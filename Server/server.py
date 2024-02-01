@@ -25,14 +25,16 @@ class ServerHandler(BaseHTTPRequestHandler):
     # Handle GET requests
     def do_GET(self):
         logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
-        content_length = int(self.headers['Content-Length'])  # <--- Gets the size of data
+        print(str(self.headers))
+
+        content_length = int(self.headers['Content-Length'])   # <--- Gets the size of data
         type = self.headers.get_content_type()
         self._set_response()
-        if (len(extractedData) > -1):
+        if (len(extractedData) > 0):
             post_data = self.rfile.read(content_length)  # <--- Gets the data itself
             data = post_data.decode('utf-8')
-            self.wfile.write(bytes(extractedData[self.client_address[0]], encoding="utf-8"))
-
+            #self.wfile.write(bytes(extractedData[self.client_address[0]], encoding="utf-8"))
+            self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
 
         else:
             self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
