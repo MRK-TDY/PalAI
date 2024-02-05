@@ -44,7 +44,7 @@ class ServerHandler(BaseHTTPRequestHandler):
         data = post_data.decode('utf-8')
         self._set_response()
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
-        if (len(data) > -1):
+        if (len(data) > 3):
 
             ##Extract Data
             result = dataextractor.extract_data(data)

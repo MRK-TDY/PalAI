@@ -10,5 +10,5 @@ default_response = "B:Cube|X=2680.000 Y=-1880.000 Z=110.000|3\n" \
 
 def extract_data(data):
     print("Extracting data: \n" + str(data))
-    gptlink.extract(data)
-    return default_response
+    result = gptlink.extract(data)
+    return result
