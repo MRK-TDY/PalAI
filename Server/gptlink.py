@@ -1,11 +1,10 @@
-from langchain_community.llms import GPT4All
 from gpt4all import GPT4All
 
 #from langchain.llms.huggingface_pipeline import HuggingFacePipeline
 
 
 instruct_path ="C:/Users/ManuelGuimaraes/AppData/Local/nomic.ai/GPT4All/mistral-7b-instruct-v0.1.Q4_0.gguf"
-chat_path = "C:/Users/ManuelGuimaraes/AppData/Local/nomic.ai/GPT4All/mistral-7b-openorca.Q4_0.gguf"
+chat_path = "mistral-7b-openorca.Q4_0.gguf"
 mini_orca = "C:/Users/ManuelGuimaraes/AppData/Local/nomic.ai/GPT4All/orca-mini-3b-gguf2-q4_0.gguf"
 
 # https://docs.gpt4all.io/gpt4all_python.html
@@ -33,7 +32,7 @@ defaultResponse = "B:Cube|X=2680.000 Y=-1880.000 Z=110.000|3\n" \
 
 
 
-model = GPT4All(mini_orca, device='gpu')
+model = GPT4All(chat_path, device='gpu')
 
 def GPTHandler(input):
     with model.chat_session(system_prompt=system_template, prompt_template=prompt_template):

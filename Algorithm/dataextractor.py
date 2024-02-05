@@ -1,5 +1,4 @@
-
-from PalAI.Server import gptlink
+from Server import gptlink
 
 default_response = "B:Cube|X=2680.000 Y=-1880.000 Z=110.000|3\n" \
                    "B:Cube|X=2880.000 Y=-2280.000 Z=110.000|3\n" \
