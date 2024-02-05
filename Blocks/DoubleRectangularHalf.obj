@@ -1,0 +1,77 @@
+# Alias OBJ Model File
+# Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
+# File units = inches
+
+mtllib DoubleRectangularHalf.mtl
+
+g Mesh1 Component_6_1 Model
+
+usemtl FrontColor
+v 0 0 -0
+vt 0 0
+vn 0 -1 -0
+v 0 0 -157.48
+vt 0 157.48
+v 315.354 0 -157.48
+vt -315.354 157.48
+v 315.354 0 -0
+vt -315.354 0
+f 1/1/1 2/2/1 3/3/1 4/4/1 
+
+usemtl BackColor
+vn -0 1 0
+f 4/4/2 3/3/2 2/2/2 1/1/2 
+
+usemtl FrontColor
+vn 1 0 -0
+vt 157.48 0
+v 315.354 78.7402 -157.48
+vt 157.48 78.7402
+v 315.354 78.7402 -0
+vt 0 78.7402
+f 4/1/3 3/5/3 5/6/3 6/7/3 
+
+usemtl BackColor
+vn -1 -0 0
+f 6/7/4 5/6/4 3/5/4 4/1/4 
+
+usemtl FrontColor
+v 0 78.7402 -157.48
+vn 0 1 -0
+v 0 78.7402 -0
+vt 315.354 0
+vt 315.354 157.48
+f 7/2/5 8/1/5 6/8/5 5/9/5 
+
+usemtl BackColor
+vn -0 -1 0
+f 5/9/6 6/8/6 8/1/6 7/2/6 
+
+usemtl FrontColor
+vn 0 0 1
+vt 315.354 78.7402
+f 1/1/7 4/8/7 6/10/7 8/7/7 
+
+usemtl BackColor
+vn -0 -0 -1
+f 8/7/8 6/10/8 4/8/8 1/1/8 
+
+usemtl FrontColor
+vt -157.48 0
+vn -1 0 -0
+vt -157.48 78.7402
+f 2/11/9 1/1/9 8/7/9 7/12/9 
+
+usemtl BackColor
+vn 1 -0 0
+f 7/12/10 8/7/10 1/1/10 2/11/10 
+
+usemtl FrontColor
+vn 0 0 -1
+vt -315.354 78.7402
+f 3/4/11 2/1/11 7/7/11 5/13/11 
+
+usemtl BackColor
+vn -0 -0 1
+f 5/13/12 7/7/12 2/1/12 3/4/12 
+

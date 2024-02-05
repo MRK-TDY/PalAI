@@ -1,10 +1,10 @@
 import openai
 import yaml
 
-with open("../config.yaml", "r") as f:
-    config = yaml.load(f, Loader=yaml.FullLoader)
+#with open("../config.yaml", "r") as f:
+#    config = yaml.load(f, Loader=yaml.FullLoader)
 #    openai.organization = config['openai_organization']
-    openai.api_key = config['openai_api_key']
+#    openai.api_key = config['openai_api_key']
 
 StartSequence = "I am in need of a structure that recreates the house from the simpsons." \
                 "In order to do this my building system takes information using the notation that follows: \n" \
@@ -19,12 +19,15 @@ defaultResponse = "B:Cube|X=2680.000 Y=-1880.000 Z=110.000|3\n" \
                    "B:Cube|X=2880.000 Y=-1880.000 Z=110.000|3\n" \
                    "B:Cube|X=3080.000 Y=-1880.000 Z=110.000|3\n"
 
+
+openai.api_key = "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"
+
 def GPTHandler(input):
 
     completePrompt = StartSequence + "Player: " + input + "\n"
 
     response = openai.chat.completions.create(
-        model="davinci-002",
+        model="gpt-3.5-turbo",
         messages=[{"role": "user","content":completePrompt}]
     )
 
