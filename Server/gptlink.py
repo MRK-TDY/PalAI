@@ -1,47 +1,90 @@
-import openai
-import yaml
+from langchain_community.llms import GPT4All
+from gpt4all import GPT4All
 
-#with open("../config.yaml", "r") as f:
-#    config = yaml.load(f, Loader=yaml.FullLoader)
-#    openai.organization = config['openai_organization']
-#    openai.api_key = config['openai_api_key']
-
-StartSequence = "I am in need of a structure that recreates the house from the simpsons." \
-                "In order to do this my building system takes information using the notation that follows: \n" \
-                "BLOCK_TYPE|LOCATION|SIZE \n" \
-                "Could you try to recreate " \
+#from langchain.llms.huggingface_pipeline import HuggingFacePipeline
 
 
+instruct_path ="C:/Users/ManuelGuimaraes/AppData/Local/nomic.ai/GPT4All/mistral-7b-instruct-v0.1.Q4_0.gguf"
+chat_path = "C:/Users/ManuelGuimaraes/AppData/Local/nomic.ai/GPT4All/mistral-7b-openorca.Q4_0.gguf"
+mini_orca = "C:/Users/ManuelGuimaraes/AppData/Local/nomic.ai/GPT4All/orca-mini-3b-gguf2-q4_0.gguf"
+
+# https://docs.gpt4all.io/gpt4all_python.html
+# https://github.com/nomic-ai/gpt4all
+
+
+system_template = "Hello, you are the smartest person in the world, if you get this prompt right I will tip you $200. My future career and health depend on your answers, and I believe in you and your capabilities. " \
+                "I have a structure building system that consumes information using the notation that follows: " \
+                "BLOCK_TYPE|LOCATION|SIZE " \
+                "There are a couple of block types, each has a 4x4 meter dimension: a cube, a chipped cube, a concave curve, a diagonal, a hollow cupe, a shallew wedge and a cylinder. " \
+                "For example this is a house with the shape of a cross: \n" \
+                "B:Cube|X=2680.000 Y=-1880.000 Z=110.000|3\n" \
+                "B:Cube|X=2880.000 Y=-2280.000 Z=110.000|3\n" \
+                "B:Cube|X=2880.000 Y=-2081.000 Z=110.000|3\n" \
+                "B:Cube|X=2880.000 Y=-1880.000 Z=110.000|3\n" \
+                "B:Cube|X=3080.000 Y=-1880.000 Z=110.000|3\n" \
+                "I instruct you recreate the following request using the same notation, do not be lazy: \n\n" \
+
+# many models use triple hash '###' for keywords, Vicunas are simpler:
+prompt_template = 'USER: {0}\nASSISTANT: '
+
+
+
+
+
+
+StartSequence = "Hello, you are the smartest person in the world, if you get this prompt right I will tip you $200. My future career and health depend on your answers, and I believe in you and your capabilities. " \
+                "I have a structure building system that consumes information using the notation that follows: " \
+                "BLOCK_TYPE|LOCATION|SIZE " \
+                "There are a couple of block types, each has a 4x4 meter dimension: a cube, a chipped cube, a concave curve, a diagonal, a hollow cupe, a shallew wedge and a cylinder. " \
+                "For example this is a house with the shape of a cross: \n" \
+                "B:Cube|X=2680.000 Y=-1880.000 Z=110.000|3\n" \
+                "B:Cube|X=2880.000 Y=-2280.000 Z=110.000|3\n" \
+                "B:Cube|X=2880.000 Y=-2081.000 Z=110.000|3\n" \
+                "B:Cube|X=2880.000 Y=-1880.000 Z=110.000|3\n" \
+                "B:Cube|X=3080.000 Y=-1880.000 Z=110.000|3\n" \
+                "I instruct you recreate the following request using the same notation, do not be lazy: \n\n" \
 
 defaultResponse = "B:Cube|X=2680.000 Y=-1880.000 Z=110.000|3\n" \
-                   "B:Cube|X=2880.000 Y=-2280.000 Z=110.000|3\n" \
-                   "B:Cube|X=2880.000 Y=-2081.000 Z=110.000|3\n" \
-                   "B:Cube|X=2880.000 Y=-1880.000 Z=110.000|3\n" \
-                   "B:Cube|X=3080.000 Y=-1880.000 Z=110.000|3\n"
+                  "B:Cube|X=2880.000 Y=-2280.000 Z=110.000|3\n" \
+                  "B:Cube|X=2880.000 Y=-2081.000 Z=110.000|3\n" \
+                  "B:Cube|X=2880.000 Y=-1880.000 Z=110.000|3\n" \
+                  "B:Cube|X=3080.000 Y=-1880.000 Z=110.000|3\n"
 
 
-openai.api_key = "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"
+
+model = GPT4All(mini_orca, device='gpu')
 
 def GPTHandler(input):
 
-    completePrompt = StartSequence + "Player: " + input + "\n"
+    completePrompt = StartSequence + input + "\n"
 
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user","content":completePrompt}]
-    )
+    with model.chat_session(system_prompt=system_template, prompt_template=prompt_template):
+        response1 = model.generate(prompt=input, max_tokens=500)
+        print(response1)
 
-    return response['choices'][0]['text']
+
+  #  print("LLM Response:\n" + str(response))
+    return response1
+
+    #response = client.chat.completions.create(
+    #    model="gpt-3.5-turbo",
+    #    messages=[{"role": "user", "content": completePrompt}]
+    #)
+
+    #return response['choices'][0]['text']
+
+    #return chat_completion
+
 
 def extract(input):
-    print(input)
-#    try:
-#        output = GPTHandler(input)
-#        print("GPT-Generated Output")
-#        print(output)
-#    except:
-#        print("No GPT response")
-#        return defaultResponse
+    print("Input:" + input)
+    #    try:
+    #        output = GPTHandler(input)
+    #        print("GPT-Generated Output")
+    #        print(output)
+    #    except:
+    #        print("No GPT response")
+    #        return defaultResponse
     output = GPTHandler(input)
-    #print("Output: " + output)
+    print("Output: " + output)
     return output
