@@ -1,6 +1,5 @@
 from configparser import RawConfigParser
 from flask import Flask, request, jsonify
-from Algorithm.dataextractor import *
 from Server.gptlink import GPTHandler
 
 if __name__ == '__main__':
@@ -13,8 +12,6 @@ if __name__ == '__main__':
 
     gpt_handler = GPTHandler(config)
 
-    extractedData = {}
-
     @app.route('/build', methods=['POST'])
     def handle_post():
         if not request.json or 'prompt' not in request.json:
@@ -24,7 +21,6 @@ if __name__ == '__main__':
         client_address = request.remote_addr
 
         result = gpt_handler.get_building_data(prompt)
-        extractedData[client_address] = result
 
         return jsonify({'message': 'Data processed', 'result': result})
 

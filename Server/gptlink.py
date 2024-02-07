@@ -9,11 +9,11 @@ class GPTHandler():
         self.model = GPT4All(config.get('llm', 'chat_path'), device='gpu')
         self.n_batch = config.getint('llm', 'n_batch')
         self.temp = eval(config.get('llm', 'temp'))
-        self.prompt_template = 'USER: {0}\nASSISTANT: '
 
         with open(config.get('llm', 'prompts_path'), 'r') as file:
             self.prompts_file = yaml.safe_load(file)
         self.system_prompt = self.prompts_file['system_prompt']
+        self.prompt_template = self.prompts_file['prompt_template']
 
     def get_llm_response(self, prompt):
         with self.model.chat_session(system_prompt=self.system_prompt, prompt_template=self.prompt_template):
@@ -41,7 +41,12 @@ class GPTHandler():
             if line.count('|') == 2:
                 building_info.append(line)
 
-        return building_info
+        blocks = []
+        for block in building_info:
+            block = block.split('|')
+            blocks.append({'type': block[0], 'position': f"({block[1]})", 'size': block[2]})
+
+        return blocks
 
     # def OutputCleaner(self,output):
     #     # Split the input string into lines

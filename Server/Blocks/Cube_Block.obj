@@ -1,33 +1,27 @@
 # Alias OBJ Model File
 # Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
 # File units = meters
-
-mtllib Cube_4m_Block.mtl
-
-g Mesh1 Component_4_1 Model
-
-usemtl FrontColor
-v 4 0 -0
+v 1 0 -0
 vt 0 0
 vn 1 0 -0
-v 4 0 -4
+v 1 0 -1
 vt 157.48 0
-v 4 4 -4
+v 1 1 -1
 vt 157.48 157.48
-v 4 4 -0
+v 1 1 -0
 vt 0 157.48
 f 1/1/1 2/2/1 3/3/1 4/4/1 
 
 v 0 0 -0
 vn 0 -1 -0
-v 0 0 -4
+v 0 0 -1
 vt -157.48 157.48
 vt -157.48 0
 f 5/1/2 6/4/2 2/5/2 1/6/2 
 
 vn -1 0 -0
-v 0 4 -0
-v 0 4 -4
+v 0 1 -0
+v 0 1 -1
 f 6/6/3 5/1/3 7/4/3 8/5/3 
 
 vn 0 0 1
