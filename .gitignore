@@ -1,6 +1,7 @@
 config.ini
 .idea/
-
+Tests/Logs/
+Results/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

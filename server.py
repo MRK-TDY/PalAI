@@ -1,6 +1,8 @@
+import os
+import yaml
 from configparser import RawConfigParser
 from flask import Flask, request, jsonify
-from Server.gptlink import GPTHandler
+from Server.pal_ai import PalAI
 
 if __name__ == '__main__':
     app = Flask(__name__)
@@ -10,7 +12,16 @@ if __name__ == '__main__':
 
     PORT = config.getint('server', 'port')
 
-    gpt_handler = GPTHandler(config)
+    with open(os.path.join(os.path.dirname(__file__), 'prompts.yaml'), 'r') as file:
+        prompts_file = yaml.safe_load(file)
+
+    pal = PalAI(prompts_file,
+                config.getfloat('llm', 'temp'),
+                config.get('llm', 'model_name'),
+                config.get('openai', 'api_key'),
+                # config.get('openai', 'org_id'),
+                config.getboolean('server', 'verbose'))
+
 
     @app.route('/build', methods=['POST'])
     def handle_post():
@@ -18,10 +29,10 @@ if __name__ == '__main__':
             return jsonify({'message': 'Missing or invalid JSON payload'}), 400  # Bad Request
 
         prompt = request.json['prompt']
-        client_address = request.remote_addr
-
-        result = gpt_handler.get_building_data(prompt)
+        response = pal.get_llm_response(*pal.format_prompt(prompt))
+        result = pal.extract_building_information(response)
 
         return jsonify({'message': 'Data processed', 'result': result})
+
 
     app.run(port=PORT)
