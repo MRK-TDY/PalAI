@@ -28,9 +28,13 @@ class ObjVisualizer:
                 print("Block type not implemented:", block['type'])
                 block['type'] = 'CUBE'  # Default to a cube if the block type is not implemented
 
-            block_name = block['type']
-            position = tuple(map(float, block['position'].replace("(", "").replace(")", "").split(',')))
-            size = float(block['size'])
+            try:
+                block_name = block['type']
+                position = tuple(map(float, block['position'].replace("(", "").replace(")", "").split(',')))
+                # size = float(block['size'])
+                size = 1
+            except Exception as e:
+                continue
 
             path = os.path.join(os.path.dirname(__file__), self.block_obj_paths[block_name])
             # Load the template OBJ for this block

@@ -3,6 +3,7 @@ from datetime import datetime
 import unittest
 import requests
 from Server.visualizer import *
+import csv
 class TestClient(unittest.TestCase):
 
     SERVER_URL = "http://127.0.0.1:8000"
@@ -43,6 +44,12 @@ class TestClient(unittest.TestCase):
     def test_small_batch(self):
         self._test_server("Generate a building in the shape of an L", "L-shape", self.path)
         self._test_server("Generate a building in the shape of an M", "M-shape", self.path)
+
+    def test_csv_prompts(self):
+        with open(os.path.join(os.path.dirname(__file__), 'prompts.csv'), 'r') as csvfile:
+            reader = csv.DictReader(csvfile, delimiter=';')
+            for row in reader:
+                self._test_server(row["PROMPT"], row["PATH"], self.path)
 
 if __name__ == '__main__':
     unittest.main()

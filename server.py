@@ -19,7 +19,7 @@ if __name__ == '__main__':
                 config.getfloat('llm', 'temp'),
                 config.get('llm', 'model_name'),
                 config.get('openai', 'api_key'),
-                # config.get('openai', 'org_id'),
+                config.get('llm', 'max_tokens'),
                 config.getboolean('server', 'verbose'))
 
 
