@@ -1,24 +1,34 @@
 from direct.showbase.ShowBase import ShowBase
-from pandac.PandaModules import *
-import sys
+from panda3d.core import *
+import os
 
 
 def screenshot_model(obj_path, screenshot_path):
+
+    def get_rel_path(path):
+        return Filename.fromOsSpecific(os.path.join(os.path.dirname(__file__), path))
+
     class OffscreenRenderer(ShowBase):
         def __init__(self, obj_path, screenshot_path):
             ShowBase.__init__(self)
+
             base.disableMouse()  # Disable mouse control of the camera
 
             # Load the model
-            self.model = self.loader.loadModel(obj_path)
-            self.model.reparentTo(self.render)
-            self.model.setPos(0, 0, -1)
-            self.model.setScale(1, 1, 1)
-            self.model.setHpr(0, 90, 0)
-            self.applySimpleMaterial()
+            try:
+                path = (obj_path)
+                print(os.path.abspath(path))
+                self.model = self.loader.loadModel(path)
+                self.model.reparentTo(self.render)
+                self.model.setPos(1, 0, -1)
+                self.model.setScale(1, 1, 1)
+                self.model.setHpr(0, 90, 90)
+                self.applySimpleMaterial()
+            except Exception as e:
+                pass  #if model doesn't exist screenshot just the grid
 
-            self.grid_tex = self.loader.load_texture("grid.png")
-            self.model_grid = self.loader.loadModel("Blocks/Cube_Block.obj")
+            self.grid_tex = self.loader.load_texture(get_rel_path("grid.png"))
+            self.model_grid = self.loader.loadModel(get_rel_path("Blocks/Cube_Block.obj"))
             self.model_grid.reparentTo(self.render)
             self.model_grid.setPos(-1, -1, -1)
             self.model_grid.setScale(11, 11, 11)
@@ -28,7 +38,7 @@ def screenshot_model(obj_path, screenshot_path):
             gridScale = 11.0 / 256.0 / 10.0
             self.model_grid.setTexScale(TextureStage.getDefault(), gridScale, gridScale)
 
-            self.floor = self.loader.loadModel("Blocks/Cube_Block.obj")
+            self.floor = self.loader.loadModel(get_rel_path("Blocks/Cube_Block.obj"))
             self.floor.reparentTo(self.render)
             self.floor.setPos(-50, -50, -1.01)
             self.floor.setScale(100 , 100, 0.1)
@@ -45,7 +55,8 @@ def screenshot_model(obj_path, screenshot_path):
 
             # Render and save screenshot
             base.graphicsEngine.renderFrame()
-            self.takeScreenshot(screenshot_path)
+            self.takeScreenshot(get_rel_path(screenshot_path))
+            ShowBase.destroy(self)
 
         def applySimpleMaterial(self):
             # Create a simple white material
@@ -77,6 +88,6 @@ def screenshot_model(obj_path, screenshot_path):
     # app.run() # Uncomment this line to run the app and display the model for more than a frame
 
 if __name__ == "__main__":
-    obj_path = "../Tests/Logs/2024-02-15_15-49-33/L-shape.obj"  # Replace this with the path to your OBJ file
+    obj_path = "manuel.obj"
     app = screenshot_model(obj_path, "screenshot.png")
 

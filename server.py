@@ -15,12 +15,6 @@ if __name__ == '__main__':
     with open(os.path.join(os.path.dirname(__file__), 'prompts.yaml'), 'r') as file:
         prompts_file = yaml.safe_load(file)
 
-    pal = PalAI(prompts_file,
-                config.getfloat('llm', 'temp'),
-                config.get('llm', 'model_name'),
-                config.get('openai', 'api_key'),
-                config.get('llm', 'max_tokens'),
-                config.getboolean('server', 'verbose'))
 
 
     @app.route('/build', methods=['POST'])
@@ -28,11 +22,17 @@ if __name__ == '__main__':
         if not request.json or 'prompt' not in request.json:
             return jsonify({'message': 'Missing or invalid JSON payload'}), 400  # Bad Request
 
+        pal = PalAI(prompts_file,
+                    config.getfloat('llm', 'temp'),
+                    config.get('llm', 'model_name'),
+                    config.get('llm', 'image_model_name'),
+                    config.get('openai', 'api_key'),
+                    config.get('llm', 'max_tokens'),
+                    config.getboolean('server', 'verbose'))
+
         prompt = request.json['prompt']
-        response = pal.get_llm_response(*pal.format_prompt(prompt))
-        result = pal.extract_building_information(response)
+        result = pal.build(prompt)
 
         return jsonify({'message': 'Data processed', 'result': result})
-
 
     app.run(port=PORT)

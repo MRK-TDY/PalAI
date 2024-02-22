@@ -38,11 +38,11 @@ class TestClient(unittest.TestCase):
         cls.path = f"Logs/{now}"
 
     def test_single(self):
-        self._test_server("Generate a building in the shape of stairs", "stairs", self.path)
+        self._test_server("Generate a building in the shape of an L 2 blocks tall", "L-shape", self.path)
 
 
     def test_small_batch(self):
-        self._test_server("Generate a building in the shape of an L", "L-shape", self.path)
+        self._test_server("Generate a building in the shape of stairs", "stairs", self.path)
         self._test_server("Generate a building in the shape of an M", "M-shape", self.path)
 
     def test_csv_prompts(self):
