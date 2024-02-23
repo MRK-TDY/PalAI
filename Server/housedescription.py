@@ -3,7 +3,10 @@ import requests
 import openai
 
 
-path = "Server/Uploads/received_image.png"
+pathFront = "Server/Uploads/front.png"
+pathRight = "Server/Uploads/right.png"
+pathLeft = "Server/Uploads/left.png"
+pathBack = "Server/Uploads/back.png"
 
 class BuildingDescriptor():
     def __init__(self, api_key):
@@ -15,7 +18,10 @@ class BuildingDescriptor():
 
 
     def get_image_description(self):
-        base64_image = self.encode_image(path)
+        base64_imageFront = self.encode_image(pathFront)
+        base64_imageRight = self.encode_image(pathRight)
+        base64_imageLeft = self.encode_image(pathLeft)
+        base64_imageBack = self.encode_image(pathBack)
 
         headers = {
             "Content-Type": "application/json",
@@ -30,12 +36,30 @@ class BuildingDescriptor():
                     "content": [
                         {
                             "type": "text",
-                            "text": "Can you describe the building you see in the image?"
+                            "text": "The following images show a building from the front, right, left and back.Please describe this building style in a few worlds. Don't mention the pictures"
                         },
                         {
                             "type": "image_url",
                             "image_url": {
-                                "url": f"data:image/jpeg;base64,{base64_image}"
+                                "url": f"data:image/jpeg;base64,{base64_imageFront}"
+                            }
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_imageRight}"
+                            }
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_imageLeft}"
+                            }
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_imageBack}"
                             }
                         }
                     ]

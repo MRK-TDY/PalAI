@@ -1,5 +1,7 @@
 import os
 import yaml
+import json
+import base64
 from configparser import RawConfigParser
 from flask import Flask, request, jsonify
 from Server.pal_ai import PalAI
@@ -45,17 +47,38 @@ if __name__ == '__main__':
 
     @app.route('/description', methods=['POST'])
     def handle_image_post():
-        if request.content_type == 'application/octet-stream':
+        if request.content_type == 'application/json':
             data = request.data  # This is the raw image data
             # Generate or specify your filename here. For example:
-            filename = 'received_image.png'
-            file_path = os.path.join(UPLOAD_FOLDER, filename)
-            with open(file_path, 'wb') as file:
-                file.write(data)
+            filenameFront = 'front.png'
+            filenameRight = 'right.png'
+            filenameLeft = 'left.png'
+            filenameBack = 'back.png'
 
-            response =  description.get_image_description()
+            json_object = json.loads(data)
 
-            return jsonify({'message': 'File successfully uploaded', 'filename': response}), 200
+            file_path = os.path.join(UPLOAD_FOLDER, filenameFront)
+            imgdata = base64.b64decode(json_object["front"])
+            with open(file_path, 'wb') as fileFront:
+                fileFront.write(imgdata)
+
+            file_path = os.path.join(UPLOAD_FOLDER, filenameRight)
+            imgdata = base64.b64decode(json_object["right"])
+            with open(file_path, 'wb') as fileRight:
+                fileRight.write(imgdata)
+
+            file_path = os.path.join(UPLOAD_FOLDER, filenameLeft)
+            imgdata = base64.b64decode(json_object["left"])
+            with open(file_path, 'wb') as fileLeft:
+                fileLeft.write(imgdata)
+
+            file_path = os.path.join(UPLOAD_FOLDER, filenameBack)
+            imgdata = base64.b64decode(json_object["back"])
+            with open(file_path, 'wb') as fileBack:
+                fileBack.write(imgdata)
+
+            response = description.get_image_description()
+            return jsonify({'message': response}), 200
         else:
             return jsonify({'error': 'Unsupported Media Type'}), 415
 
