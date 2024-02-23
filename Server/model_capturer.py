@@ -10,15 +10,19 @@ def screenshot_model(obj_path, screenshot_path):
 
     class OffscreenRenderer(ShowBase):
         def __init__(self, obj_path, screenshot_path):
+
+            cache = BamCache.get_global_ptr()
+            cache.set_cache_models(False)
+            cache.set_active(False)
+            load_prc_file_data("", "model-cache-dir")
+
             ShowBase.__init__(self)
 
             base.disableMouse()  # Disable mouse control of the camera
 
             # Load the model
             try:
-                path = (obj_path)
-                print(os.path.abspath(path))
-                self.model = self.loader.loadModel(path)
+                self.model = self.loader.loadModel(get_rel_path(obj_path))
                 self.model.reparentTo(self.render)
                 self.model.setPos(1, 0, -1)
                 self.model.setScale(1, 1, 1)
@@ -88,6 +92,6 @@ def screenshot_model(obj_path, screenshot_path):
     # app.run() # Uncomment this line to run the app and display the model for more than a frame
 
 if __name__ == "__main__":
-    obj_path = "manuel.obj"
+    obj_path = "temp/model_2.obj"
     app = screenshot_model(obj_path, "screenshot.png")
 

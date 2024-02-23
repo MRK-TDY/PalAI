@@ -38,7 +38,7 @@ class TestClient(unittest.TestCase):
         cls.path = f"Logs/{now}"
 
     def test_single(self):
-        self._test_server("Generate a building in the shape of an L 2 blocks tall", "L-shape", self.path)
+        self._test_server("Generate a tower that is 3 blocks wide and tapers at the top, the tower should be place at 5,5", "demo", self.path)
 
 
     def test_small_batch(self):
