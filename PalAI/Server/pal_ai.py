@@ -1,11 +1,7 @@
-from datetime import datetime
 import tempfile
 import colorama
 import os
 import sys
-import shutil
-
-from langchain.memory import ConversationStringBufferMemory
 
 sys.path.append(os.path.dirname(__file__))
 
@@ -16,7 +12,7 @@ import base64
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain.schema.messages import HumanMessage, AIMessage
+from langchain.schema.messages import HumanMessage #, AIMessage
 
 class PalAI():
     def __init__(self, prompts_file, temperature, model_name, image_model_name, api_key, max_tokens, verbose=False):
@@ -52,7 +48,7 @@ class PalAI():
         else:
             prompt = ChatPromptTemplate.from_messages( [
                 ("system", "{system_message}"),
-                ("user", "{prompt}")
+                ("user", f"{prompt}")
             ])
             llm = self.llm
 
@@ -64,23 +60,26 @@ class PalAI():
 
         return response
 
-    def format_prompt(self, user_prompt):
+    def format_prompt(self):
         return (self.system_prompt, self.prompt_template)
 
-    def build(self, prompt):
+    def build(self, architect_plan):
 
-        # prompt = self.get_llm_response(self.prompts_file["plan_system_message"],
-        #                                self.prompts_file["plan_prompt"].format(prompt))
+        architect_plan = self.get_llm_response(self.prompts_file["plan_system_message"],
+                                               self.prompts_file["plan_prompt"].format(architect_plan))
         visualizer = ObjVisualizer()
-        system_message, prompt_template = self.format_prompt(prompt)
+        system_message, prompt_template = self.format_prompt()
         complete_building = []
         temp_files_to_delete = []
         history = []
 
+        obj_path = ""
+
         try:
             for i in range(3):
-
-                formatted_prompt = prompt_template.format(prompt=prompt, layer=i)
+                print(architect_plan)
+                level_prompt = next(x for x in architect_plan.split("\n") if x.lower().startswith(f"layer {i}:"))
+                formatted_prompt = prompt_template.format(prompt=level_prompt, layer=i)
                 if len(history) > 0:
                     aux = ""
                     for j, building_layer in enumerate(history):
@@ -90,7 +89,7 @@ class PalAI():
 
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image, \
                         tempfile.NamedTemporaryFile(delete=False, suffix=".obj") as temp_obj:
-                    screenshot_model(obj_path if i > 0 else "", temp_image.name)
+                    screenshot_model(obj_path, temp_image.name)
                     # shutil.copy2(temp_image.name, f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png")
 
 

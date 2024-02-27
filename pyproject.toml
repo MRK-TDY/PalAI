@@ -1,0 +1,11 @@
+[project]
+name = "PalAI"
+version = "0.1.0"
+description = "AI Assistant to TODAY's Pal Tool"
+
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core >=3.2,<4"]
+
+[tool.pyright]
+include = "PalAI"

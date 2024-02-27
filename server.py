@@ -2,7 +2,7 @@ import os
 import yaml
 from configparser import RawConfigParser
 from flask import Flask, request, jsonify
-from Server.pal_ai import PalAI
+from PalAI.Server.pal_ai import PalAI
 
 if __name__ == '__main__':
     app = Flask(__name__)

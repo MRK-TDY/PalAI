@@ -33,7 +33,7 @@ class ObjVisualizer:
                 position = tuple(map(float, block['position'].replace("(", "").replace(")", "").split(',')))
                 # size = float(block['size'])
                 size = 1
-            except Exception as e:
+            except Exception as _:
                 continue
 
             path = os.path.join(os.path.dirname(__file__), self.block_obj_paths[block_name])

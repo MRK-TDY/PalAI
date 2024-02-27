@@ -1,4 +1,0 @@
-CUBE|(0,0,0)
-CUBE|(0,0,2)
-DIAGONAL|(0,0,4)
-DIAGONAL|(0,2,4)

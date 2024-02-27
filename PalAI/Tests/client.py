@@ -2,8 +2,11 @@ import json
 from datetime import datetime
 import unittest
 import requests
-from Server.visualizer import *
+import os
+
+from PalAI.Server.visualizer import *
 import csv
+
 class TestClient(unittest.TestCase):
 
     SERVER_URL = "http://127.0.0.1:8000"
@@ -26,7 +29,7 @@ class TestClient(unittest.TestCase):
 
         try:
            os.startfile(file_path)
-        except Exception as e:
+        except Exception as _:
             pass  # Ignore error
 
         self.assertEqual(data['message'], 'Data processed')
@@ -38,7 +41,7 @@ class TestClient(unittest.TestCase):
         cls.path = f"Logs/{now}"
 
     def test_single(self):
-        self._test_server("Generate a tower that is 3 blocks wide and tapers at the top, the tower should be place at 5,5", "demo", self.path)
+        self._test_server("Generate a tower that is 3 blocks wide and tapers at the top, the tower should be placed at 5,5", "demo", self.path)
 
 
     def test_small_batch(self):
