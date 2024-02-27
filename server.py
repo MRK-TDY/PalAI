@@ -28,6 +28,7 @@ if __name__ == '__main__':
                     config.get('llm', 'image_model_name'),
                     config.get('openai', 'api_key'),
                     config.get('llm', 'max_tokens'),
+                    config.getboolean('pal', 'use_images', fallback=False),
                     config.getboolean('server', 'verbose'))
 
         prompt = request.json['prompt']

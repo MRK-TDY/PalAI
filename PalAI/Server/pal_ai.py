@@ -15,16 +15,20 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.messages import HumanMessage #, AIMessage
 
 class PalAI():
-    def __init__(self, prompts_file, temperature, model_name, image_model_name, api_key, max_tokens, verbose=False):
+    def __init__(self, prompts_file, temperature, model_name, image_model_name, api_key, max_tokens, use_images, verbose=False):
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file['system_prompt']
         self.prompt_template = self.prompts_file['prompt_template']
+
         self.llm = ChatOpenAI(model=model_name, temperature=temperature, api_key=api_key, max_tokens=max_tokens)
         self.mm_llm = ChatOpenAI(model=image_model_name, temperature=temperature, api_key=api_key,
                                  max_tokens=max_tokens)
+
+        self.use_images = use_images
         self.verbose = verbose
 
         os.chdir(os.path.dirname(__file__))
+
 
     def get_llm_response(self, system_message, prompt, image_path = ""):
         if self.verbose:
@@ -60,8 +64,10 @@ class PalAI():
 
         return response
 
+    
     def format_prompt(self):
         return (self.system_prompt, self.prompt_template)
+
 
     def build(self, architect_plan):
 
@@ -77,9 +83,9 @@ class PalAI():
 
         try:
             for i in range(3):
-                print(architect_plan)
                 level_prompt = next(x for x in architect_plan.split("\n") if x.lower().startswith(f"layer {i}:"))
                 formatted_prompt = prompt_template.format(prompt=level_prompt, layer=i)
+
                 if len(history) > 0:
                     aux = ""
                     for j, building_layer in enumerate(history):
@@ -87,28 +93,34 @@ class PalAI():
                     formatted_prompt = f"Previous layers:\n{aux}\n\nRequest:{formatted_prompt}"
 
 
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image, \
-                        tempfile.NamedTemporaryFile(delete=False, suffix=".obj") as temp_obj:
-                    screenshot_model(obj_path, temp_image.name)
-                    # shutil.copy2(temp_image.name, f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png")
+                if self.use_images:
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image, \
+                            tempfile.NamedTemporaryFile(delete=False, suffix=".obj") as temp_obj:
+                        screenshot_model(obj_path, temp_image.name)
 
+                        response = self.get_llm_response(system_message, formatted_prompt, temp_image.name)
 
-                    response = self.get_llm_response(system_message, formatted_prompt, temp_image.name)
+                        history.append(response)
+                        new_layer = self.extract_building_information(response, i)
+                        complete_building.extend(new_layer)
+                        obj_content = visualizer.generate_obj(complete_building)
 
+                        temp_obj.write(obj_content.encode())
+                        temp_obj.flush()
+
+                        # Remember the paths to delete them later
+                        temp_files_to_delete.append(temp_image.name)
+                        temp_files_to_delete.append(temp_obj.name)
+
+                        # If you need to use the obj file for the next iteration
+                        obj_path = temp_obj.name
+
+                else:
+                    response = self.get_llm_response(system_message, formatted_prompt)
                     history.append(response)
                     new_layer = self.extract_building_information(response, i)
                     complete_building.extend(new_layer)
-                    obj_content = visualizer.generate_obj(complete_building)
-
-                    temp_obj.write(obj_content.encode())
-                    temp_obj.flush()
-
-                    # Remember the paths to delete them later
-                    temp_files_to_delete.append(temp_image.name)
-                    temp_files_to_delete.append(temp_obj.name)
-
-                    # If you need to use the obj file for the next iteration
-                    obj_path = temp_obj.name
+    
 
             return complete_building
         finally:
@@ -116,7 +128,13 @@ class PalAI():
             for file_path in temp_files_to_delete:
                 os.remove(file_path)
 
+
     # def extract_building_information(self, text, level):
+    # """
+    # Extracts building information from the API response. Uses grid layout response
+    # :param text: API response
+    # :return list: List of dictionaries, where each dictionary represents a block.
+    # """
     #     lines = text.split('\n')
     #
     #     building_info = []
@@ -135,6 +153,7 @@ class PalAI():
     #             i += 1
     #
     #     return building_info
+
 
     def extract_building_information(self, text, level):
         """

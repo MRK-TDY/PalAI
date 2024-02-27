@@ -1,6 +1,7 @@
 config.ini
 .idea/
 PalAI/Tests/Logs/
+Logs/
 Results/
 
 # Byte-compiled / optimized / DLL files
