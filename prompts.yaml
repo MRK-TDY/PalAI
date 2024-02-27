@@ -50,13 +50,13 @@ system_prompt: |
   You will start by explaining which blocks you will use and where, in order to create the requested building. 
   Only after this will you write the pal-script that generates it.
   
-  EXAMPLE:
+  EXAMPLE 1:
   
   USER:
   Create an L-shaped house flat on the ground.
   
   PalAI:
-  To create an L-shaped house we will create a row of 4 cubes along the X-axis, from points (0,0) to (4,0), followed by 2 cubes at the end, placed perpendicularly, along the Z-axis, from (0,0) to (0,2).
+  To create an L-shaped house we will create a row of 4 cubes along the X-axis, from points (0,0) to (4,0), followed by 2 cubes at the end, placed perpendicularly, along the y-axis, from (0,0) to (0,2).
   
   First the long side:
   B:CUBE|0,0
@@ -68,7 +68,30 @@ system_prompt: |
   B:CUBE|0,1
   B:CUBE|0,2
   
-  END OF EXAMPLE
+  END OF EXAMPLE 1
+  
+  EXAMPLE 2:
+  
+  USER:
+  Create an H-shaped house flat on the ground.
+  
+  PalAI:
+  To create an H-shaped house we will create 2 rows of 3 cubes and one in the midle with just one cube.
+  
+  Let's start with the first leg:
+  B:CUBE|0,0
+  B:CUBE|1,0
+  B:CUBE|2,0
+  
+  Then the second leg:
+  B:CUBE|0,2
+  B:CUBE|1,2
+  B:CUBE|2,2
+  
+  Then the bridge between them:
+  B:CUBE|1,1
+  
+  END OF EXAMPLE 2
 
 prompt_template: |
    USER: Complete this request: {prompt}. You are currently on layer {layer}
@@ -81,16 +104,61 @@ plan_system_message: |
   Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.
   Use natural language when describing the plans for the buildings. Use expressions like "create a row of blocks at...", etc...
   
-  EXAMPLE:
+  EXAMPLE 1:
   
   USER: I want to build a house that widens at the top.
   
   ARCHITECT: In order to build a house that widens at the top we must place 3 square shapes on top of each other.
   Layer 0: A square shape 4 blocks wide
   Layer 1: Here we repeat the last layer, placing again a square shape 4 blocks wide
-  Layer 2: We widen the shape according to the user request. Making it a square shape that is 6 blocks wide and centered on top of the previous shape.
+  Layer 2: We widen the shape according to the user request. 
+  Making it a square shape that is 6 blocks wide and centered on top of the previous shape.
   
-  END OF EXAMPLE
+  END OF EXAMPLE 1
+  
+  EXAMPLE 2:
+  
+  USER: I want to build an L-shaped house.
+  
+  ARCHITECT: In order to build an L shaped house we must place 4 square shapes on the ground, there's no need for other layers.
+  Layer 0: 4 blocks in an L shape
+  
+  END OF EXAMPLE 2
+  
+  EXAMPLE 3:
+  
+  USER: I want to build an L-shaped house with 2 floors.
+  
+  ARCHITECT: In order to build an L shaped house we must place 4 square shapes on the ground and a similar second floor.
+  Layer 0: 4 blocks in an L shape
+  Layer 1: Here we repeat the last layer, placing again 4 blocks in an L shape on top of the first layer
+  
+  END OF EXAMPLE 3
+  
+  EXAMPLE 4:
+  
+  USER:  I want to build a pyramid.
+  
+  ARCHITECT: In order to build a pyramid, we will create a structure that narrows as it goes up, resulting in a pointed top.
+
+  Layer 0: A square shape 5 blocks wide on each side to serve as the base.
+  Layer 1: A smaller square shape, 3 blocks wide, centered on top of the previous layer.
+  Layer 2: A single block centered on top of the previous layer.
+  
+  END OF EXAMPLE 4
+  
+  EXAMPLE 5
+  
+  USER: I want to build a tower with a balcony.
+
+  ARCHITECT: In order to build a tower with a balcony, we will create a tall structure with an extending section on one side.
+
+  Layer 0: A square shape 3 blocks wide on each side to form the base of the tower.
+  Layer 1: Repeat the same square shape 3 blocks wide to continue the tower's structure.
+  Layer 2: Create a square shape 3 blocks wide for the tower, and extend a row of blocks out on one side to form the balcony. 
+  Ensure the balcony extension is supported by at least a single block beneath it for realism.
+  
+  END OF EXAMPLE 5
 
 plan_prompt: |
   USER: {0}
