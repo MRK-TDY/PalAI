@@ -74,16 +74,16 @@ class PalAI():
         architect_plan = self.get_llm_response(self.prompts_file["plan_system_message"],
                                                self.prompts_file["plan_prompt"].format(architect_plan))
         visualizer = ObjVisualizer()
-        system_message, prompt_template = self.format_prompt()
+        system_message_template, prompt_template = self.format_prompt()
         complete_building = []
         temp_files_to_delete = []
         history = []
+        levels = [i for i in architect_plan.split("\n") if i.lower().startswith(f"layer")] 
 
         obj_path = ""
 
         try:
-            for i in range(3):
-                level_prompt = next(x for x in architect_plan.split("\n") if x.lower().startswith(f"layer {i}:"))
+            for i, level_prompt in enumerate(levels):
                 formatted_prompt = prompt_template.format(prompt=level_prompt, layer=i)
 
                 if len(history) > 0:
@@ -92,6 +92,11 @@ class PalAI():
                         aux += f"Building at layer {j}:\n{building_layer}"
                     formatted_prompt = f"Previous layers:\n{aux}\n\nRequest:{formatted_prompt}"
 
+                if i == 0:
+                    example = self.prompts_file["door_example"]
+                else:
+                    example =  self.prompts_file["basic_example"]
+                system_message = system_message_template.format(example=example)
 
                 if self.use_images:
                     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image, \
@@ -100,7 +105,7 @@ class PalAI():
 
                         response = self.get_llm_response(system_message, formatted_prompt, temp_image.name)
 
-                        history.append(response)
+                        history.append(self.extract_history(response))
                         new_layer = self.extract_building_information(response, i)
                         complete_building.extend(new_layer)
                         obj_content = visualizer.generate_obj(complete_building)
@@ -129,30 +134,22 @@ class PalAI():
                 os.remove(file_path)
 
 
-    # def extract_building_information(self, text, level):
-    # """
-    # Extracts building information from the API response. Uses grid layout response
-    # :param text: API response
-    # :return list: List of dictionaries, where each dictionary represents a block.
-    # """
-    #     lines = text.split('\n')
-    #
-    #     building_info = []
-    #     i = 0
-    #     while i < len(lines):
-    #         line = lines[i]
-    #         if line.startswith("LEVEL"):
-    #             i += 1
-    #             for j in range(0, 5):
-    #                 for k, b in enumerate(lines[i+j].split(" ")):
-    #                     if b != "0":
-    #                         building_info.append({"type": "CUBE", "position": f"({j},{level},{k})"})
-    #             level += 1
-    #             i += 5
-    #         else:
-    #             i += 1
-    #
-    #     return building_info
+    def extract_history(response):
+        """
+        Extracts history from the response.
+        Only includes lines that create blocks and doesn't include add-ons to blocks.
+        This is because latter layers may not know this part of the syntax
+        :param response: LLM response
+        :return string: Only relevant history
+        """
+        aux = ""
+        for line in response.split("\n"):
+            if line.startswith("B:"):
+                parts = line.split("|")
+                if len(parts) == 3:
+                    line = "|".join(parts[:-1])
+                aux += line + "\n"
+        return aux
 
 
     def extract_building_information(self, text, level):
@@ -173,6 +170,9 @@ class PalAI():
         for block in building_info:
             block = block.split('|')
             position = block[1].split(',')
-            blocks.append({'type': block[0], 'position': f"({position[1]},{level},{position[0]})"})
+            aux = {'type': block[0], 'position': f"({position[1]},{level},{position[0]})"}
+            if len(block) == 3:
+                aux['tags'] = ["Door"]
+            blocks.append(aux)
 
         return blocks

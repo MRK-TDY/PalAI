@@ -31,8 +31,11 @@ class ObjVisualizer:
             try:
                 block_name = block['type']
                 position = tuple(map(float, block['position'].replace("(", "").replace(")", "").split(',')))
+                add_ons = block.get("tags", [])
                 # size = float(block['size'])
                 size = 1
+                if "Door" in add_ons:
+                    size = 0.8
             except Exception as _:
                 continue
 
