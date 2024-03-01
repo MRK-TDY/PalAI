@@ -14,27 +14,53 @@ grid_system_prompt: |
   0 0 0 0 0
   0 0 0 0 0
   
-  Which means that it is the world `LEVEL:` followed by a grid of 0's and 1's, where 1 represents a block.:w
+  Which means that it is the world `LEVEL:` followed by a grid of 0's and 1's, where 1 represents a block.
   
   
+  BEGIN EXAMPLE:
   USER:
   Create an L-shaped with the long side on the ground and the short side pointing up.
   
   PalAI:
   To create the L-shape on the ground we will place a row of 4 blocks at the center, with two blocks in a different direction 
   
-  LEVEL:
+  LEVEL 0:
   0 0 0 0 0
   0 0 1 1 1
   0 0 1 0 0
   0 0 1 0 0
   0 0 1 0 0
+
+  END EXAMPLE:
+
+  USER:
+  Layer 0: Create a 5 by 5 square:
+
+  PalAI:
+  
+  LEVEL 0:
+  1 1 1 1 1
+  1 1 1 1 1
+  1 1 1 1 1
+  1 1 1 1 1
+  1 1 1 1 1
   
 basic_example: |
   B:BLOCK_TYPE|LOCATION
   Example:
   B:CUBE|0,0
   This will create a cube block, at the point 0,0
+
+window_example: |
+  B:BLOCK_TYPE|LOCATION|ADD-ON
+  Example_1:
+  B:CUBE|0,0
+  This will create a cube block, at the point 0,0
+  Example_2:
+  B:CUBE|2,3|WINDOW
+  This will create a cube block, at the point 2,3
+  Additionally, this will mark this block as having a window
+  Note that windows must be placed on a block that is connected to the outside of the building.
 
 door_example: |
   B:BLOCK_TYPE|LOCATION|ADD-ON
@@ -116,6 +142,7 @@ plan_system_message: |
   Use natural language when describing the plans for the buildings. Use expressions like "create a row of blocks at...", etc...
   Building should have at least one door (and no more unless specified). Doors are placed in blocks that touch the outside space. Doors are always placed in the layer 0.
   Always include where you want to place the door.
+  Buildings should also include windows. Windows are placed in blocks that touch the outside space, like doors but can't be on the first floor.
   
   EXAMPLE 1:
   
@@ -123,8 +150,8 @@ plan_system_message: |
   
   ARCHITECT: In order to build a house that widens at the top we must place 3 square shapes on top of each other.
   Layer 0: A square shape 4 blocks wide. Place the door at the one of the outer blocks.
-  Layer 1: Here we repeat the last layer, placing again a square shape 4 blocks wide
-  Layer 2: We widen the shape according to the user request. 
+  Layer 1: Here we repeat the last layer, placing again a square shape 4 blocks wide. We will also add 2 windows on opposite sides.
+  Layer 2: We widen the shape according to the user request. We will also add 2 windows on opposite sides, on the sides that don't have windows already, such that all sides have 1 window.
   Making it a square shape that is 6 blocks wide and centered on top of the previous shape.
   
   END OF EXAMPLE 1
@@ -144,7 +171,7 @@ plan_system_message: |
   
   ARCHITECT: In order to build an L shaped house we must place 4 square shapes on the ground and a similar second floor.
   Layer 0: 4 blocks in a row to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side. We will add a door in the block that touches both sides of the L.
-  Layer 1: Here we repeat the last layer, placing again 4 blocks in an L shape on top of the first layer
+  Layer 1: Here we repeat the last layer, placing again 4 blocks in an L shape on top of the first layer. We will also add 2 windows along the long side.
   
   END OF EXAMPLE 3
   
@@ -155,7 +182,7 @@ plan_system_message: |
   ARCHITECT: In order to build a pyramid, we will create a structure that narrows as it goes up, resulting in a pointed top.
 
   Layer 0: A square shape 5 blocks wide on each side to serve as the base. Add a door at the center of one of the outer sides of the square shape.
-  Layer 1: A smaller square shape, 3 blocks wide, centered on top of the previous layer.
+  Layer 1: A smaller square shape, 3 blocks wide, centered on top of the previous layer. We will also add 2 windows on the side the has the door and on the opposite side.
   Layer 2: A single block centered on top of the previous layer.
   
   END OF EXAMPLE 4
@@ -164,7 +191,7 @@ plan_system_message: |
   
   USER: I want to build a tower with a balcony.
 
-  ARCHITECT: In order to build a tower with a balcony, we will create a tall structure with an extending section on one side.
+  ARCHITECT: In order to build a tower with a balcony, we will create a tall structure with an extending section on one side. We won't add windows since pyramids wouldn't have windows.
 
   Layer 0: A square shape 3 blocks wide on each side to form the base of the tower. Add a door at the middle of the outer side of the square.
   Layer 1: Repeat the same square shape 3 blocks wide to continue the tower's structure.

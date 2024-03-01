@@ -87,15 +87,13 @@ class PalAI():
                 formatted_prompt = prompt_template.format(prompt=level_prompt, layer=i)
 
                 if len(history) > 0:
-                    aux = ""
-                    for j, building_layer in enumerate(history):
-                        aux += f"Building at layer {j}:\n{building_layer}"
-                    formatted_prompt = f"Previous layers:\n{aux}\n\nRequest:{formatted_prompt}"
+                    complete_history = ('\n\n').join(history)
+                    formatted_prompt = f"{complete_history}\n\nCurrent request: {formatted_prompt}"
 
                 if i == 0:
                     example = self.prompts_file["door_example"]
                 else:
-                    example =  self.prompts_file["basic_example"]
+                    example =  self.prompts_file["window_example"]
                 system_message = system_message_template.format(example=example)
 
                 if self.use_images:
@@ -105,7 +103,7 @@ class PalAI():
 
                         response = self.get_llm_response(system_message, formatted_prompt, temp_image.name)
 
-                        history.append(self.extract_history(response))
+                        history.append(self.extract_history(formatted_prompt, response))
                         new_layer = self.extract_building_information(response, i)
                         complete_building.extend(new_layer)
                         obj_content = visualizer.generate_obj(complete_building)
@@ -127,14 +125,14 @@ class PalAI():
                     complete_building.extend(new_layer)
     
 
-            return complete_building
+            return { "result": complete_building, "plan" : architect_plan }
         finally:
             # Cleanup temporary files
             for file_path in temp_files_to_delete:
                 os.remove(file_path)
 
 
-    def extract_history(response):
+    def extract_history(user_message, response):
         """
         Extracts history from the response.
         Only includes lines that create blocks and doesn't include add-ons to blocks.
@@ -142,12 +140,12 @@ class PalAI():
         :param response: LLM response
         :return string: Only relevant history
         """
-        aux = ""
+        aux = "User Request: " + user_message + "\n"
         for line in response.split("\n"):
             if line.startswith("B:"):
-                parts = line.split("|")
-                if len(parts) == 3:
-                    line = "|".join(parts[:-1])
+                # parts = line.split("|")
+                # if len(parts) == 3:
+                #     line = "|".join(parts[:-1])
                 aux += line + "\n"
         return aux
 
@@ -172,7 +170,7 @@ class PalAI():
             position = block[1].split(',')
             aux = {'type': block[0], 'position': f"({position[1]},{level},{position[0]})"}
             if len(block) == 3:
-                aux['tags'] = ["Door"]
+                aux['tags'] = block[2].upper()
             blocks.append(aux)
 
         return blocks

@@ -33,7 +33,8 @@ if __name__ == '__main__':
 
         prompt = request.json['prompt']
         result = pal.build(prompt)
+        result["message"] = "Data processed"
 
-        return jsonify({'message': 'Data processed', 'result': result})
+        return jsonify(result)
 
     app.run(port=PORT)
