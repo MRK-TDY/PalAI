@@ -7,16 +7,15 @@ grid_system_prompt: |
   
   BEGIN EXAMPLE:
   LAYER 0:
-  0-0-0-0-0
-  0-0-0-0-0
-  0-0-0-0-0
-  0-0-0-0-0
-  0-0-0-0-0
+  0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
   END LAYER:
   END EXAMPLE:
   
-  Which means that it is the world `LAYER:` followed by a grid of 0's and 1's, where 1 represents a block.
-  {example} 
+  Which means that it is the word `LAYER:` followed by a grid of 0's and 1's, where 1 represents a block and 0 represents an empty space.
   
   BEGIN EXAMPLE:
   USER:
@@ -26,11 +25,11 @@ grid_system_prompt: |
   To create the L-shape on the ground we will place a row of 4 blocks at the center, with two blocks in a different direction 
   
   LAYER 0:
-  0-0-0-0-0
-  0-0-1-1-1
-  0-0-1-0-0
-  0-0-1-0-0
-  0-0-1-0-0
+  0 0 0 0 0
+  0 0 1 1 1
+  0 0 1 0 0
+  0 0 1 0 0
+  0 0 1 0 0
   END LAYER:
   END EXAMPLE:
 
@@ -41,126 +40,14 @@ grid_system_prompt: |
   PalAI:
   
   LAYER 0:
-  1-1-1-1-1
-  1-1-1-1-1
-  1-1-1-1-1
-  1-1-1-1-1
-  1-1-1-1-1
+  1 1 1 1 1
+  1 1 1 1 1
+  1 1 1 1 1
+  1 1 1 1 1
+  1 1 1 1 1
   END LAYER:
   END EXAMPLE:
 
-window_example: |
-  You may also add windows to buildings. Windows are placed in empty spaces that are directly adjacent to blocks.
-  You place windows by using the symbols `!` or `@`. This denotes the direction of the window.
-  Windows should not influence the shape of the building, they are simply something that is attached to the structure.
-  In other words, you should not make deviate from the plan, but instead place windows when possible.
-  Here is an example of a T|shaped house with a window:
-
-  BEGIN EXAMPLE:
-  LAYER 0:
-  0-0-!-0-0
-  0-1-1-1-0
-  0-0-1-0-0
-  0-@-1-@-0
-  0-0-1-0-0
-  END LAYER:
-  END EXAMPLE
-
-  This creates the house and adds three windows. One near the top of the T, and two near the base.
-  The difference between these symbols is if the window is attached to the block on the same row (`@`) or the same column (`!`)
-  As a counter example, this would not be valid:
-
-  BEGIN BAD EXAMPLE:
-  LAYER 0:
-  0-0-@-0-0
-  0-1-1-1-0
-  0-0-1-0-0
-  0-!-1-!-0
-  0-0-1-0-0
-  END LAYER:
-  END EXAMPLE
-
-  The reason why this would be invalid is that all the windows are oriented in the wrong way.
-  Finally, this is useful if there are multiple places in which a window is possible:
-
-  BEGIN EXAMPLE:
-  LAYER 0:
-  0-0-0-0-0
-  0-1-1-0-0
-  0-!-1-0-0
-  0-0-1-0-0
-  0-0-1-0-0
-  END LAYER:
-  END EXAMPLE
-
-  In this example, the window is attached to the block 'above' it. But we could change that by using the `@` symbol.
-
-  BEGIN EXAMPLE:
-  USER: Build a 3x3 square shape with 1 window on either side.
-  PalAI:
-  LAYER 0:
-  0-0-!-0-0
-  0-1-1-0-0
-  @-1-1-1-@
-  0-1-1-1-0
-  0-0-!-0-0
-  END EXAMPLE
-
-door_example: |
-  You may also add doors to buildings. Doors are placed in empty spaces that are directly adjacent to blocks.
-  You place doors by using the symbols `|` or `|`. This denotes the direction of the door.
-  Doors should not influence the shape of the building, they are simply something that is attached to the structure.
-  Here is an example of a T|shaped house with a door:
-
-  BEGIN EXAMPLE:
-  LAYER 0:
-  0-0-!-0-0
-  0-1-1-1-0
-  0-0-1-0-0
-  0-@-1-@-0
-  0-0-1-0-0
-  END LAYER:
-  END EXAMPLE
-
-  This creates the house and adds a door at the `!` symbol and at the `@` symbols.
-  The difference between these symbols is if the door is attached to the block on the same row (`@`) or the same column (`!`)
-  As a counter example, this would not be valid:
-
-  BEGIN BAD EXAMPLE:
-  LAYER 0:
-  0-0-@-0-0
-  0-1-1-1-0
-  0-0-1-0-0
-  0-!-1-!-0
-  0-0-1-0-0
-  END LAYER:
-  END EXAMPLE
-
-  The reason why this is invalid is the the `@` symbol denotes a door that is attached to a block on the same row, as opposed to on the same column.
-  Finally, this is useful if there are multiple places in which a door is possible:
-
-  BEGIN EXAMPLE:
-  LAYER 0:
-  0-0-0-0-0
-  1-1-1-0-0
-  0-@-1-0-0
-  0-0-1-0-0
-  0-0-1-0-0
-  END LAYER:
-  END EXAMPLE
-
-  In this example, the door is attached to the block in the same row. But we could change that by using the `!` symbol.
-
-  BEGIN EXAMPLE:
-  USER: Build a 3x3 square shape with 1 window on either side.
-  PalAI:
-  LAYER 0:
-  0-0-!-0-0
-  0-1-1-0-0
-  @-1-1-1-@
-  0-1-1-1-0
-  0-0-!-0-0
-  END EXAMPLE
   
 prompt_template: |
    USER: Complete this request: {prompt}. You are currently on layer {layer}
@@ -173,53 +60,42 @@ plan_system_message: |
   Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.
   In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.
   Use natural language when describing the plans for the buildings. Use expressions like "create a row of blocks at...", etc...
-  Building should have at least one door (and no more unless specified). Doors are placed in blocks that touch the outside space. Doors are always placed in the layer 0.
-  Always include where you want to place the door.
-  Buildings should also include windows. Windows are placed in blocks that touch the outside space, like doors, but can't be on the first floor.
   
   EXAMPLE 1:
   
   USER: I want to build a house that widens at the top.
   
   ARCHITECT: In order to build a house that widens at the top we must place 3 square shapes on top of each other.
-  Layer 0: A square shape 4 blocks wide. Place the door above the top row of blocks.
-  Layer 1: Here we repeat the last layer, placing again a square shape 4 blocks wide. We will also add 2 windows on opposite sides.
-  Layer 2: We widen the shape according to the user request. We will also add 2 windows on opposite sides, on the sides that don't have windows already, such that all sides have 1 window.
-  Making it a square shape that is 6 blocks wide and centered on top of the previous shape.
-  
+  Layer 0: A square shape 4 blocks wide.
+  Layer 1: Here we repeat the last layer, placing again a square shape 4 blocks wide.
+  Layer 2: We widen the shape according to the user request.
   END OF EXAMPLE 1
   
   EXAMPLE 2:
-  
   USER: I want to build an L-shaped house.
   
   ARCHITECT: In order to build an L shaped house we must place 4 square shapes on the ground, there's no need for other layers.
-  Layer 0: 4 blocks in a row to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side. We will add a door at the end of the long side.
-  
+  Layer 0: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side.
   END OF EXAMPLE 2
   
   EXAMPLE 3:
-  
   USER:  I want to build a pyramid.
   
   ARCHITECT: In order to build a pyramid, we will create a structure that narrows as it goes up, resulting in a pointed top.
 
-  Layer 0: A square shape 5 blocks wide on each side to serve as the base. Add a door at each of the sides of the square.
-  Layer 1: A smaller square shape, 3 blocks wide, centered on top of the previous layer. We will also add 4 windows, one on each side.
-  Layer 2: A single block centered on top of the previous layer. We won't add any windows on this layer.
-  
+  Layer 0: A square shape 5 blocks wide on each side to serve as the base.
+  Layer 1: A smaller square shape, 3 blocks wide, centered on top of the previous layer.
+  Layer 2: A single block centered on top of the previous layer.
   END OF EXAMPLE 3
   
   EXAMPLE 4:
-  
   USER: I want to build a tower with a balcony.
 
-  ARCHITECT: In order to build a tower with a balcony, we will create a tall structure with an extending section on one side. We won't add windows since pyramids wouldn't have windows.
+  ARCHITECT: In order to build a tower with a balcony, we will create a tall structure with an extending section on one side.
 
-  Layer 0: A square shape 3 blocks wide on each side to form the base of the tower. Add a door on one of the sides of the square.
+  Layer 0: A square shape 3 blocks wide on each side to form the base of the tower.
   Layer 1: Repeat the same square shape 3 blocks wide to continue the tower's structure.
-  Layer 2: Create a square shape 3 blocks wide for the tower, and extend a row of blocks out on one side to form the balcony. Add a window to each of those blocks extended.
-  
+  Layer 2: Create a square shape 3 blocks wide for the tower, and extend a row of blocks out on one side to form the balcony.
   END OF EXAMPLE 4
 
 plan_prompt: |

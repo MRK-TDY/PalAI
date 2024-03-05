@@ -95,11 +95,7 @@ class PalAI():
                     complete_history = ('\n\n').join(history)
                     formatted_prompt = f"{complete_history}\n\nCurrent request: {formatted_prompt}"
 
-                if i == 0:
-                    example = self.prompts_file["door_example"]
-                else:
-                    example =  self.prompts_file["window_example"]
-                system_message = system_message_template.format(example=example)
+                system_message = system_message_template.format()
 
                 if self.use_images:
                     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image, \
@@ -171,7 +167,7 @@ class PalAI():
                     if i + j >= len(lines) or lines[i+j].startswith("END"):
                         break
 
-                grid = [[l for l in k.split("-")] for k in lines[i + 1: i + j]]
+                grid = [[l for l in k.split(" ")] for k in lines[i + 1: i + j]]
                 i += j
                 for y in range(len(grid)):
                     for x in range(len(grid[y])):
