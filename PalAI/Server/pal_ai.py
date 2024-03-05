@@ -171,20 +171,20 @@ class PalAI():
                     if i + j >= len(lines) or lines[i+j].startswith("END"):
                         break
 
-                grid = [[l for l in k.split(" ")] for k in lines[i + 1: i + j]]
+                grid = [[l for l in k.split("-")] for k in lines[i + 1: i + j]]
                 i += j
                 for y in range(len(grid)):
                     for x in range(len(grid[y])):
-                        if grid[y][x] == '|':
+                        if grid[y][x] == '!':
                             if y >= 0 and grid[y - 1][x] == '1':
                                 grid[y -1][x] = '2'
-                            elif y < len(grid) - 1 and grid[y + 1][x] == '1':
+                            if y < len(grid) - 1 and grid[y + 1][x] == '1':
                                 grid[y + 1][x] = '2'
 
-                        if grid[y][x] == '-':
+                        if grid[y][x] == '@':
                             if x >= 0 and grid[y][x - 1] == '1':
                                 grid[y][x - 1] = '2'
-                            elif x < len(grid[y]) - 1 and grid[y][x + 1] == '1':
+                            if x < len(grid[y]) - 1 and grid[y][x + 1] == '1':
                                 grid[y][x + 1] = '2'
 
                 for y in range(len(grid)):
