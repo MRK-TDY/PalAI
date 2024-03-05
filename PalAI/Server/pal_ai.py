@@ -12,23 +12,27 @@ import base64
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain.schema.messages import HumanMessage #, AIMessage
+from langchain.schema.messages import HumanMessage 
 
 class PalAI():
     def __init__(self, prompts_file, temperature, model_name, image_model_name, api_key, max_tokens, use_images, verbose=False):
         self.prompts_file = prompts_file
-        self.system_prompt = self.prompts_file['system_prompt']
-        self.prompt_template = self.prompts_file['prompt_template']
+        self.system_prompt = self.prompts_file.get('grid_system_prompt', "")
+        self.prompt_template = self.prompts_file.get('prompt_template', "")
 
-        self.llm = ChatOpenAI(model=model_name, temperature=temperature, api_key=api_key, max_tokens=max_tokens)
-        self.mm_llm = ChatOpenAI(model=image_model_name, temperature=temperature, api_key=api_key,
-                                 max_tokens=max_tokens)
+        if api_key is not None:
+            self.llm = ChatOpenAI(model=model_name, temperature=temperature, api_key=api_key, max_tokens=max_tokens)
+            self.mm_llm = ChatOpenAI(model=image_model_name, temperature=temperature, api_key=api_key,
+                                     max_tokens=max_tokens)
 
         self.use_images = use_images
         self.verbose = verbose
 
         os.chdir(os.path.dirname(__file__))
 
+    @classmethod
+    def create_default(cls):
+        return cls({}, 0.7, 'gpt-4', 'gpt-4-vision-preview', None, 1024, False, True)
 
     def get_llm_response(self, system_message, prompt, image_path = ""):
         if self.verbose:
@@ -73,18 +77,19 @@ class PalAI():
 
         architect_plan = self.get_llm_response(self.prompts_file["plan_system_message"],
                                                self.prompts_file["plan_prompt"].format(architect_plan))
+        api_result = {"architect": [l for l in architect_plan.split("\n") if l != ""]}
         visualizer = ObjVisualizer()
         system_message_template, prompt_template = self.format_prompt()
         complete_building = []
         temp_files_to_delete = []
         history = []
-        levels = [i for i in architect_plan.split("\n") if i.lower().startswith(f"layer")] 
+        layers = [i for i in architect_plan.split("\n") if i.lower().startswith(f"layer")] 
 
         obj_path = ""
 
         try:
-            for i, level_prompt in enumerate(levels):
-                formatted_prompt = prompt_template.format(prompt=level_prompt, layer=i)
+            for i, layer_prompt in enumerate(layers):
+                formatted_prompt = prompt_template.format(prompt=layer_prompt, layer=i)
 
                 if len(history) > 0:
                     complete_history = ('\n\n').join(history)
@@ -123,9 +128,10 @@ class PalAI():
                     history.append(response)
                     new_layer = self.extract_building_information(response, i)
                     complete_building.extend(new_layer)
-    
+                api_result[f"bricklayer_{i}"] = [l for l in response.split("\n") if l != ""]    
 
-            return { "result": complete_building, "plan" : architect_plan }
+            api_result["result"] = complete_building
+            return api_result
         finally:
             # Cleanup temporary files
             for file_path in temp_files_to_delete:
@@ -141,36 +147,53 @@ class PalAI():
         :return string: Only relevant history
         """
         aux = "User Request: " + user_message + "\n"
-        for line in response.split("\n"):
-            if line.startswith("B:"):
+        lines = response.split("\n")
+        for i, line in enumerate(lines):
+            if line.startswith("LAYER:"):
                 # parts = line.split("|")
                 # if len(parts) == 3:
                 #     line = "|".join(parts[:-1])
-                aux += line + "\n"
+                aux += "\n".join(lines[i:i+6])
         return aux
 
 
-    def extract_building_information(self, text, level):
-        """
-        Extracts building information from the API response.
-        :param text: API response
-        :return list: List of dictionaries, where each dictionary represents a block.
-        """
+    def extract_building_information(self, text, layer):
         lines = text.split('\n')
+
         building_info = []
+        i = -1
+        while i < len(lines) - 1:
+            i += 1
+            line = lines[i]
+            if line.startswith("LAYER"):
+                j = 0
+                for j in range(1, 10):  #Max grid size
+                    if i + j >= len(lines) or lines[i+j].startswith("END"):
+                        break
 
-        # match lines that have two `|` characters
-        for line in lines:
-            if line.startswith('B:'):
-                building_info.append(line[2:])
+                grid = [[l for l in k.split(" ")] for k in lines[i + 1: i + j]]
+                i += j
+                for y in range(len(grid)):
+                    for x in range(len(grid[y])):
+                        if grid[y][x] == '|':
+                            if y >= 0 and grid[y - 1][x] == '1':
+                                grid[y -1][x] = '2'
+                            elif y < len(grid) - 1 and grid[y + 1][x] == '1':
+                                grid[y + 1][x] = '2'
 
-        blocks = []
-        for block in building_info:
-            block = block.split('|')
-            position = block[1].split(',')
-            aux = {'type': block[0], 'position': f"({position[1]},{level},{position[0]})"}
-            if len(block) == 3:
-                aux['tags'] = block[2].upper()
-            blocks.append(aux)
+                        if grid[y][x] == '-':
+                            if x >= 0 and grid[y][x - 1] == '1':
+                                grid[y][x - 1] = '2'
+                            elif x < len(grid[y]) - 1 and grid[y][x + 1] == '1':
+                                grid[y][x + 1] = '2'
 
-        return blocks
+                for y in range(len(grid)):
+                    for x in range(len(grid[y])):
+                        b = grid[y][x]
+                        if b == "1":
+                            building_info.append({"type": "CUBE", "position": f"({y},{layer},{x})"})
+                        if b == "2":
+                            tags = ["DOOR"] if layer == 0 else ["WINDOW"]
+                            building_info.append({"type": "CUBE", "position": f"({y},{layer},{x})", "tags": tags})
+
+        return building_info
