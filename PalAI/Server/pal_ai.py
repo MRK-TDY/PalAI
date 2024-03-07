@@ -15,7 +15,28 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.messages import HumanMessage
 
 class PalAI():
+
+
+
     def __init__(self, prompts_file, temperature, model_name, image_model_name, api_key, max_tokens, use_images, verbose=False):
+        self.material_types = ["Generic White",
+                 "Plastic Orange",
+                 "Concrete White",
+                 "Metal Blue",
+                 "Metal Dark Blue",
+                 "Honeycomb White",
+                 "Grey Light Wood",
+                 "Concrete Grey",
+                 "Concrete Dark Stripes Blue",
+                 "Marble",
+                 "Dark Marble",
+                 "Sand",
+                 "Dark Red",
+                 "Molten Marble",
+                 "Plastic Red",
+                 "Stone Light Grey",
+                 "Dark Concrete"]
+
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get('system_prompt', "")
         self.prompt_template = self.prompts_file.get('prompt_template', "")
@@ -34,7 +55,7 @@ class PalAI():
     def create_default(cls):
         return cls({}, 0.7, 'gpt-4', 'gpt-4-vision-preview', None, 1024, False, True)
 
-    def get_llm_response(self, system_message, prompt, image_path = ""):
+    async def get_llm_response(self, system_message, prompt, image_path = ""):
         if self.verbose:
             print(f"{colorama.Fore.GREEN}System message:{colorama.Fore.RESET} {system_message}")
             print(f"{colorama.Fore.BLUE}Prompt:{colorama.Fore.RESET} {prompt}")
@@ -61,7 +82,7 @@ class PalAI():
             llm = self.llm
 
         self.chain = prompt | llm | StrOutputParser()
-        response = self.chain.invoke({"system_message": system_message, "prompt": prompt})
+        response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})
 
         if self.verbose:
             print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
@@ -73,9 +94,8 @@ class PalAI():
         return (self.system_prompt, self.prompt_template)
 
 
-    def build(self, architect_plan):
-
-        architect_plan = self.get_llm_response(self.prompts_file["plan_system_message"],
+    async def build(self, architect_plan):
+        architect_plan = await self.get_llm_response(self.prompts_file["plan_system_message"],
                                                self.prompts_file["plan_prompt"].format(architect_plan))
         api_result = {"architect": [l for l in architect_plan.split("\n") if l != ""]}
         visualizer = ObjVisualizer()
@@ -109,7 +129,7 @@ class PalAI():
                             tempfile.NamedTemporaryFile(delete=False, suffix=".obj") as temp_obj:
                         screenshot_model(obj_path, temp_image.name)
 
-                        response = self.get_llm_response(system_message, formatted_prompt, temp_image.name)
+                        response = await self.get_llm_response(system_message, formatted_prompt, temp_image.name)
 
                         history.append(f"Layer {i}:")
                         history.append(current_layer_prompt)
@@ -129,7 +149,7 @@ class PalAI():
                         obj_path = temp_obj.name
 
                 else:
-                    response = self.get_llm_response(system_message, formatted_prompt)
+                    response = await self.get_llm_response(system_message, formatted_prompt)
                     history.append(f"Layer {i}:")
                     history.append(current_layer_prompt)
                     history.append(self.extract_history(formatted_prompt, response))
@@ -138,10 +158,17 @@ class PalAI():
 
                 api_result[f"bricklayer_{i}"] = [l for l in response.split("\n") if l != ""]
 
-            # WINDOW AND DOOR PLACEMENT
+            # FINISHING TOUCHES
             add_on_prompt = self.format_add_on_prompt(plan_list, building)
-            building = self.get_llm_response(self.prompts_file["add_on_system_message"], add_on_prompt)
+            building_promise = self.get_llm_response(self.prompts_file["add_on_system_message"], add_on_prompt)
+            material_promise = self.get_llm_response(
+                    self.prompts_file["material_system_message"].format(materials= self.material_types),
+                    architect_plan)
+
+            building = await building_promise
+            material = self.extract_materials(await material_promise)
             api_result["add_on_agent"] = [l for l in building.split("\n") if l != ""]
+            api_result["materials"] = material
             building = self.extract_building_information(building)
 
             api_result["result"] = building
@@ -212,4 +239,15 @@ class PalAI():
             blocks.append(aux)
 
         return blocks
+
+    def extract_materials(self, material_response):
+        materials = {}
+        for line in material_response.split("\n"):
+            if ": " in line:
+                parts = line.upper().split(": ")
+                if parts[0] in ["FLOOR", "INTERIOR", "EXTERIOR"]:
+                    # TODO: should we verify if material is on list?
+                    materials[parts[0]] = parts[1]
+
+        return materials
 

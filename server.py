@@ -1,5 +1,6 @@
 import os
 import yaml
+import asyncio
 from configparser import RawConfigParser
 from flask import Flask, request, jsonify
 from PalAI.Server.pal_ai import PalAI
@@ -32,7 +33,7 @@ if __name__ == '__main__':
                     config.getboolean('server', 'verbose'))
 
         prompt = request.json['prompt']
-        result = pal.build(prompt)
+        result = asyncio.run(pal.build(prompt))
         result["message"] = "Data processed"
 
         return jsonify(result)
