@@ -29,11 +29,6 @@ class TestClient(unittest.TestCase):
         with open(file_path + ".txt", 'w') as file:
             file.write(json.dumps(api_response, indent=2))
 
-        try:
-           os.startfile(file_path + ".obj")
-        except Exception as _:
-            pass  # Ignore error
-
         self.assertEqual(api_response['message'], 'Data processed')
         self.assertEqual(response.status_code, 200)
 
