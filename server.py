@@ -2,11 +2,13 @@ import os
 import yaml
 import asyncio
 from configparser import RawConfigParser
-from flask import Flask, request, jsonify
+from flask import Flask
+from flask_socketio import SocketIO
 from PalAI.Server.pal_ai import PalAI
 
 if __name__ == '__main__':
     app = Flask(__name__)
+    socketio = SocketIO(app, cors_allowed_origins="*")
 
     config = RawConfigParser()
     config.read('config.ini')
@@ -18,10 +20,19 @@ if __name__ == '__main__':
 
 
 
-    @app.route('/build', methods=['POST'])
-    def handle_post():
-        if not request.json or 'prompt' not in request.json:
-            return jsonify({'message': 'Missing or invalid JSON payload'}), 400  # Bad Request
+    @socketio.on('connect')
+    def test_connect():
+        print('Client connected')
+
+    @socketio.on('disconnect')
+    def test_disconnect():
+        print('Client disconnected')
+
+    @socketio.on('build')
+    def handle_post(json):
+        if not json or 'prompt' not in json:
+            socketio.emit('message', 'Missing or invalid JSON payload') # Bad Request
+            return
 
         pal = PalAI(prompts_file,
                     config.getfloat('llm', 'temp'),
@@ -32,10 +43,12 @@ if __name__ == '__main__':
                     config.getboolean('pal', 'use_images', fallback=False),
                     config.getboolean('server', 'verbose'))
 
-        prompt = request.json['prompt']
-        result = asyncio.run(pal.build(prompt))
+        prompt = json['prompt']
+        result = asyncio.run(pal.build(prompt, socketio))
         result["message"] = "Data processed"
 
-        return jsonify(result)
+        socketio.emit("response", result)
+        socketio.emit("disconnect")
+        return
 
-    app.run(port=PORT)
+    socketio.run(app, port=PORT)
