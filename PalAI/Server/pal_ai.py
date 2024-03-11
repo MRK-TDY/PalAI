@@ -16,8 +16,6 @@ from langchain.schema.messages import HumanMessage
 
 class PalAI():
 
-
-
     def __init__(self, prompts_file, temperature, model_name, image_model_name, api_key, max_tokens, use_images, verbose=False):
         self.material_types = ["Generic White",
                  "Plastic Orange",
@@ -167,15 +165,17 @@ class PalAI():
                     self.prompts_file["material_system_message"].format(materials= self.material_types),
                     architect_plan)
 
-            building = await building_promise
+            add_ons = await building_promise
             material = self.extract_materials(await material_promise)
             api_result["add_on_agent"] = [l for l in building.split("\n") if l != ""]
             api_result["materials"] = material
-            building = self.extract_building_information(building)
+            add_ons = self.extract_building_information(add_ons)
+            building = self.overlap_blocks(building, add_ons)
             if socketio is not None:
                 socketio.emit("material", material)
             if socketio is not None:
                 socketio.emit("add_ons", building)
+
 
             api_result["result"] = building
             return api_result
@@ -200,6 +200,17 @@ class PalAI():
             pal_script += "\n"
         return pal_script
 
+    def overlap_blocks(self, base_structure, extra_blocks):
+        """
+        Overlaps a base structure with a set of extra blocks
+        Returns a structure containing all blocks of both sets, prioritizing the first argument
+        :param base_structure: set of blocks with priority
+        :param extra_blocks: set of blocks with no priority
+        """
+        for b in extra_blocks:
+            if any([x for x in base_structure if x["position"] == b["position"]]):
+                   base_structure.append(b)
+        return base_structure
 
     def extract_history(self, user_message, response):
         """

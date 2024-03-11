@@ -163,6 +163,7 @@ add_on_system_message: |
   There shouldn't be a block touching that face, as otherwise the window would just have a brick wall on the other side.
 
   Doors can only be placed on the layer 0.
+  Don't repeat the entire structure, only those blocks that you wish to add windows or doors to.
 
 material_system_message: |
   You are a designer of virtual buildings in a video-game called TODAY.
