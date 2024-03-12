@@ -1,4 +1,5 @@
 import tempfile
+import json
 import colorama
 import os
 import sys
@@ -92,7 +93,7 @@ class PalAI():
         return (self.system_prompt, self.prompt_template)
 
 
-    async def build(self, architect_plan, socketio = None):
+    async def build(self, architect_plan, ws = None):
         architect_plan = await self.get_llm_response(self.prompts_file["plan_system_message"],
                                                self.prompts_file["plan_prompt"].format(architect_plan))
         api_result = {"architect": [l for l in architect_plan.split("\n") if l != ""]}
@@ -154,8 +155,10 @@ class PalAI():
                     new_layer = self.extract_building_information(response, i)
                     building.extend(new_layer)
 
-                if socketio is not None:
-                    socketio.emit("layer", new_layer)
+                if ws is not None:
+                    message = {"value": new_layer}
+                    message["event"] = "layer"
+                    ws.send(json.dumps(message))
                 api_result[f"bricklayer_{i}"] = [l for l in response.split("\n") if l != ""]
 
             # FINISHING TOUCHES
@@ -171,10 +174,14 @@ class PalAI():
             api_result["materials"] = material
             add_ons = self.extract_building_information(add_ons)
             building = self.overlap_blocks(building, add_ons)
-            if socketio is not None:
-                socketio.emit("material", material)
-            if socketio is not None:
-                socketio.emit("add_ons", building)
+            if ws is not None:
+                message = {"value": material}
+                message["event"] = "material"
+                ws.send(json.dumps(message))
+            if ws is not None:
+                message = {"value": building}
+                message["event"] = "add_ons"
+                ws.send(json.dumps(message))
 
 
             api_result["result"] = building
@@ -196,7 +203,6 @@ class PalAI():
             position = i['position'].replace("(", "").replace(")","").split(",")
 
             pal_script += f"B:{type}|{position[2]},{position[0]}|{position[1]}"
-            # TODO: add-ons
             pal_script += "\n"
         return pal_script
 

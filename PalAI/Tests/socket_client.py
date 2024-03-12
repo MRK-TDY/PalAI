@@ -1,11 +1,10 @@
+import json
 import websocket
 
 # The objective of this client is to purely test the connection
 
 def on_message(ws, message):
-    print(f"Received message: {message}")
-    # Close the connection after receiving a message
-    ws.close()
+    print(f"Received message: {json.dumps(message, indent=2)}")
 
 
 def on_error(ws, error):
@@ -19,12 +18,12 @@ def on_close(ws, close_status_code, close_msg):
 def on_open(ws):
     print("Connection opened")
     # Sending a message right after opening the connection
-    ws.send("Hello, WebSocket!")
+    ws.send(json.dumps({"prompt": "Build a very small house"}))
 
 
 if __name__ == "__main__":
     # Define WebSocket endpoint
-    ws_url = "ws://127.0.0.1:8000/echo"
+    ws_url = "ws://127.0.0.1:8000/build"
 
 
     # Create a WebSocket app/connection

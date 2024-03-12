@@ -1,6 +1,7 @@
 import json
 
-from flask import Flask, request, jsonify
+import traceback
+from flask import Flask
 from flask_sockets import Sockets
 import yaml
 import os
@@ -57,7 +58,7 @@ def handle_post(ws):
                 print('Building: ' + str(json_data))
                 if 'prompt' in json_data:
                     pal = create_pal_instance()
-                    result = asyncio.run(pal.build(json_data['prompt']))
+                    result = asyncio.run(pal.build(json_data['prompt'], ws))
                     result["message"] = "Data processed"
                     ws.send(json.dumps(result))
                     print('Sent Json Response: ' + str(result))
@@ -65,6 +66,7 @@ def handle_post(ws):
                     ws.send(json.dumps({'message': 'Missing or invalid JSON payload'}))
                     print('Missing or invalid JSON payload')
             except Exception as e:
+                traceback.print_exc()
                 ws.send(json.dumps({'message': 'Error processing request', 'error': str(e)}))
                 print('message: Error processing request')
         else:
