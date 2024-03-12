@@ -170,7 +170,7 @@ class PalAI():
 
             add_ons = await building_promise
             material = self.extract_materials(await material_promise)
-            api_result["add_on_agent"] = [l for l in building.split("\n") if l != ""]
+            api_result["add_on_agent"] = building
             api_result["materials"] = material
             add_ons = self.extract_building_information(add_ons)
             building = self.overlap_blocks(building, add_ons)
