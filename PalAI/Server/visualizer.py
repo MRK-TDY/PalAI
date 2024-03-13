@@ -5,12 +5,14 @@ class ObjVisualizer:
         # Dictionary mapping block names to OBJ file paths
         self.block_obj_paths = {
             'CUBE': 'Blocks/Cube_Block.obj',
+            'DIAGONAL': 'Blocks/Diagonal.obj',
             'CHIPPED_CUBE': 'Blocks/Cube_Block.obj',
             'CONCAVE_CUBE': 'Blocks/Cube_Block.obj'
             # Add more block types here
         }
 
-    def place_block(self, position, block_name, size, vertex_offset):
+    def __place_block(self, position, block_name, size, vertex_offset, rotation = 0):
+        rotation += 3  # HACK: diagonals file is wrong
         obj_content = ''
         path = os.path.join(os.path.dirname(__file__), self.block_obj_paths[block_name])
         # Load the template OBJ for this block
@@ -21,9 +23,27 @@ class ObjVisualizer:
         for line in block_obj.splitlines():
             if line.startswith('v '):  # Vertex definition
                 parts = line.split()
-                x, y, z = [float(parts[1]) * size + position[0],
-                           float(parts[2]) * size + position[1],
-                           float(parts[3]) * size + position[2]]
+                x, y, z = [float(parts[1]), float(parts[2]), float(parts[3])]
+
+                # Adjust for pivot (0.5, 0.5) before rotation
+                x -= 0.5
+                z -= 0.5
+
+                # Apply rotation
+                if rotation % 4 == 2:
+                    x, z = -x, -z
+                elif rotation % 4 == 1:
+                    x, z = z, -x
+                elif rotation % 4 == 3:
+                    x, z = -z, x
+
+                # Adjust back after rotation
+                x += 0.5
+                z += 0.5
+
+                # Now apply scaling and translation
+                x, y, z = [x * size + position[0], y * size + position[1], z * size + position[2]]
+
                 obj_content += f'v {x} {y} {z}\n'
             elif line.startswith('f '):  # Face definition, adjust with the current vertex offset
                 parts = line.split()[1:]
@@ -64,17 +84,18 @@ class ObjVisualizer:
             try:
                 block_name = block['type']
                 position = tuple(map(float, block['position'].replace("(", "").replace(")", "").split(',')))
+                rotation = block.get("rotation", 0)
                 add_on = block.get("tags", {})
                 # size = float(block['size'])
                 size = 1
                 if add_on.get("type", "") in ["WINDOW", "DOOR"]:
                     add_on_position = tuple(map(lambda x: float(x), add_on['position'].replace("(", "").replace(")", "").split(',')))
-                    placed_block = self.place_block(add_on_position, 'CUBE', 0.3, vertex_offset)
+                    placed_block = self.__place_block(add_on_position, 'CUBE', 0.3, vertex_offset)
                     obj_content += placed_block[0]
                     vertex_offset = placed_block[1]
             except Exception as _:
                 continue
-            placed_block = self.place_block(position, block_name, size, vertex_offset)
+            placed_block = self.__place_block(position, block_name, size, vertex_offset, rotation)
             obj_content += placed_block[0]
             vertex_offset = placed_block[1]
 
