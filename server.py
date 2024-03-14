@@ -34,13 +34,7 @@ with open(os.path.join(os.path.dirname(__file__), 'prompts.yaml'), 'r') as file:
 
 def create_pal_instance():
     return PalAI(prompts_file,
-                config.getfloat('llm', 'temp'),
-                config.get('llm', 'model_name'),
-                config.get('llm', 'image_model_name'),
-                config.get('openai', 'api_key'),
-                config.get('llm', 'max_tokens'),
-                config.getboolean('pal', 'use_images', fallback=False),
-                config.getboolean('server', 'verbose'))
+                "gpt")
 
 def create_descriptor_instance():
     return BuildingDescriptor(config.get('openai', 'api_key'))

@@ -14,10 +14,11 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.messages import HumanMessage
+from LLMClients import gpt_client, together_client
 
 class PalAI():
 
-    def __init__(self, prompts_file, temperature, model_name, image_model_name, api_key, max_tokens, use_images, verbose=False):
+    def __init__(self, prompts_file, llm="gpt"):
         self.material_types = ["Generic White",
                  "Plastic Orange",
                  "Concrete White",
@@ -36,65 +37,32 @@ class PalAI():
                  "Stone Light Grey",
                  "Dark Concrete"]
 
+
+        match llm:
+            case 'gpt':
+                self.llm_client = gpt_client.GPTClient(prompts_file)
+
+            case 'together':
+                self.llm_client = together_client.TogetherClient(prompts_file)
+
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get('system_prompt', "")
         self.prompt_template = self.prompts_file.get('prompt_template', "")
 
-        if api_key is not None:
-            self.llm = ChatOpenAI(model=model_name, temperature=temperature, api_key=api_key, max_tokens=max_tokens)
-            self.mm_llm = ChatOpenAI(model=image_model_name, temperature=temperature, api_key=api_key,
-                                     max_tokens=max_tokens)
 
-        self.use_images = use_images
-        self.verbose = verbose
 
         os.chdir(os.path.dirname(__file__))
 
     @classmethod
     def create_default(cls):
-        return cls({}, 0.7, 'gpt-4', 'gpt-4-vision-preview', None, 1024, False, True)
-
-    async def get_llm_response(self, system_message, prompt, image_path = ""):
-        if self.verbose:
-            print(f"{colorama.Fore.GREEN}System message:{colorama.Fore.RESET} {system_message}")
-            print(f"{colorama.Fore.BLUE}Prompt:{colorama.Fore.RESET} {prompt}")
-
-        if image_path != "":
-            with open(image_path, "rb") as image_file:
-                image = base64.b64encode(image_file.read()).decode('utf-8')
-
-            prompt = ChatPromptTemplate.from_messages([
-                ("system", "{system_message}"),
-                HumanMessage(content=[
-                    {"type": "text", "text": f"{prompt}"},
-                    {"type": "image_url",
-                     "image_url": f"data:image/jpeg;base64,{image}"}
-                ])
-            ])
-            llm = self.mm_llm
-
-        else:
-            prompt = ChatPromptTemplate.from_messages( [
-                ("system", "{system_message}"),
-                ("user", f"{prompt}")
-            ])
-            llm = self.llm
-
-        self.chain = prompt | llm | StrOutputParser()
-        response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})
-
-        if self.verbose:
-            print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
-
-        return response
-
+        return cls({})
 
     def format_prompt(self):
         return (self.system_prompt, self.prompt_template)
 
 
     async def build(self, architect_plan, ws = None):
-        architect_plan = await self.get_llm_response(self.prompts_file["plan_system_message"],
+        architect_plan = await self.llm_client.get_llm_response(self.prompts_file["plan_system_message"],
                                                self.prompts_file["plan_prompt"].format(architect_plan))
         api_result = {"architect": [l for l in architect_plan.split("\n") if l != ""]}
         visualizer = ObjVisualizer()
@@ -123,37 +91,14 @@ class PalAI():
 
                 system_message = system_message_template.format(example=example)
 
-                if self.use_images:
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image, \
-                            tempfile.NamedTemporaryFile(delete=False, suffix=".obj") as temp_obj:
-                        screenshot_model(obj_path, temp_image.name)
 
-                        response = await self.get_llm_response(system_message, formatted_prompt, temp_image.name)
 
-                        history.append(f"Layer {i}:")
-                        history.append(current_layer_prompt)
-                        history.append(self.extract_history(formatted_prompt, response))
-                        new_layer = self.extract_building_information(response, i)
-                        building.extend(new_layer)
-                        obj_content = visualizer.generate_obj(building)
-
-                        temp_obj.write(obj_content.encode())
-                        temp_obj.flush()
-
-                        # Remember the paths to delete them later
-                        temp_files_to_delete.append(temp_image.name)
-                        temp_files_to_delete.append(temp_obj.name)
-
-                        # If you need to use the obj file for the next iteration
-                        obj_path = temp_obj.name
-
-                else:
-                    response = await self.get_llm_response(system_message, formatted_prompt)
-                    history.append(f"Layer {i}:")
-                    history.append(current_layer_prompt)
-                    history.append(self.extract_history(formatted_prompt, response))
-                    new_layer = self.extract_building_information(response, i)
-                    building.extend(new_layer)
+                response = await  self.llm_client.get_llm_response(system_message, formatted_prompt)
+                history.append(f"Layer {i}:")
+                history.append(current_layer_prompt)
+                history.append(self.extract_history(formatted_prompt, response))
+                new_layer = self.extract_building_information(response, i)
+                building.extend(new_layer)
 
                 if ws is not None:
                     message = {"value": new_layer}
@@ -163,8 +108,8 @@ class PalAI():
 
             # FINISHING TOUCHES
             add_on_prompt = self.format_add_on_prompt(plan_list, building)
-            building_promise = self.get_llm_response(self.prompts_file["add_on_system_message"], add_on_prompt)
-            material_promise = self.get_llm_response(
+            building_promise =  self.llm_client.get_llm_response(self.prompts_file["add_on_system_message"], add_on_prompt)
+            material_promise =  self.llm_client.get_llm_response(
                     self.prompts_file["material_system_message"].format(materials= self.material_types),
                     architect_plan)
 
@@ -274,3 +219,27 @@ class PalAI():
 
         return materials
 
+
+    def getimages(self):
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image, \
+                tempfile.NamedTemporaryFile(delete=False, suffix=".obj") as temp_obj:
+            screenshot_model(obj_path, temp_image.name)
+
+            #response = await self.llm_client.get_llm_response(system_message, formatted_prompt, temp_image.name)
+
+            history.append(f"Layer {i}:")
+            history.append(current_layer_prompt)
+            history.append(self.extract_history(formatted_prompt, response))
+            new_layer = self.extract_building_information(response, i)
+            building.extend(new_layer)
+            obj_content = visualizer.generate_obj(building)
+
+            temp_obj.write(obj_content.encode())
+            temp_obj.flush()
+
+            # Remember the paths to delete them later
+            temp_files_to_delete.append(temp_image.name)
+            temp_files_to_delete.append(temp_obj.name)
+
+            # If you need to use the obj file for the next iteration
+            obj_path = temp_obj.name
