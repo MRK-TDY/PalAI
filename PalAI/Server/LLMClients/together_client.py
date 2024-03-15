@@ -9,17 +9,20 @@ from langchain.schema.messages import HumanMessage
 class TogetherClient(LLMClient):
 
     def __init__(self, prompts_file):
-        super().__init__(self, prompts_file)
+        LLMClient.__init__(self, prompts_file)
         self.api_key = self.config.get('together', 'api_key')
-        self.together.api_key = api_key
+        self.model_name = self.config.get('together', 'model_name')
+        together.api_key = self.api_key
 
 
     async def get_llm_response(self, system_message, prompt, image_path=""):
-          prompt = self.prompts_file["plan_system_message"]
-          prompt += self.prompts_file["plan_prompt"]
+
+          actual_prompt = self.prompts_file["plan_system_message"]
+          actual_prompt += self.prompts_file["plan_prompt"]
+          actual_prompt += prompt
           print("Prompt: \n" + prompt)
           output = together.Complete.create(
-          prompt=prompt,
+          prompt=actual_prompt,
           model=self.model_name,
           max_tokens =self.max_tokens,
           temperature = self.temperature,
