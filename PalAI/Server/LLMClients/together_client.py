@@ -18,9 +18,8 @@ class TogetherClient(LLMClient):
     async def get_llm_response(self, system_message, prompt, image_path=""):
 
           actual_prompt = self.prompts_file["plan_system_message"]
-          actual_prompt += self.prompts_file["plan_prompt"]
           actual_prompt += prompt
-          print("Prompt: \n" + prompt)
+          print(actual_prompt)
           output = together.Complete.create(
           prompt=actual_prompt,
           model=self.model_name,
