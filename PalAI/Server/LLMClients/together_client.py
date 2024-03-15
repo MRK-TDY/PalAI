@@ -12,6 +12,8 @@ class TogetherClient(LLMClient):
         LLMClient.__init__(self, prompts_file)
         self.api_key = self.config.get('together', 'api_key')
         self.model_name = self.config.get('together', 'model_name')
+        self.max_tokens = int(self.config.get('together', 'together_max_tokens'))
+        self.temperature = float(self.config.get('together', 'together_temperature'))
         together.api_key = self.api_key
 
 
