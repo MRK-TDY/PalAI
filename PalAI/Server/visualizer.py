@@ -12,7 +12,6 @@ class ObjVisualizer:
         }
 
     def __place_block(self, position, block_name, size, vertex_offset, rotation = 0):
-        rotation += 3  # HACK: diagonals file is wrong
         obj_content = ''
         path = os.path.join(os.path.dirname(__file__), self.block_obj_paths[block_name])
         # Load the template OBJ for this block
@@ -30,12 +29,12 @@ class ObjVisualizer:
                 z -= 0.5
 
                 # Apply rotation
-                if rotation % 4 == 2:
-                    x, z = -x, -z
-                elif rotation % 4 == 1:
-                    x, z = z, -x
-                elif rotation % 4 == 3:
+                if rotation % 4 == 1:
                     x, z = -z, x
+                elif rotation % 4 == 2:
+                    x, z = -x, -z
+                elif rotation % 4 == 3:
+                    x, z = z, -x
 
                 # Adjust back after rotation
                 x += 0.5

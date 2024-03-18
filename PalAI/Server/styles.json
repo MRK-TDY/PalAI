@@ -1,5 +1,5 @@
 {
-    "styles": [{
+    "styles": {
         "modern": {
             "description": "Sleek design, with angled corners and no round faces",
             "rules": [{
@@ -7,12 +7,16 @@
                     [1, 1, 0],
                     [1, 1, -1],
                     [0, -1, -1]],
-                    "effect": {
-                        "type": "DIAGONAL",
-                        "rotation": "{rotation}"
-                    }
+                    "effects": [{
+                        "key": "type",
+                        "value": "DIAGONAL"
+                    },
+                    {
+                        "key": "rotation",
+                        "value": "{rotation}"
+                    }]
                 }
             ]
         }
-    ]
+    }
 }

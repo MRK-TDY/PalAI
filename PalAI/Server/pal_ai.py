@@ -1,24 +1,12 @@
-import tempfile
 import json
-import colorama
 import os
-import sys
 
-sys.path.append(os.path.dirname(__file__))
-
-from visualizer import ObjVisualizer
-from model_capturer import screenshot_model
-
-import base64
-from langchain_core.output_parsers import StrOutputParser
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.schema.messages import HumanMessage
-from LLMClients import gpt_client, together_client, google_client, anyscale_client
+from PalAI.Server.LLMClients import gpt_client, together_client, google_client, anyscale_client
+from PalAI.Server.post_process import PostProcess
 
 class PalAI():
 
-    def __init__(self, prompts_file, llm="gpt"):
+    def __init__(self, prompts_file, llm="gpt", web_socket = None):
         self.material_types = ["Generic White",
                  "Plastic Orange",
                  "Concrete White",
@@ -48,41 +36,44 @@ class PalAI():
             case 'anyscale':
                 self.llm_client = anyscale_client.AnyscaleClient(prompts_file)
 
+        self.building = []
+        self.history = []
+        self.api_result = {}
+
+        self.ws = web_socket
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get('system_prompt', "")
         self.prompt_template = self.prompts_file.get('prompt_template', "")
 
-
-
         os.chdir(os.path.dirname(__file__))
 
-    @classmethod
-    def create_default(cls):
-        return cls({})
 
-    def format_prompt(self):
-        return (self.system_prompt, self.prompt_template)
+    async def build(self, prompt):
+        self.prompt = prompt
+
+        #TODO: do requests that may be parallel in parallel
+        await self.get_architect_plan()
+        await self.build_structure()
+        await self.apply_add_ons()
+        await self.get_material()
+        await self.style()
+
+        self.api_result["result"] = self.building
+        return self.api_result
 
 
-    async def build(self, architect_plan, ws = None):
-        architect_plan = await self.llm_client.get_llm_response(self.prompts_file["plan_system_message"],
-                                               self.prompts_file["plan_prompt"].format(architect_plan))
-        api_result = {"architect": [l for l in architect_plan.split("\n") if l != ""]}
-        visualizer = ObjVisualizer()
-        system_message_template, prompt_template = self.format_prompt()
-        building = []
-        temp_files_to_delete = []
-        history = []
-        plan_list = [i for i in architect_plan.split("\n") if i.lower().startswith(f"layer")]
+    async def get_architect_plan(self):
+        self.architect_plan = await self.llm_client.get_llm_response(self.prompts_file["plan_system_message"],
+                                                                self.prompts_file["plan_prompt"].format(self.prompt))
+        self.api_result["architect"] = [l for l in self.architect_plan.split("\n") if l != ""]
+        self.plan_list = [i for i in self.architect_plan.split("\n") if i.lower().startswith(f"layer")]
 
-        obj_path = ""
+    async def build_structure(self):
+            for i, layer_prompt in enumerate(self.plan_list):
+                current_layer_prompt = self.prompt_template.format(prompt=layer_prompt, layer=i)
 
-        try:
-            for i, layer_prompt in enumerate(plan_list):
-                current_layer_prompt = prompt_template.format(prompt=layer_prompt, layer=i)
-
-                if len(history) > 0:
-                    complete_history = ('\n\n').join(history)
+                if len(self.history) > 0:
+                    complete_history = ('\n\n').join(self.history)
                     formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
                 else:
                     formatted_prompt = current_layer_prompt
@@ -92,61 +83,61 @@ class PalAI():
                 else:
                     example =  self.prompts_file["basic_example"]
 
-                system_message = system_message_template.format(example=example)
-
-
+                system_message = self.system_prompt.format(example=example)
 
                 response = await  self.llm_client.get_llm_response(system_message, formatted_prompt)
-                history.append(f"Layer {i}:")
-                history.append(current_layer_prompt)
-                history.append(self.extract_history(formatted_prompt, response))
+                self.history.append(f"Layer {i}:")
+                self.history.append(current_layer_prompt)
+                self.history.append(self.extract_history(formatted_prompt, response))
                 new_layer = self.extract_building_information(response, i)
-                building.extend(new_layer)
+                self.building.extend(new_layer)
 
-                if ws is not None:
+                if self.ws is not None:
                     message = {"value": new_layer}
                     message["event"] = "layer"
-                    ws.send(json.dumps(message))
-                api_result[f"bricklayer_{i}"] = [l for l in response.split("\n") if l != ""]
-
-            # FINISHING TOUCHES
-            add_on_prompt = self.format_add_on_prompt(plan_list, building)
-            building_promise =  self.llm_client.get_llm_response(self.prompts_file["add_on_system_message"], add_on_prompt)
-            material_promise =  self.llm_client.get_llm_response(
-                    self.prompts_file["material_system_message"].format(materials= self.material_types),
-                    architect_plan)
-
-            add_ons = await building_promise
-            material = self.extract_materials(await material_promise)
-            api_result["add_on_agent"] = building
-            api_result["materials"] = material
-            add_ons = self.extract_building_information(add_ons)
-            building = self.overlap_blocks(building, add_ons)
-            if ws is not None:
-                message = {"value": material}
-                message["event"] = "material"
-                ws.send(json.dumps(message))
-            if ws is not None:
-                message = {"value": building}
-                message["event"] = "add_ons"
-                ws.send(json.dumps(message))
+                    self.ws.send(json.dumps(message))
+                self.api_result[f"bricklayer_{i}"] = [l for l in response.split("\n") if l != ""]
 
 
-            api_result["result"] = building
-            return api_result
-        finally:
-            # Cleanup temporary files
-            for file_path in temp_files_to_delete:
-                os.remove(file_path)
+    async def apply_add_ons(self):
+        plan = "\n".join(self.plan_list)
+        building = self.json_to_pal_script(self.building)
+        add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{building}."
+        add_ons = await self.llm_client.get_llm_response(self.prompts_file["add_on_system_message"], add_on_prompt)
+        add_ons = self.extract_building_information(add_ons)
+        self.building = self.overlap_blocks(self.building, add_ons)
+        self.api_result["add_on_agent"] = self.building
 
-    def format_add_on_prompt(self, plan_list, building):
-        plan = "\n".join(plan_list)
-        building = self.json_to_pal_script(building)
-        return f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{building}."
+        if self.ws is not None:
+            message = {"value": self.building}
+            message["event"] = "add_ons"
+            self.ws.send(json.dumps(message))
 
-    def json_to_pal_script(self, text):
+
+    async def get_material(self):
+
+        material = await self.llm_client.get_llm_response(
+                self.prompts_file["material_system_message"].format(materials= self.material_types),
+                self.architect_plan)
+        self.api_result["materials"] = material
+        if self.ws is not None:
+            message = {"value": material}
+            message["event"] = "material"
+            self.ws.send(json.dumps(message))
+
+
+    async def style(self):
+        pp = PostProcess(self.building)
+        self.building = pp.style("modern")
+
+    def json_to_pal_script(self, building):
+        """
+        Converts a building from JSON to be used to communicate with the LLM
+        :returns : (str) same building in the format that LLM's consume
+        :param building: json formatted building
+        """
         pal_script = ""
-        for i in text:
+        for i in building:
             type = i['type']
             position = i['position'].replace("(", "").replace(")","").split(",")
 
@@ -222,27 +213,3 @@ class PalAI():
 
         return materials
 
-
-    def getimages(self):
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image, \
-                tempfile.NamedTemporaryFile(delete=False, suffix=".obj") as temp_obj:
-            screenshot_model(obj_path, temp_image.name)
-
-            #response = await self.llm_client.get_llm_response(system_message, formatted_prompt, temp_image.name)
-
-            history.append(f"Layer {i}:")
-            history.append(current_layer_prompt)
-            history.append(self.extract_history(formatted_prompt, response))
-            new_layer = self.extract_building_information(response, i)
-            building.extend(new_layer)
-            obj_content = visualizer.generate_obj(building)
-
-            temp_obj.write(obj_content.encode())
-            temp_obj.flush()
-
-            # Remember the paths to delete them later
-            temp_files_to_delete.append(temp_image.name)
-            temp_files_to_delete.append(temp_obj.name)
-
-            # If you need to use the obj file for the next iteration
-            obj_path = temp_obj.name
