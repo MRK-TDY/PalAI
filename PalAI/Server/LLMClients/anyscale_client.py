@@ -43,13 +43,8 @@ class AnyscaleClient(LLMClient):
           # Note: not all arguments are currently supported and will be ignored by the backend.
           chat_completion = self.client.chat.completions.create(
               model="mistralai/Mistral-7B-Instruct-v0.1",
-              messages=[{"role": "system", "content": self.system_prompt },
-                        {"role": "user", "content": "I want to build a house that widens at the top."},
-                        {"role": "assistant", "content": self.system_prompt2},
-                        {"role": "user", "content": "I want to build an L-shaped house."},
-                        {"role": "assistant", "content": self.system_prompt2},
-                        {"role": "user", "content": prompt}]
-                        ,
+              messages=[{"role": "system", "content": system_message},
+                        {"role": "user", "content": prompt}],
               temperature=0.1
           )
           print(chat_completion.choices[0].message.content)
