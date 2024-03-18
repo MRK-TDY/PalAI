@@ -5,7 +5,7 @@ from configparser import RawConfigParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.messages import HumanMessage
 
-
+# Pricing https://api.together.xyz/models
 class TogetherClient(LLMClient):
 
     def __init__(self, prompts_file):

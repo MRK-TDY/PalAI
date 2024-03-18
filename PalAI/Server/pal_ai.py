@@ -14,7 +14,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.messages import HumanMessage
-from LLMClients import gpt_client, together_client
+from LLMClients import gpt_client, together_client, google_client, anyscale_client
 
 class PalAI():
 
@@ -41,9 +41,12 @@ class PalAI():
         match llm:
             case 'gpt':
                 self.llm_client = gpt_client.GPTClient(prompts_file)
-
             case 'together':
                 self.llm_client = together_client.TogetherClient(prompts_file)
+            case 'google':
+                self.llm_client = google_client.GoogleClient(prompts_file)
+            case 'anyscale':
+                self.llm_client = anyscale_client.AnyscaleClient(prompts_file)
 
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get('system_prompt', "")
