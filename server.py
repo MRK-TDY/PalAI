@@ -65,6 +65,7 @@ def handle_post(ws):
                 if 'prompt' in json_data:
                     pal = create_pal_instance()
                     result = asyncio.run(pal.build(json_data['prompt'], ws))
+                    result["event"] = "result"
                     result["message"] = "Data processed"
                     ws.send(json.dumps(result))
                     print('Sent Json Response: ' + str(result))
