@@ -35,7 +35,7 @@ class AnyscaleClient(LLMClient):
         self.system_prompt3 = "In order to build an L shaped house we must place 4 square shapes on the ground, there's no need for other layers. \n" \
                               "  Layer 0: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side."
 
-    async def get_llm_response(self, system_message, prompt, image_path=""):
+    async def get_llm_response(self, system_message, prompt, image_path="", debug=False):
 
 
 
@@ -68,9 +68,8 @@ class AnyscaleClient(LLMClient):
 
           messages.append({"role": "user", "content": prompt})
 
-
-          print("---------------------------"
-                "\n Messages: \n " + str(messages))
+          self.prompt_total += system_message
+          self.prompt_total += prompt
 
           # Note: not all arguments are currently supported and will be ignored by the backend.
           chat_completion = self.client.chat.completions.create(
@@ -78,7 +77,9 @@ class AnyscaleClient(LLMClient):
               messages=messages,
               temperature=0.1
           )
-          print(chat_completion.choices[0].message.content)
+
+          if(debug):
+              print(chat_completion.choices[0].message.content)
 
 
           return chat_completion.choices[0].message.content

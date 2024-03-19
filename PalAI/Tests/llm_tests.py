@@ -6,8 +6,9 @@ from PalAI.Server.pal_ai import PalAI
 from PalAI.Server.visualizer import ObjVisualizer
 import asyncio
 import time
-import prompt_baseline
+import output_evaluator
 os.chdir(os.path.dirname(__file__))
+import tiktoken
 
 
 ## Use this output to test without spending €€
@@ -16,6 +17,8 @@ mock_output = [{'type': 'CUBE', 'position': '(0,0,0)'}, {'type': 'CUBE', 'positi
                {'type': 'CUBE', 'position': '(0,1,0)'}, {'type': 'CUBE', 'position': '(0,1,1)'},
                {'type': 'CUBE', 'position': '(0,1,2)'}, {'type': 'CUBE', 'position': '(0,1,3)'},
                {'type': 'CUBE', 'position': '(1,1,0)'}, {'type': 'CUBE', 'position': '(2,1,0)'}, {'type': 'CUBE', 'position': '(2,2,0)'}]
+
+
 
 def test_runner(endpoint, prompt):
     with open(os.path.join(os.path.dirname(__file__), '..\..\prompts.yaml'), 'r') as file:
@@ -27,16 +30,17 @@ def test_runner(endpoint, prompt):
 
         layers = asyncio.run(layerbuilder(architect_plan, pal_ai))
 
-        return layers
+        return pal_ai, layers
 
 
-async def get_architect_plan(prompt, pal_ai, prompts_file):
+async def get_architect_plan(prompt, pal_ai, prompts_file, debug=False):
 
     architect_plan = await pal_ai.llm_client.get_llm_response(prompts_file["plan_system_message"],
                                                               prompt)
     #api_result = {"architect": [l for l in architect_plan.split("\n") if l != ""]}
 
-    print("Architect Plan: \n " + str(architect_plan))
+    if(debug):
+        print("Architect Plan: \n " + str(architect_plan))
 
     return architect_plan
 
@@ -53,7 +57,7 @@ async def layerbuilder(architect_plan, pal_ai):
 
     for i, layer_prompt in enumerate(plan_list):
         current_layer_prompt = pal_ai.prompt_template.format(prompt=layer_prompt, layer=i)
-        print("Layer " + str(i) + " \n Prompt: \n" + str(current_layer_prompt))
+
         #if len(history) > 0:
         #    complete_history = ('\n\n').join(history)
         #    formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
@@ -82,17 +86,53 @@ async def layerbuilder(architect_plan, pal_ai):
 
     return building
 
+def num_tokens_from_string(string: str, encoding_name: str) -> int:
+    encoding = tiktoken.get_encoding(encoding_name)
+    num_tokens = len(encoding.encode(string))
+    return num_tokens
 
-if __name__ == '__main__':
+
+
+def testsuite():
+    with open(os.path.join(os.path.dirname(__file__), 'BuildingBaseline/prompts_test_suite.txt'), 'r') as file:
+
+        prompts = file.readlines()
+
+        for prompt in prompts:
+            print("--------------------------")
+            print("Evaluating prompt: " + prompt)
+            runttest(prompt, 'anyscale')
+
+
+
+def runttest(prompt, model_type):
     # Record the start time
     start_time = time.time()
-    #test_runner('anyscale', 'i want a tiny house')
-    #test_runner('together', 'i want a tiny house')
+    pal_ai, building = test_runner(model_type, prompt)
+    try:
+        if pal_ai:
+            total_prompt = pal_ai.llm_client.getTotalPromptsUsed()
+            tokens_used = num_tokens_from_string(total_prompt, 'cl100k_base')
+            print("Tokens used: " + str(tokens_used))
+            price_rate = pal_ai.llm_client.price_rate
+            print("Price paid: " + str(round(price_rate * tokens_used, 6)) + "$")
+    except NameError:
+        print("Tokens used: " + str(num_tokens_from_string(prompt, 'cl100k_base')))
 
-    prompt_baseline.evaluate("I want a tiny house", mock_output)
+    try:
+        if building:
+            output_evaluator.evaluate(prompt, building)
+    except NameError:
+        output_evaluator.evaluate(prompt, mock_output)
+
+
     # Record the end time
     end_time = time.time()
 
     # Calculate and print the total runtime
     runtime = end_time - start_time
-    print(f"The program took {runtime} seconds to run.")
+    print(f"The test took {runtime} seconds to run.")
+
+
+if __name__ == '__main__':
+    testsuite()

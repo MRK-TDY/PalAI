@@ -29,6 +29,7 @@ class TogetherClient(LLMClient):
           temperature = self.temperature,
           )
 
+          self.prompt_total += actual_prompt
           # parse the completion then print the whole output
           generatedText = output['output']['choices'][0]['text']
           print(output)

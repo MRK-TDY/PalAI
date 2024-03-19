@@ -7,8 +7,8 @@ class LLMClient():
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get('system_prompt', "")
         self.prompt_template = self.prompts_file.get('prompt_template', "")
-
-
+        self.prompt_total = ""
+        self.price_rate = 0.00000015
         os.chdir(os.path.dirname(__file__))
 
         self.config = RawConfigParser()
@@ -20,3 +20,7 @@ class LLMClient():
 
     async def get_llm_response(self, system_message, prompt, image_path=""):
         print(response)
+
+
+    def getTotalPromptsUsed(self):
+        return self.prompt_total

@@ -46,6 +46,9 @@ class GPTClient(LLMClient):
             ])
             llm = self.llm
 
+        self.prompt_total += system_message
+        self.prompt_total += prompt
+
         self.chain = prompt | llm | StrOutputParser()
         response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})
 
