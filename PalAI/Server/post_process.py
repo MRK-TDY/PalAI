@@ -4,15 +4,17 @@ import json
 
 
 class PostProcess:
-    def __init__(self, building, style_sheet = "styles.json"):
+    def __init__(self, style_sheet = "styles.json"):
+
+        with open(os.path.join(os.path.dirname(__file__), style_sheet), 'r') as fptr:
+            self.styles = json.load(fptr)
+
+    def import_building(self, building):
         positions = [self.get_block_dict_position(b) for b in building]
 
         self.size_x = max(positions, key=lambda x: x[0])[0] + 1
         self.size_y = max(positions, key=lambda x: x[1])[1] + 1
         self.size_z = max(positions, key=lambda x: x[2])[2] + 1
-
-        with open(os.path.join(os.path.dirname(__file__), style_sheet), 'r') as fptr:
-            self.styles = json.load(fptr)
 
         # Grid is indexed (y, x, z) because most transformations happen on a slice of the y axis
         self.grid = [
@@ -25,6 +27,12 @@ class PostProcess:
             pos = self.get_block_dict_position(b)
             self.grid[pos[1]][pos[0]][pos[2]] = b
             self.pixel_grid[pos[1], pos[0], pos[2]] = 1
+
+    def get_available_styles(self):
+        styles = ""
+        for s in self.styles["styles"].keys():
+            styles += f"{s}: {self.styles["styles"][s]['description']}\n"
+        return styles
 
     def style(self, style):
         for rule in self.styles["styles"][style]["rules"]:

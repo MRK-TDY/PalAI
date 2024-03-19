@@ -1,12 +1,17 @@
 import json
 import os
 
+from colorama import Fore
+import colorama
+
 from PalAI.Server.LLMClients import gpt_client, together_client, google_client, anyscale_client
 from PalAI.Server.post_process import PostProcess
 
 class PalAI():
 
     def __init__(self, prompts_file, llm="gpt", web_socket = None):
+        colorama.init(autoreset=True)
+
         self.material_types = ["Generic White",
                  "Plastic Orange",
                  "Concrete White",
@@ -40,6 +45,8 @@ class PalAI():
         self.history = []
         self.api_result = {}
 
+        self.post_process = PostProcess()
+
         self.ws = web_socket
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get('system_prompt', "")
@@ -50,13 +57,24 @@ class PalAI():
 
     async def build(self, prompt):
         self.prompt = prompt
+        print(f"{Fore.BLUE}Received prompt{Fore.RESET}: {prompt}")
 
         #TODO: do requests that may be parallel in parallel
+
         await self.get_architect_plan()
+        print(f"{Fore.BLUE}Received architect plan")
+
         await self.build_structure()
+        print(f"{Fore.BLUE}Received basic structure")
+
         await self.apply_add_ons()
-        await self.get_material()
-        await self.style()
+        print(f"{Fore.BLUE}Received add-ons")
+
+        await self.get_artist_response()
+        print(f"{Fore.BLUE}Received artist response")
+
+        await self.apply_style()
+        print(f"{Fore.BLUE}Applied style {self.style}")
 
         self.api_result["result"] = self.building
         return self.api_result
@@ -98,6 +116,8 @@ class PalAI():
                     self.ws.send(json.dumps(message))
                 self.api_result[f"bricklayer_{i}"] = [l for l in response.split("\n") if l != ""]
 
+                print(f"{Fore.GREEN}Received layer {i} of structure")
+
 
     async def apply_add_ons(self):
         plan = "\n".join(self.plan_list)
@@ -114,11 +134,20 @@ class PalAI():
             self.ws.send(json.dumps(message))
 
 
-    async def get_material(self):
-
-        material = await self.llm_client.get_llm_response(
-                self.prompts_file["material_system_message"].format(materials= self.material_types),
+    async def get_artist_response(self):
+        materials_response = await self.llm_client.get_llm_response(
+                self.prompts_file["material_system_message"].format(materials= self.material_types,
+                                                                    styles = self.post_process.get_available_styles()),
                 self.architect_plan)
+        material = {}
+        for l in materials_response.split("\n"):
+            l = l.upper().split(": ")
+            if len(l) == 2:
+                if l[0] == "STYLE":
+                    self.style = l[1].lower().strip()
+                if l[0] in ["INTERIOR", "EXTERIOR", "FLOOR", "STYLE"]:
+                    material[l[0]] = l[1].strip()
+
         self.api_result["materials"] = material
         if self.ws is not None:
             message = {"value": material}
@@ -126,9 +155,9 @@ class PalAI():
             self.ws.send(json.dumps(message))
 
 
-    async def style(self):
-        pp = PostProcess(self.building)
-        self.building = pp.style("modern")
+    async def apply_style(self):
+        self.post_process.import_building(self.building)
+        self.building = self.post_process.style(self.style)
 
     def json_to_pal_script(self, building):
         """

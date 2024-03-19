@@ -9,11 +9,12 @@ import os
 
 class GPTClient(LLMClient):
 
-    def __init__(self, prompts_file):
+    def __init__(self, prompts_file, verbose = False):
         LLMClient.__init__(self, prompts_file)
 
         self.api_key = self.config.get('openai', 'api_key')
         self.model_name = self.config.get('openai', 'model_name')
+        self.verbose = verbose
 
         if self.api_key is not None:
             self.llm = ChatOpenAI(model=self.model_name, temperature=self.temperature, api_key=self.api_key, max_tokens=self.max_tokens)

@@ -1,5 +1,9 @@
 {
     "styles": {
+        "blocky": {
+            "description": "No additional styling, just the basic blocks. Don't use this unless the user asked for a very blocky building.",
+            "rules": []
+        },
         "modern": {
             "description": "Sleek design, with angled corners and no round faces",
             "rules": [{
@@ -14,6 +18,33 @@
                     {
                         "key": "rotation",
                         "value": "{rotation}"
+                    }]
+                }
+            ]
+        },
+        "rounded": {
+            "description": "Round corners, no sharp angles.",
+            "rules": [{
+                "filter": [
+                    [1, 1, 0],
+                    [1, 1, -1],
+                    [0, -1, -1]],
+                    "effects": [{
+                        "key": "type",
+                        "value": "ROUNDED CORNER"
+                    },
+                    {
+                        "key": "rotation",
+                        "value": "{rotation}"
+                    }]
+                },{
+                "filter": [
+                    [0, -1, 0],
+                    [-1, 1, -1],
+                    [0, -1, 0]],
+                    "effects": [{
+                        "key": "type",
+                        "value": "CYLINDER"
                     }]
                 }
             ]

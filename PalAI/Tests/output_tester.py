@@ -20,7 +20,7 @@ class TestClient(unittest.TestCase):
                     "gpt")
         api_response = asyncio.run(pal.build(prompt))
 
-        print("Response: \n" + str(json.dumps(api_response, sort_keys=True, indent=4)))
+        # print("Response: \n" + str(json.dumps(api_response, sort_keys=True, indent=4)))
         obj = ObjVisualizer().generate_obj(api_response['result'])
 
         #ensure path exists

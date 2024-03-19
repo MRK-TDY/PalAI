@@ -171,11 +171,15 @@ material_system_message: |
   You must choose a material for these three: floor, interior walls and exterior walls
   Here is the list of available materials:
   {materials}
+  You must also choose a style for the building.
+  Here is the list of available styles:
+  {styles}
 
   You must give your response in the following format:
   Floor: <COLOR 1>
   Interior: <COLOR 2>
   Exterior: <COLOR 3>
+  Style: <style>
 
   You may repeat colors, but do it only if requested.
 
