@@ -37,14 +37,45 @@ class AnyscaleClient(LLMClient):
 
     async def get_llm_response(self, system_message, prompt, image_path=""):
 
-          actual_prompt = self.prompts_file["plan_system_message"]
-          actual_prompt += prompt
+
+
+          prompt_array = prompt.split('\n')
+          user = []
+          assistant = []
+          bUser = False
+          bAssistant = False
+          for p in prompt_array:
+            if("user" in p.lower()):
+                bUser = True
+                bAssistant = False
+            if ("assistant" in p.lower()):
+                bAssistant = True
+                bUser = False
+
+            if(bUser):
+                user.append(p)
+
+            elif (bAssistant):
+                assistant.append(p)
+
+
+          messages = []
+          messages.append({"role": "system", "content": system_message})
+
+          for i, user_prompt in enumerate(user):
+              messages.append({"role": "user", "content": user_prompt})
+              messages.append({"role": "assistant", "content": assistant[i]})
+
+          messages.append({"role": "user", "content": prompt})
+
+
+          print("---------------------------"
+                "\n Messages: \n " + str(messages))
 
           # Note: not all arguments are currently supported and will be ignored by the backend.
           chat_completion = self.client.chat.completions.create(
               model="mistralai/Mistral-7B-Instruct-v0.1",
-              messages=[{"role": "system", "content": system_message},
-                        {"role": "user", "content": prompt}],
+              messages=messages,
               temperature=0.1
           )
           print(chat_completion.choices[0].message.content)
