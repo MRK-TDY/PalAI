@@ -5,9 +5,9 @@ class ObjVisualizer:
         # Dictionary mapping block names to OBJ file paths
         self.block_obj_paths = {
             'CUBE': 'Blocks/Cube_Block.obj',
+            'ROUNDED CORNER': 'Blocks/ConvexCurve.obj',
             'DIAGONAL': 'Blocks/Diagonal.obj',
-            'CHIPPED_CUBE': 'Blocks/Cube_Block.obj',
-            'CONCAVE_CUBE': 'Blocks/Cube_Block.obj'
+            'CYLINDER': 'Blocks/Cylinder.obj'
             # Add more block types here
         }
 
