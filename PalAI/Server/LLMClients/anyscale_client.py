@@ -10,6 +10,11 @@ class AnyscaleClient(LLMClient):
         LLMClient.__init__(self, prompts_file)
         self.api_key = self.config.get('anyscale', 'api_key')
         self.model_name = 'mistralai/Mistral-7B-Instruct-v0.1'
+        self.model_name = 'meta-llama/Llama-2-7b-chat-hf'
+        self.model_name = 'meta-llama/Llama-2-13b-chat-hf'
+        self.price_rate = 0.00000025
+        self.model_name = 'google/gemma-7b-it'
+        self.price_rate = 0.00000015
 
         self.client = openai.OpenAI(
             base_url="https://api.endpoints.anyscale.com/v1",
@@ -73,7 +78,7 @@ class AnyscaleClient(LLMClient):
 
           # Note: not all arguments are currently supported and will be ignored by the backend.
           chat_completion = self.client.chat.completions.create(
-              model="mistralai/Mistral-7B-Instruct-v0.1",
+              model=self.model_name,
               messages=messages,
               temperature=0.1
           )

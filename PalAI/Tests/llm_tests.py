@@ -50,7 +50,7 @@ async def layerbuilder(architect_plan, pal_ai):
     building = []
     temp_files_to_delete = []
     history = []
-    system_message_template, prompt_template = pal_ai.format_prompt()
+    #system_message_template, prompt_template = pal_ai.format_prompt()
     plan_array = architect_plan.split("\n")
 
     plan_list = [i for i in plan_array if "layer" in i.lower()]
@@ -69,7 +69,7 @@ async def layerbuilder(architect_plan, pal_ai):
         else:
             example = pal_ai.prompts_file["basic_example"]
 
-        system_message = system_message_template.format(example=example)
+        system_message = pal_ai.system_prompt.format(example=example)
 
         response = await  pal_ai.llm_client.get_llm_response(system_message, formatted_prompt)
         history.append(f"Layer {i}:")
@@ -94,7 +94,7 @@ def num_tokens_from_string(string: str, encoding_name: str) -> int:
 
 
 def testsuite():
-    with open(os.path.join(os.path.dirname(__file__), 'BuildingBaseline/prompts_test_suite.txt'), 'r') as file:
+    with open(os.path.join(os.path.dirname(__file__), 'Baseline/prompts_test_suite.txt'), 'r') as file:
 
         prompts = file.readlines()
 
@@ -109,13 +109,14 @@ def runttest(prompt, model_type):
     # Record the start time
     start_time = time.time()
     pal_ai, building = test_runner(model_type, prompt)
+    print("Model used: " + pal_ai.llm_client.model_name)
     try:
         if pal_ai:
             total_prompt = pal_ai.llm_client.getTotalPromptsUsed()
             tokens_used = num_tokens_from_string(total_prompt, 'cl100k_base')
             print("Tokens used: " + str(tokens_used))
             price_rate = pal_ai.llm_client.price_rate
-            print("Price paid: " + str(round(price_rate * tokens_used, 6)) + "$")
+            print("Estimated cost: " + str(round(price_rate * tokens_used, 6)) + "$")
     except NameError:
         print("Tokens used: " + str(num_tokens_from_string(prompt, 'cl100k_base')))
 
@@ -131,7 +132,7 @@ def runttest(prompt, model_type):
 
     # Calculate and print the total runtime
     runtime = end_time - start_time
-    print(f"The test took {runtime} seconds to run.")
+    print(f"The test took {round(runtime, 4)} seconds to run.")
 
 
 if __name__ == '__main__':
