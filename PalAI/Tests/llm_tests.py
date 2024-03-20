@@ -1,3 +1,5 @@
+import csv
+import json
 import os
 import yaml
 from configparser import RawConfigParser
@@ -5,18 +7,32 @@ from PalAI.Server.LLMClients import together_client
 from PalAI.Server.pal_ai import PalAI
 from PalAI.Server.visualizer import ObjVisualizer
 import asyncio
-import time
-from Baseline import output_evaluator
-os.chdir(os.path.dirname(__file__))
 import tiktoken
+import time
 
+os.chdir(os.path.dirname(__file__))
 
-## Use this output to test without spending €€
-mock_output = [{'type': 'CUBE', 'position': '(0,0,0)'}, {'type': 'CUBE', 'position': '(0,0,1)'},
-               {'type': 'CUBE', 'position': '(0,0,2)'}, {'type': 'CUBE', 'position': '(0,0,3)'},
-               {'type': 'CUBE', 'position': '(0,1,0)'}, {'type': 'CUBE', 'position': '(0,1,1)'},
-               {'type': 'CUBE', 'position': '(0,1,2)'}, {'type': 'CUBE', 'position': '(0,1,3)'},
-               {'type': 'CUBE', 'position': '(1,1,0)'}, {'type': 'CUBE', 'position': '(2,1,0)'}, {'type': 'CUBE', 'position': '(2,2,0)'}]
+# This limits the number of buildings generated
+limit = 1
+
+with open(os.path.join(os.path.dirname(__file__), "Resources/baselines.json"), 'r') as fptr:
+    baselines_json = json.load(fptr)
+
+def evaluate(prompt, output):
+    if prompt in baselines_json["baselines"].keys():
+        current_baseline_blocks = baselines_json[prompt]
+        max_score = len(current_baseline_blocks)
+        current_score = 0
+
+        for block in current_baseline_blocks:
+            if block in output:
+                current_score += 1
+
+        print("Quality of Output Score: " + str(current_score) + "/" + str(max_score))
+        return current_score/max_score
+
+    else:
+        print("Output Evaluator: Prompt not in baseline list")
 
 
 
@@ -48,7 +64,6 @@ async def get_architect_plan(prompt, pal_ai, prompts_file, debug=False):
 async def layerbuilder(architect_plan, pal_ai):
 
     building = []
-    temp_files_to_delete = []
     history = []
     #system_message_template, prompt_template = pal_ai.format_prompt()
     plan_array = architect_plan.split("\n")
@@ -94,14 +109,17 @@ def num_tokens_from_string(string: str, encoding_name: str) -> int:
 
 
 def testsuite():
-    with open(os.path.join(os.path.dirname(__file__), 'Baseline/prompts_test_suite.txt'), 'r') as file:
-
-        prompts = file.readlines()
-
-        for prompt in prompts:
+    with open(os.path.join(os.path.dirname(__file__), 'Resources/prompts.csv'), 'r') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=';')
+        i = 0
+        for row in reader:
+            i += 1
+            prompt = row["PROMPT"]
             print("--------------------------")
             print("Evaluating Prompt: " + prompt)
             runttest(prompt, 'anyscale')
+            if i >= limit:
+                return
 
 
 
@@ -122,10 +140,9 @@ def runttest(prompt, model_type):
 
     try:
         if building:
-            output_evaluator.evaluate(prompt, building)
+            evaluate(prompt, building)
     except NameError:
-        output_evaluator.evaluate(prompt, mock_output)
-
+        print("Prompt not found, result not evaluated")
 
     # Record the end time
     end_time = time.time()
