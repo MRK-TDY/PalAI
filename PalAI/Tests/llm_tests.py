@@ -3,8 +3,6 @@ import json
 import os
 import yaml
 from configparser import RawConfigParser
-import colorama
-from colorama import Fore
 from PalAI.Server.LLMClients import together_client
 from PalAI.Server.pal_ai import PalAI
 from PalAI.Server.visualizer import ObjVisualizer
@@ -13,7 +11,6 @@ import tiktoken
 import time
 
 os.chdir(os.path.dirname(__file__))
-colorama.init(autoreset=True)
 
 # This limits the number of buildings generated
 limit = 1
@@ -23,7 +20,7 @@ with open(os.path.join(os.path.dirname(__file__), "Resources/baselines.json"), '
 
 def evaluate(prompt, output):
     if prompt in baselines_json["baselines"].keys():
-        current_baseline_blocks = baselines_json["baselines"][prompt]
+        current_baseline_blocks = baselines_json[prompt]
         max_score = len(current_baseline_blocks)
         current_score = 0
 
@@ -40,7 +37,7 @@ def evaluate(prompt, output):
 
 
 def test_runner(endpoint, prompt):
-    with open(os.path.join(os.path.dirname(__file__), "../../prompts.yaml"), 'r') as file:
+    with open(os.path.join(os.path.dirname(__file__), '..\..\prompts.yaml'), 'r') as file:
         prompts_file = yaml.safe_load(file)
 
         pal_ai = PalAI(prompts_file, endpoint)
@@ -118,7 +115,7 @@ def testsuite():
         for row in reader:
             i += 1
             prompt = row["PROMPT"]
-            print("-" * 20)
+            print("--------------------------")
             print("Evaluating Prompt: " + prompt)
             runttest(prompt, 'anyscale')
             if i >= limit:
