@@ -55,8 +55,9 @@ class PalAI():
         os.chdir(os.path.dirname(__file__))
 
 
-    async def build(self, prompt):
+    async def build(self, prompt, ws):
         self.prompt = prompt
+        self.ws = ws
         print(f"{Fore.BLUE}Received prompt{Fore.RESET}: {prompt}")
 
         #TODO: do requests that may be parallel in parallel

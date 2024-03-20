@@ -6,7 +6,7 @@ from PalAI.Server.pal_ai import PalAI
 from PalAI.Server.visualizer import ObjVisualizer
 import asyncio
 import time
-import output_evaluator
+from Baseline import output_evaluator
 os.chdir(os.path.dirname(__file__))
 import tiktoken
 
@@ -100,7 +100,7 @@ def testsuite():
 
         for prompt in prompts:
             print("--------------------------")
-            print("Evaluating prompt: " + prompt)
+            print("Evaluating Prompt: " + prompt)
             runttest(prompt, 'anyscale')
 
 

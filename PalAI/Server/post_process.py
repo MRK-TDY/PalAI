@@ -31,7 +31,7 @@ class PostProcess:
     def get_available_styles(self):
         styles = ""
         for s in self.styles["styles"].keys():
-            styles += f"{s}: {self.styles["styles"][s]['description']}\n"
+            styles += f"{s}: {self.styles['styles'][s]['description']}\n"
         return styles
 
     def style(self, style):

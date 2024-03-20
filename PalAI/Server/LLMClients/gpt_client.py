@@ -26,6 +26,10 @@ class GPTClient(LLMClient):
             print(f"{colorama.Fore.GREEN}System message:{colorama.Fore.RESET} {system_message}")
             print(f"{colorama.Fore.BLUE}Prompt:{colorama.Fore.RESET} {prompt}")
 
+        self.prompt_total += system_message
+        self.prompt_total += prompt
+
+
         if image_path != "":
             with open(image_path, "rb") as image_file:
                 image = base64.b64encode(image_file.read()).decode('utf-8')
@@ -46,9 +50,6 @@ class GPTClient(LLMClient):
                 ("user", f"{prompt}")
             ])
             llm = self.llm
-
-        self.prompt_total += system_message
-        self.prompt_total += prompt
 
         self.chain = prompt | llm | StrOutputParser()
         response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})
