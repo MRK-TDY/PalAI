@@ -174,5 +174,46 @@
         "rotation": 0
       }
     ]
-  }
+  },
+ "bricklayer_baselines": {
+
+     "A single block on the center":
+            [{"type": "CUBE", "position": "(0,0,0)"}],
+
+
+     "A 4 block line":
+            [{"type": "CUBE", "position": "(0,0,0)"},
+             {"type": "CUBE", "position": "(0,0,1)"},
+             {"type": "CUBE", "position": "(0,0,2)"},
+             {"type": "CUBE", "position": "(0,0,3)"}],
+
+        "A square shape house 2 blocks wide":
+            [{"type": "CUBE", "position": "(0,0,0)"},
+             {"type": "CUBE", "position": "(0,0,1)"},
+             {"type": "CUBE", "position": "(1,0,1)"},
+             {"type": "CUBE", "position": "(1,0,0)"}],
+
+
+        "A 4 block long T shaped flat house":
+            [{"type": "CUBE", "position": "(0,0,0)"},
+            {"type": "CUBE", "position": "(0,0,1)"},
+            {"type": "CUBE", "position": "(0,0,2)"},
+            {"type": "CUBE", "position": "(0,0,3)"},
+            {"type": "CUBE", "position": "(1,0,3)"},
+            {"type": "CUBE", "position": "(-1,0,3)"}],
+
+   "An E shaped flat house":
+            [{"type": "CUBE", "position": "(0,0,0)"},
+            {"type": "CUBE", "position": "(0,0,1)"},
+            {"type": "CUBE", "position": "(0,0,2)"},
+            {"type": "CUBE", "position": "(0,0,3)"},
+            {"type": "CUBE", "position": "(0,0,4)"},
+            {"type": "CUBE", "position": "(0,0,5)"},
+            {"type": "CUBE", "position": "(1,0,0)"},
+            {"type": "CUBE", "position": "(2,0,0)"},
+            {"type": "CUBE", "position": "(1,0,2)"},
+            {"type": "CUBE", "position": "(2,0,2)"},
+            {"type": "CUBE", "position": "(1,0,4)"},
+            {"type": "CUBE", "position": "(2,0,4)"}]
+ }
 }
