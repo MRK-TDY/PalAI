@@ -42,26 +42,21 @@ def evaluate(prompt, output, key="baselines"):
             if block not in current_baseline_blocks:
                 false_positives += 1
 
-        baseline_length = len(output)
-
         accuracy = true_positives / (true_positives + false_negatives)
         accuracy = round(accuracy, 3)
         precision = true_positives / (true_positives + false_positives)
         precision = round(precision, 3)
-        recall = true_positives / (true_positives + false_negatives)
-        recall = round(recall, 3)
-        overall_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+        overall_score = 2 * (precision * accuracy) / (precision + accuracy) if (precision + accuracy) > 0 else 0
         overall_score = round(overall_score, 3)
+
+        ## TODO: Add complexity bonus
 
         print("Accuracy: " + str(accuracy))
         print("Precision: " + str(precision))
-        print("Recall: " + str(recall))
         print("Overall Score: " + str(round(overall_score,4)))
 
 
-
-
-        return accuracy, precision, recall, overall_score
+        return accuracy, precision, overall_score
 
     else:
         print("Output Evaluator: Prompt not in baseline list")
@@ -213,7 +208,7 @@ async def testbricklayer(model_type, model_name=None):
             #print("LLM Response: " + str(response))
             new_layer = pal_ai.extract_building_information(response, 0)
             print("Prompt: " + prompt + "\nGenerated Layer: " + str(new_layer))
-            accuracy, precision, recall, overall_score = evaluate(prompt, new_layer, "bricklayer_baselines")
+            accuracy, precision, overall_score = evaluate(prompt, new_layer, "bricklayer_baselines")
             total_prompt = pal_ai.llm_client.getTotalPromptsUsed()
             tokens_used = num_tokens_from_string(total_prompt, 'cl100k_base')
             print("Tokens used: " + str(tokens_used))
@@ -229,11 +224,11 @@ async def testbricklayer(model_type, model_name=None):
             print(f"The test took {round(runtime, 4)} seconds to run.")
 
             metrics_list = [{
+            'Endpoint': model_type,
             'Model Name': pal_ai.llm_client.model_name,
             'Prompt': prompt,
             'Accuracy Score': accuracy,
             'Precision Score': precision,
-            'Recall Score': recall,
             'Overall Score': overall_score,
             'Price Rate': price_rate,
             'Estimated Price Total': price_total,
