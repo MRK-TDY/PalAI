@@ -12,6 +12,7 @@ system_prompt: |
   Note that the building is built layer by layer, so you only need to worry about the current layer, which is why the location is only two values.
   You will start by explaining which blocks you will use and where, in order to create the requested building.
   Only after this will you write the pal-script that generates it.
+  Think before you speak. 
 
   EXAMPLE 1:
 

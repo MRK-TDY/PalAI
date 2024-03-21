@@ -23,7 +23,16 @@ class GPTClient(LLMClient):
         if('gpt4' in self.model_name):
             self.price_rate = 0.00003
 
+    def SetModel(self, model_name):
+        self.model_name = model_name
 
+        if ('gpt-3' in model_name):
+            self.price_rate = 0.0000005
+        elif ('gpt-4' in self.model_name):
+            self.price_rate = 0.00003
+
+        self.llm = ChatOpenAI(model=self.model_name, temperature=self.temperature, api_key=self.api_key,
+                              max_tokens=self.max_tokens)
 
     async def get_llm_response(self, system_message, prompt, image_path = ""):
         if self.verbose:

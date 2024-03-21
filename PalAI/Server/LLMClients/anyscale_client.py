@@ -27,8 +27,8 @@ class AnyscaleClient(LLMClient):
           messages.append({"role": "system", "content": instructions})
 
           for i, user_prompt in enumerate(user):
-              messages.append({"role": "user", "content": user_prompt})
-              messages.append({"role": "assistant", "content": assistant[i]})
+              messages.append({"role": "user", "content": user_prompt + "\n"})
+              messages.append({"role": "assistant", "content": assistant[i] + "\n"})
 
           prompt = prompt.replace("ARCHITECT:\n", "")
           messages.append({"role": "user", "content": prompt})
@@ -46,7 +46,44 @@ class AnyscaleClient(LLMClient):
           if(debug):
               print(chat_completion.choices[0].message.content)
 
-
+          print(chat_completion.choices[0].message.content)
           return chat_completion.choices[0].message.content
 
+
+    def preparePrompt(self, system_message):
+        prompt_array = system_message.split('\n')
+        user = []
+        assistant = [""]
+        instructions = ""
+        assistant_index = -1
+        bUser = False
+        bAssistant = False
+        for p in prompt_array:
+            if(len(p) < 2):
+                continue
+            if("EXAMPLE" in p):
+                continue
+            if ("USER" in p):
+                bUser = True
+                bAssistant = False
+            if ("ARCHITECT" in p):
+                bAssistant = True
+                bUser = False
+                assistant_index += 1
+
+            if (bUser):
+                backup = p.replace("USER: ", "")
+                user.append(backup + "\n")
+
+            elif (bAssistant):
+                if(len(assistant) <= assistant_index):
+                    assistant.append(p)
+                else:
+                    assistant[assistant_index] += p + "\n"
+
+            else:
+                instructions += p
+
+
+        return user, assistant, instructions
 

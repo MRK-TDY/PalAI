@@ -22,6 +22,7 @@ with open(os.path.join(os.path.dirname(__file__), "Resources/baselines.json"), '
 with open(os.path.join(os.path.dirname(__file__), 'Resources/context_prompts.json'), 'r') as bricklayer_file:
     context_json = json.load(bricklayer_file)
 
+
 def evaluate(prompt, output, key="baselines"):
     if prompt in baselines_json[key].keys():
         current_baseline_blocks = baselines_json[key][prompt]
@@ -42,9 +43,11 @@ def evaluate(prompt, output, key="baselines"):
             if block not in current_baseline_blocks:
                 false_positives += 1
 
-        accuracy = true_positives / (true_positives + false_negatives)
+        accuracy = true_positives / (
+                    true_positives + false_negatives)  # Accuracy = correctly identified blocks from the baseline.
         accuracy = round(accuracy, 3)
-        precision = true_positives / (true_positives + false_positives)
+        precision = true_positives / (
+                    true_positives + false_positives)  # Precision = correctly identified blocks to all blocks identified (including extra blocks).
         precision = round(precision, 3)
         overall_score = 2 * (precision * accuracy) / (precision + accuracy) if (precision + accuracy) > 0 else 0
         overall_score = round(overall_score, 3)
@@ -53,15 +56,13 @@ def evaluate(prompt, output, key="baselines"):
 
         print("Accuracy: " + str(accuracy))
         print("Precision: " + str(precision))
-        print("Overall Score: " + str(round(overall_score,4)))
-
+        print("Overall Score: " + str(round(overall_score, 4)))
 
         return accuracy, precision, overall_score
 
     else:
         print("Output Evaluator: Prompt not in baseline list")
         return 0, 0, 0, 0
-
 
 
 def test_runner(endpoint, prompt):
@@ -72,28 +73,26 @@ def test_runner(endpoint, prompt):
 
         architect_plan = asyncio.run(pal_ai.build(prompt))
 
-#        layers = asyncio.run(layerbuilder(architect_plan, pal_ai))
+        #        layers = asyncio.run(layerbuilder(architect_plan, pal_ai))
 
         return pal_ai, layers
 
 
 async def get_architect_plan(prompt, pal_ai, prompts_file, debug=False):
-
     architect_plan = await pal_ai.llm_client.get_llm_response(prompts_file["plan_system_message"],
                                                               prompt)
-    #api_result = {"architect": [l for l in architect_plan.split("\n") if l != ""]}
+    # api_result = {"architect": [l for l in architect_plan.split("\n") if l != ""]}
 
-    if(debug):
+    if (debug):
         print("Architect Plan: \n " + str(architect_plan))
 
     return architect_plan
 
 
 async def layerbuilder(architect_plan, pal_ai):
-
     building = []
     history = []
-    #system_message_template, prompt_template = pal_ai.format_prompt()
+    # system_message_template, prompt_template = pal_ai.format_prompt()
     plan_array = architect_plan.split("\n")
 
     plan_list = [i for i in plan_array if "layer" in i.lower()]
@@ -124,11 +123,11 @@ async def layerbuilder(architect_plan, pal_ai):
 
     return building
 
+
 def num_tokens_from_string(string: str, encoding_name: str) -> int:
     encoding = tiktoken.get_encoding(encoding_name)
     num_tokens = len(encoding.encode(string))
     return num_tokens
-
 
 
 def testsuite():
@@ -143,7 +142,6 @@ def testsuite():
             runttest(prompt, 'anyscale')
             if i >= limit:
                 return
-
 
 
 def runttest(prompt, model_type):
@@ -191,7 +189,7 @@ def save_metrics_to_excel(metrics_list, file_name="Metrics/llm_comparison.xlsx")
 
 
 async def testbricklayer(model_type, model_name=None):
-
+    # TODO: The tests should be run 10 times to get more accurate metrics
     with open(os.path.join(os.path.dirname(__file__), '..\..\prompts.yaml'), 'r') as file:
         prompts_file = yaml.safe_load(file)
         for prompt in baselines_json["bricklayer_baselines"].keys():
@@ -204,8 +202,8 @@ async def testbricklayer(model_type, model_name=None):
             start_time = time.time()
             print("---------------------------------- \nModel used: " + pal_ai.llm_client.model_name)
 
-            response = await pal_ai.llm_client.get_llm_single_response("bricklayer",context_json, prompt)
-            #print("LLM Response: " + str(response))
+            response = await pal_ai.llm_client.get_llm_single_response("bricklayer", context_json, prompt)
+            # print("LLM Response: " + str(response))
             new_layer = pal_ai.extract_building_information(response, 0)
             print("Prompt: " + prompt + "\nGenerated Layer: " + str(new_layer))
             accuracy, precision, overall_score = evaluate(prompt, new_layer, "bricklayer_baselines")
@@ -224,28 +222,25 @@ async def testbricklayer(model_type, model_name=None):
             print(f"The test took {round(runtime, 4)} seconds to run.")
 
             metrics_list = [{
-            'Endpoint': model_type,
-            'Model Name': pal_ai.llm_client.model_name,
-            'Prompt': prompt,
-            'Accuracy Score': accuracy,
-            'Precision Score': precision,
-            'Overall Score': overall_score,
-            'Price Rate': price_rate,
-            'Estimated Price Total': price_total,
-            'Runtime': round(runtime, 4)}]
+                'Endpoint': model_type,
+                'Model Name': pal_ai.llm_client.model_name,
+                'Prompt': prompt,
+                'Accuracy Score': accuracy,
+                'Precision Score': precision,
+                'Overall Score': overall_score,
+                'Price Rate': price_rate,
+                'Estimated Price Total': price_total,
+                'Runtime': round(runtime, 4)}]
 
             save_metrics_to_excel((metrics_list))
 
 
-
-
 if __name__ == '__main__':
-   # asyncio.run(testbricklayer("anyscale"))
-   # asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-7b-chat-hf'))
-   # asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-13b-chat-hf'))
-   # asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
+    # asyncio.run(testbricklayer("anyscale"))
+    # asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-7b-chat-hf'))
+    # asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-13b-chat-hf'))
+    # asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
     asyncio.run(testbricklayer("gpt"))
-
 
 ## Anyscale Model Names
 # 'meta-llama/Llama-2-7b-chat-hf'

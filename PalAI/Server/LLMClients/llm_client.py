@@ -67,10 +67,6 @@ class LLMClient():
 
         if ('13b' in model_name):
             self.price_rate = 0.00000025
-        elif('gpt-3' in model_name):
-            self.price_rate = 0.0000005
-        elif ('gpt-4' in self.model_name):
-            self.price_rate = 0.00003
         else:
             self.price_rate = 0.00000015
 
