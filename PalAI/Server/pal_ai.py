@@ -85,10 +85,10 @@ class PalAI():
 
 
     async def get_architect_plan(self):
-        self.architect_plan = await self.llm_client.get_llm_response(self.prompts_file["plan_system_message"],
+        self.prompt = await self.llm_client.get_llm_response(self.prompts_file["plan_system_message"],
                                                                 self.prompts_file["plan_prompt"].format(self.prompt))
-        self.api_result["architect"] = [l for l in self.architect_plan.split("\n") if l != ""]
-        self.plan_list = [i for i in self.architect_plan.split("\n") if i.lower().startswith(f"layer")]
+        self.api_result["architect"] = [l for l in self.prompt.split("\n") if l != ""]
+        self.plan_list = [i for i in self.prompt.split("\n") if i.lower().startswith(f"layer")]
 
     async def build_structure(self):
             for i, layer_prompt in enumerate(self.plan_list):
@@ -142,7 +142,7 @@ class PalAI():
         materials_response = await self.llm_client.get_llm_response(
                 self.prompts_file["material_system_message"].format(materials= self.material_types,
                                                                     styles = self.post_process.get_available_styles()),
-                self.architect_plan)
+                self.prompt)
         material = {}
         for l in materials_response.split("\n"):
             l = l.upper().split(": ")
