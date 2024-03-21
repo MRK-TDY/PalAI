@@ -24,3 +24,93 @@ class LLMClient():
 
     def getTotalPromptsUsed(self):
         return self.prompt_total
+
+# When it is necessary to treat the prompt more carefully. When systems need user -> assistant type of queries
+    def preparePrompt(self, system_message):
+        prompt_array = system_message.split('\n')
+        user = []
+        assistant = [""]
+        instructions = ""
+        assistant_index = 0
+        bUser = False
+        bAssistant = False
+        for p in prompt_array:
+            if(len(p) < 2):
+                continue
+            if("EXAMPLE" in p):
+                continue
+            if ("USER" in p):
+                bUser = True
+                bAssistant = False
+            if ("ARCHITECT" in p):
+                bAssistant = True
+                bUser = False
+                assistant_index += 1
+
+            if (bUser):
+                user.append(p)
+
+            elif (bAssistant):
+                if(len(assistant) <= assistant_index):
+                    assistant.append(p)
+                else:
+                    assistant[assistant_index] += p
+
+            else:
+                instructions += p
+
+
+        return user, assistant, instructions
+
+    def SetModel(self, model_name):
+        self.model_name = model_name
+
+        if ('13b' in model_name):
+            self.price_rate = 0.00000025
+        elif('gpt-3' in model_name):
+            self.price_rate = 0.0000005
+        elif ('gpt-4' in self.model_name):
+            self.price_rate = 0.00003
+        else:
+            self.price_rate = 0.00000015
+
+    async def get_llm_single_response(self, context_type,context_file, prompt, debug=False):
+
+        system_message = context_file[context_type + "_system_message"]
+        examples =context_file[context_type + "_examples"]
+        user = []
+        assistant = []
+        for key in examples.keys():
+            user.append(examples[key]["user"])
+            assistant.append(examples[key]["assistant"])
+
+        messages = []
+        messages.append({"role": "system", "content": system_message})
+        self.prompt_total += system_message
+
+        for i, user_prompt in enumerate(user):
+            messages.append({"role": "user", "content": user_prompt})
+            messages.append({"role": "assistant", "content": assistant[i]})
+            self.prompt_total += user_prompt
+            self.prompt_total += assistant[i]
+
+        prompt = prompt.replace("ARCHITECT:\n", "")
+        messages.append({"role": "user", "content": prompt})
+
+        self.prompt_total += prompt
+
+        # Note: not all arguments are currently supported and will be ignored by the backend.
+        chat_completion = self.client.chat.completions.create(
+            model=self.model_name,
+            messages=messages,
+            temperature=0.1
+        )
+
+        if (debug):
+            print(chat_completion.choices[0].message.content)
+
+        self.prompt_total += chat_completion.choices[0].message.content
+
+        return chat_completion.choices[0].message.content
+
+

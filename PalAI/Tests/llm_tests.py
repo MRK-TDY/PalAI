@@ -9,6 +9,7 @@ from PalAI.Server.visualizer import ObjVisualizer
 import asyncio
 import tiktoken
 import time
+import pandas as pd
 
 os.chdir(os.path.dirname(__file__))
 
@@ -18,21 +19,53 @@ limit = 1
 with open(os.path.join(os.path.dirname(__file__), "Resources/baselines.json"), 'r') as fptr:
     baselines_json = json.load(fptr)
 
-def evaluate(prompt, output):
-    if prompt in baselines_json["baselines"].keys():
-        current_baseline_blocks = baselines_json[prompt]
-        max_score = len(current_baseline_blocks)
-        current_score = 0
+with open(os.path.join(os.path.dirname(__file__), 'Resources/context_prompts.json'), 'r') as bricklayer_file:
+    context_json = json.load(bricklayer_file)
 
+def evaluate(prompt, output, key="baselines"):
+    if prompt in baselines_json[key].keys():
+        current_baseline_blocks = baselines_json[key][prompt]
+        max_score = len(current_baseline_blocks)
+        print("Expected Layer: " + str(current_baseline_blocks))
+        true_positives = 0
         for block in current_baseline_blocks:
             if block in output:
-                current_score += 1
+                true_positives += 1
 
-        print("Quality of Output Score: " + str(current_score) + "/" + str(max_score))
-        return current_score/max_score
+        false_negatives = 0
+        for block in current_baseline_blocks:
+            if block not in output:
+                false_negatives += 1
+
+        false_positives = 0
+        for block in output:
+            if block not in current_baseline_blocks:
+                false_positives += 1
+
+        baseline_length = len(output)
+
+        accuracy = true_positives / (true_positives + false_negatives)
+        accuracy = round(accuracy, 3)
+        precision = true_positives / (true_positives + false_positives)
+        precision = round(precision, 3)
+        recall = true_positives / (true_positives + false_negatives)
+        recall = round(recall, 3)
+        overall_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+        overall_score = round(overall_score, 3)
+
+        print("Accuracy: " + str(accuracy))
+        print("Precision: " + str(precision))
+        print("Recall: " + str(recall))
+        print("Overall Score: " + str(round(overall_score,4)))
+
+
+
+
+        return accuracy, precision, recall, overall_score
 
     else:
         print("Output Evaluator: Prompt not in baseline list")
+        return 0, 0, 0, 0
 
 
 
@@ -42,9 +75,9 @@ def test_runner(endpoint, prompt):
 
         pal_ai = PalAI(prompts_file, endpoint)
 
-        architect_plan = asyncio.run(get_architect_plan(prompt, pal_ai, prompts_file))
+        architect_plan = asyncio.run(pal_ai.build(prompt))
 
-        layers = asyncio.run(layerbuilder(architect_plan, pal_ai))
+#        layers = asyncio.run(layerbuilder(architect_plan, pal_ai))
 
         return pal_ai, layers
 
@@ -73,11 +106,6 @@ async def layerbuilder(architect_plan, pal_ai):
     for i, layer_prompt in enumerate(plan_list):
         current_layer_prompt = pal_ai.prompt_template.format(prompt=layer_prompt, layer=i)
 
-        #if len(history) > 0:
-        #    complete_history = ('\n\n').join(history)
-        #    formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
-        #else:
-        #    formatted_prompt = current_layer_prompt
         formatted_prompt = current_layer_prompt
         if i == 0:
             example = pal_ai.prompts_file["basic_example"]
@@ -152,5 +180,80 @@ def runttest(prompt, model_type):
     print(f"The test took {round(runtime, 4)} seconds to run.")
 
 
+def save_metrics_to_excel(metrics_list, file_name="Metrics/llm_comparison.xlsx"):
+    # Convert the list of dictionaries to a DataFrame
+    new_data_df = pd.DataFrame(metrics_list)
+
+    # If the Excel file exists, read it and append the new data
+    if os.path.exists(file_name):
+        existing_data_df = pd.read_excel(file_name)
+        combined_df = pd.concat([existing_data_df, new_data_df], ignore_index=True)
+    else:
+        combined_df = new_data_df
+
+    # Save the combined DataFrame to Excel, without the index
+    combined_df.to_excel(file_name, index=False)
+
+
+async def testbricklayer(model_type, model_name=None):
+
+    with open(os.path.join(os.path.dirname(__file__), '..\..\prompts.yaml'), 'r') as file:
+        prompts_file = yaml.safe_load(file)
+        for prompt in baselines_json["bricklayer_baselines"].keys():
+
+            pal_ai = PalAI(prompts_file, model_type)
+
+            if model_name != None:
+                pal_ai.llm_client.SetModel(model_name)
+
+            start_time = time.time()
+            print("---------------------------------- \nModel used: " + pal_ai.llm_client.model_name)
+
+            response = await pal_ai.llm_client.get_llm_single_response("bricklayer",context_json, prompt)
+            #print("LLM Response: " + str(response))
+            new_layer = pal_ai.extract_building_information(response, 0)
+            print("Prompt: " + prompt + "\nGenerated Layer: " + str(new_layer))
+            accuracy, precision, recall, overall_score = evaluate(prompt, new_layer, "bricklayer_baselines")
+            total_prompt = pal_ai.llm_client.getTotalPromptsUsed()
+            tokens_used = num_tokens_from_string(total_prompt, 'cl100k_base')
+            print("Tokens used: " + str(tokens_used))
+            price_rate = pal_ai.llm_client.price_rate
+            price_total = round(price_rate * tokens_used, 4)
+            print("Estimated cost: " + str(round(price_rate * tokens_used, 5)) + "$")
+
+            # Record the end time
+            end_time = time.time()
+
+            # Calculate and print the total runtime
+            runtime = end_time - start_time
+            print(f"The test took {round(runtime, 4)} seconds to run.")
+
+            metrics_list = [{
+            'Model Name': pal_ai.llm_client.model_name,
+            'Prompt': prompt,
+            'Accuracy Score': accuracy,
+            'Precision Score': precision,
+            'Recall Score': recall,
+            'Overall Score': overall_score,
+            'Price Rate': price_rate,
+            'Estimated Price Total': price_total,
+            'Runtime': round(runtime, 4)}]
+
+            save_metrics_to_excel((metrics_list))
+
+
+
+
 if __name__ == '__main__':
-    testsuite()
+   # asyncio.run(testbricklayer("anyscale"))
+   # asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-7b-chat-hf'))
+   # asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-13b-chat-hf'))
+   # asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
+    asyncio.run(testbricklayer("gpt"))
+
+
+## Anyscale Model Names
+# 'meta-llama/Llama-2-7b-chat-hf'
+# 'meta-llama/Llama-2-13b-chat-hf'
+# 'google/gemma-7b-it'
+# default: 'mistralai/Mistral-7B-Instruct-v0.1'

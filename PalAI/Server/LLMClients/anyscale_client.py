@@ -10,48 +10,27 @@ class AnyscaleClient(LLMClient):
         LLMClient.__init__(self, prompts_file)
         self.api_key = self.config.get('anyscale', 'api_key')
         self.model_name = 'mistralai/Mistral-7B-Instruct-v0.1'
-        self.model_name = 'meta-llama/Llama-2-7b-chat-hf'
-        self.model_name = 'meta-llama/Llama-2-13b-chat-hf'
-        self.price_rate = 0.00000025
-        self.model_name = 'google/gemma-7b-it'
-        self.price_rate = 0.00000015
 
         self.client = openai.OpenAI(
             base_url="https://api.endpoints.anyscale.com/v1",
             api_key=self.api_key
         )
 
+
+
     async def get_llm_response(self, system_message, prompt, image_path="", debug=False):
 
-
-
-          prompt_array = prompt.split('\n')
-          user = []
-          assistant = []
-          bUser = False
-          bAssistant = False
-          for p in prompt_array:
-            if("user" in p.lower()):
-                bUser = True
-                bAssistant = False
-            if ("assistant" in p.lower()):
-                bAssistant = True
-                bUser = False
-
-            if(bUser):
-                user.append(p)
-
-            elif (bAssistant):
-                assistant.append(p)
-
+          user, assistant, instructions = self.preparePrompt(system_message)
 
           messages = []
-          messages.append({"role": "system", "content": system_message})
+
+          messages.append({"role": "system", "content": instructions})
 
           for i, user_prompt in enumerate(user):
               messages.append({"role": "user", "content": user_prompt})
               messages.append({"role": "assistant", "content": assistant[i]})
 
+          prompt = prompt.replace("ARCHITECT:\n", "")
           messages.append({"role": "user", "content": prompt})
 
           self.prompt_total += system_message

@@ -18,6 +18,10 @@ class GPTClient(LLMClient):
 
         if self.api_key is not None:
             self.llm = ChatOpenAI(model=self.model_name, temperature=self.temperature, api_key=self.api_key, max_tokens=self.max_tokens)
+        self.price_rate = 0.0000005
+
+        if('gpt4' in self.model_name):
+            self.price_rate = 0.00003
 
 
 
@@ -45,7 +49,7 @@ class GPTClient(LLMClient):
             llm = self.mm_llm
 
         else:
-            prompt = ChatPromptTemplate.from_messages( [
+            prompt = ChatPromptTemplate.from_messages([
                 ("system", "{system_message}"),
                 ("user", f"{prompt}")
             ])
@@ -53,6 +57,39 @@ class GPTClient(LLMClient):
 
         self.chain = prompt | llm | StrOutputParser()
         response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})
+
+        if self.verbose:
+            print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
+
+        return response
+
+    async def get_llm_single_response(self, context_type,context_file, original_prompt, debug=False):
+
+        system_message = context_file[context_type + "_system_message"]
+        examples =context_file[context_type + "_examples"]
+        user = []
+        assistant = []
+        for key in examples.keys():
+            user.append(examples[key]["user"])
+            assistant.append(examples[key]["assistant"])
+
+        messages = []
+        messages.append(("system", system_message))
+        self.prompt_total += system_message
+
+        for i, user_prompt in enumerate(user):
+            messages.append(("user", user_prompt))
+            messages.append(("assistant", assistant[i]))
+            self.prompt_total += user_prompt
+            self.prompt_total += assistant[i]
+
+        self.prompt_total += original_prompt
+
+        prompt = ChatPromptTemplate.from_messages(messages)
+        llm = self.llm
+
+        self.chain = prompt | llm | StrOutputParser()
+        response = await self.chain.ainvoke({"system_message": system_message, "example": messages, "prompt": original_prompt})
 
         if self.verbose:
             print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
