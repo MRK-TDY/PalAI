@@ -5,6 +5,7 @@ import yaml
 from configparser import RawConfigParser
 from PalAI.Server.LLMClients import together_client
 from PalAI.Server.pal_ai import PalAI
+from PalAI.Server.post_process import PostProcess
 from PalAI.Server.visualizer import ObjVisualizer
 import asyncio
 import tiktoken
@@ -23,6 +24,36 @@ with open(os.path.join(os.path.dirname(__file__), "Resources/baselines.json"), '
 with open(os.path.join(os.path.dirname(__file__), 'Resources/context_prompts.json'), 'r') as bricklayer_file:
     context_json = json.load(bricklayer_file)
 
+
+def kernel_evaluate(prompt, output):
+    key = "kernels"
+    if prompt in baselines_json[key].keys():
+        if(len(output) <= 0):
+            print("Error in generation")
+            return 0, 0, 0
+
+        baseline_kernel = baselines_json[key][prompt]
+        total_blocks = [block for row in baseline_kernel for block in row].count(1)
+        pp = PostProcess()
+        pp.import_building(output)
+        matches = pp.apply_kernel(baseline_kernel)
+
+        print("Expected Layer: " + str(baseline_kernel))
+
+        accuracy = len(output) / total_blocks
+        precision = len(matches) # not an accurate measure of precision but we should measure then number of matches
+
+        overall_score = (1 if matches > 0 else 0) / accuracy
+
+        print("Accuracy: " + str(accuracy))
+        print("Precision: " + str(precision))
+        print("Overall Score: " + str(round(overall_score, 4)))
+
+        return accuracy, precision, overall_score
+
+    else:
+        print("Output Evaluator: Prompt not in baseline list")
+        return 0, 0, 0
 
 def evaluate(prompt, output, key="baselines"):
     if prompt in baselines_json[key].keys():

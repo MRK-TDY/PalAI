@@ -175,6 +175,19 @@
       }
     ]
   },
+  "kernels": {
+    "I want a tiny house": [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
+
+    "I want a tiny modern house": [[]],,
+
+    "I want a squared 2-floor house": [[]],,
+
+    "I want a squared 3-floor house": [[]],,
+
+    "I want a great house": [[]],,
+
+    "I want a 1-floor modern house": [[]]
+  },
  "bricklayer_baselines": {
 
      "A single block on the center":
