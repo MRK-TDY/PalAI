@@ -35,6 +35,7 @@ class PostProcess:
         return styles
 
     def style(self, style):
+        self.remove_floating_blocks()
         for rule in self.styles["styles"][style]["rules"]:
             matching_positions = self.apply_kernel(rule["filter"])
             for effect in rule["effects"]:
@@ -46,6 +47,25 @@ class PostProcess:
                         block[effect["key"]] = int(block[effect["key"]])
         return self.grid_to_json()
 
+    def remove_floating_blocks(self):
+        # Remove blocks that are not supported by any other block
+        floating_block_kernel = [
+                [[0, 0, 0],
+                 [0, -1, 0],
+                 [0, 0, 0]],
+
+                [[0, -1, 0],
+                 [-1, 1, -1],
+                 [0, -1, 0]],
+
+                [[0, 0, 0],
+                 [0, -1, 0],
+                 [0, 0, 0]]]
+        matching_positions = self.apply_kernel(floating_block_kernel)
+        for c in matching_positions:
+            self.grid[c[0][0]][c[0][1]][c[0][2]] = None
+            self.pixel_grid[c[0][0], c[0][1], c[0][2]] = -1
+
     def grid_to_json(self):
         json = []
         for yz in self.grid:
@@ -53,48 +73,68 @@ class PostProcess:
                 for b in z:
                     if b is not None:
                         json.append(b)
-
         return json
 
     def apply_kernel(self, filter_matrix):
         def rotate_filter(filter_matrix, rotation):
             # Rotate the filter matrix according to the rotation value (0, 90, 180, 270 degrees)
-            if rotation == 0:  # 0 degrees, no rotation
-                return filter_matrix
-            elif rotation == 1:  # 90 degrees
-                return [list(row) for row in zip(*filter_matrix[::-1])]
-            elif rotation == 2:  # 180 degrees
-                return [row[::-1] for row in filter_matrix[::-1]]
-            elif rotation == 3:  # 270 degrees
-                return [list(row) for row in zip(*filter_matrix)][::-1]
+            new_filter = []
+            for f in filter_matrix:
+                if rotation == 0:  # 0 degrees, no rotation
+                    new_filter.append(f)
+                elif rotation == 1:  # 90 degrees
+                    new_filter.append([list(row) for row in zip(*f[::-1])])
+                elif rotation == 2:  # 180 degrees
+                    new_filter.append([row[::-1] for row in f[::-1]])
+                elif rotation == 3:  # 270 degrees
+                    new_filter.append([list(row) for row in zip(*f)][::-1])
+            return new_filter
+
+        if not isinstance(filter_matrix[0][0], list):
+            filter_matrix = [filter_matrix]
+
+        filter_depth = len(filter_matrix)
+        filter_height = len(filter_matrix[0])
+        filter_width = len(filter_matrix[0][0])
+
+        # Assume the filter dimensions are odd sizes
+        depth_offset = filter_depth // 2
+        height_offset = filter_height // 2
+        width_offset = filter_width // 2
 
         filtered_values = []
-        filter_size = len(filter_matrix)
-
-        # Assume the filter is square and of odd size
-        offset = filter_size // 2
 
         for y in range(self.size_y):
             for x in range(self.size_x):
                 for z in range(self.size_z):
-
                     for orientation in range(4):
+                        # rotated_filter = filter_matrix
                         rotated_filter = rotate_filter(filter_matrix, orientation)
                         applies = True
-                        for fy in range(filter_size):
-                            for fx in range(filter_size):
-                                nx, nz = x + fx - offset, z + fy - offset
-                                if 0 <= nx < self.size_x and 0 <= nz < self.size_z:
-                                    value = self.pixel_grid[y][nx][nz]
-                                else:
-                                    value = -1
+                        for fd in range(filter_depth):
+                            for fh in range(filter_height):
+                                for fw in range(filter_width):
+                                    ny, nx, nz = y + fd - depth_offset, x + fw - width_offset, z + fh - height_offset
+                                    # Check bounds
+                                    if 0 <= ny < self.size_y and 0 <= nx < self.size_x and 0 <= nz < self.size_z:
+                                        value = self.pixel_grid[ny][nx][nz]
+                                    else:
+                                        value = -1  # Outside bounds, treat as not matching
 
-                                if rotated_filter[fy][fx] != 0 and rotated_filter[fy][fx] != value:
-                                    applies = False
+                                    if rotated_filter[fd][fh][fw] != 0 and rotated_filter[fd][fh][fw] != value:
+                                        applies = False
+                                        break  # Break out of the innermost loop only
+                                if not applies:
+                                    break  # Break out of the second loop
+                            if not applies:
+                                break  # Break out of the third loop
+
                         if applies:
-                            filtered_values.append(((y, x, z), orientation))
+                            filtered_values.append(((y, x, z), orientation))  # Orientation handling removed for simplicity
 
         return filtered_values
+
+
 
     def get_block_dict_position(self, block):
         position = block["position"].replace("(", "").replace(")", "").split(",")
