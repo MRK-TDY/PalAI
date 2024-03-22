@@ -10,6 +10,7 @@ import asyncio
 import tiktoken
 import time
 import pandas as pd
+from itertools import islice
 
 os.chdir(os.path.dirname(__file__))
 
@@ -26,8 +27,12 @@ with open(os.path.join(os.path.dirname(__file__), 'Resources/context_prompts.jso
 def evaluate(prompt, output, key="baselines"):
     if prompt in baselines_json[key].keys():
         current_baseline_blocks = baselines_json[key][prompt]
-        max_score = len(current_baseline_blocks)
         print("Expected Layer: " + str(current_baseline_blocks))
+
+        if(len(output) <= 0):
+            print("Error in generation")
+            return 0, 0, 0
+
         true_positives = 0
         for block in current_baseline_blocks:
             if block in output:
@@ -62,7 +67,7 @@ def evaluate(prompt, output, key="baselines"):
 
     else:
         print("Output Evaluator: Prompt not in baseline list")
-        return 0, 0, 0, 0
+        return 0, 0, 0
 
 
 def test_runner(endpoint, prompt):
@@ -173,7 +178,7 @@ def runttest(prompt, model_type):
     print(f"The test took {round(runtime, 4)} seconds to run.")
 
 
-def save_metrics_to_excel(metrics_list, file_name="Metrics/llm_comparison.xlsx"):
+def save_metrics_to_excel(metrics_list, file_name="Metrics/5run-llm_comparison.xlsx"):
     # Convert the list of dictionaries to a DataFrame
     new_data_df = pd.DataFrame(metrics_list)
 
@@ -192,55 +197,76 @@ async def testbricklayer(model_type, model_name=None):
     # TODO: The tests should be run 10 times to get more accurate metrics
     with open(os.path.join(os.path.dirname(__file__), '..\..\prompts.yaml'), 'r') as file:
         prompts_file = yaml.safe_load(file)
-        for prompt in baselines_json["bricklayer_baselines"].keys():
+
+        ##  We might not want to run all of the baseline tests
+        max_iterations = 5
+        for prompt in islice(baselines_json["bricklayer_baselines"].keys(), max_iterations):
 
             pal_ai = PalAI(prompts_file, model_type)
-
             if model_name != None:
                 pal_ai.llm_client.SetModel(model_name)
 
-            start_time = time.time()
-            print("---------------------------------- \nModel used: " + pal_ai.llm_client.model_name)
+            total_accuracy, total_precision, total_score, total_runtime, price_total = 0,0,0,0,0
+            number_of_runs = 5
+            # Run each test N times = number_of_runs
+            for x in range(0, number_of_runs):
+                start_time = time.time()
+                print("---------------------------------- \nModel used: " + pal_ai.llm_client.model_name)
 
-            response = await pal_ai.llm_client.get_llm_single_response("bricklayer", context_json, prompt)
-            # print("LLM Response: " + str(response))
-            new_layer = pal_ai.extract_building_information(response, 0)
-            print("Prompt: " + prompt + "\nGenerated Layer: " + str(new_layer))
-            accuracy, precision, overall_score = evaluate(prompt, new_layer, "bricklayer_baselines")
-            total_prompt = pal_ai.llm_client.getTotalPromptsUsed()
-            tokens_used = num_tokens_from_string(total_prompt, 'cl100k_base')
-            print("Tokens used: " + str(tokens_used))
-            price_rate = pal_ai.llm_client.price_rate
-            price_total = round(price_rate * tokens_used, 4)
-            print("Estimated cost: " + str(round(price_rate * tokens_used, 5)) + "$")
+                response = await pal_ai.llm_client.get_llm_single_response("bricklayer", context_json, prompt)
+                # print("LLM Response: " + str(response))
+                new_layer = pal_ai.extract_building_information(response, 0)
+                print("Prompt: " + prompt + "\nGenerated Layer: " + str(new_layer))
+                accuracy, precision, overall_score = evaluate(prompt, new_layer, "bricklayer_baselines")
+                total_prompt = pal_ai.llm_client.getTotalPromptsUsed()
+                tokens_used = num_tokens_from_string(total_prompt, 'cl100k_base')
+                print("Tokens used: " + str(tokens_used))
+                price_rate = pal_ai.llm_client.price_rate
+                price_total += round(price_rate * tokens_used, 4)
+                print("Estimated cost: " + str(round(price_rate * tokens_used, 5)) + "$")
 
-            # Record the end time
-            end_time = time.time()
+                # Record the end time
+                end_time = time.time()
 
-            # Calculate and print the total runtime
-            runtime = end_time - start_time
-            print(f"The test took {round(runtime, 4)} seconds to run.")
+                # Calculate and print the total runtime
+                runtime = end_time - start_time
+
+
+                total_accuracy += accuracy
+                total_precision += precision
+                total_score += overall_score
+                total_runtime += runtime
+
+                time.sleep(0.3)
+
+            total_accuracy = total_accuracy / number_of_runs
+            total_precision = total_precision / number_of_runs
+            total_score = total_score / number_of_runs
+            total_runtime = total_runtime / number_of_runs
+
+
+                #print(f"The test took {round(runtime, 4)} seconds to run.")
 
             metrics_list = [{
                 'Endpoint': model_type,
                 'Model Name': pal_ai.llm_client.model_name,
                 'Prompt': prompt,
-                'Accuracy Score': accuracy,
-                'Precision Score': precision,
-                'Overall Score': overall_score,
+                'Accuracy Score': total_accuracy,
+                'Precision Score': total_precision,
+                'Overall Score': total_score,
                 'Price Rate': price_rate,
                 'Estimated Price Total': price_total,
-                'Runtime': round(runtime, 4)}]
+                'Runtime': round(total_runtime, 4)}]
 
             save_metrics_to_excel((metrics_list))
 
 
 if __name__ == '__main__':
-    # asyncio.run(testbricklayer("anyscale"))
-    # asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-7b-chat-hf'))
-    # asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-13b-chat-hf'))
-    # asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
-    asyncio.run(testbricklayer("gpt"))
+     asyncio.run(testbricklayer("anyscale"))
+     asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-7b-chat-hf'))
+     asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-13b-chat-hf'))
+     asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
+     asyncio.run(testbricklayer("gpt"))
 
 ## Anyscale Model Names
 # 'meta-llama/Llama-2-7b-chat-hf'
