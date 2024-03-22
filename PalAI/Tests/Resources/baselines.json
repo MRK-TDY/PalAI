@@ -208,6 +208,25 @@
             {"type": "CUBE", "position": "(1,0,3)"},
             {"type": "CUBE", "position": "(-1,0,3)"}],
 
+   "An H shaped flat house":
+            [{"type": "CUBE", "position": "(0,0,0)"},
+            {"type": "CUBE", "position": "(0,0,1)"},
+            {"type": "CUBE", "position": "(0,0,2)"},
+            {"type": "CUBE", "position": "(2,0,0)"},
+            {"type": "CUBE", "position": "(2,0,1)"},
+            {"type": "CUBE", "position": "(2,0,2)"},
+            {"type": "CUBE", "position": "(1,0,1)"}],
+
+
+      "A 5 block long T shaped flat house":
+            [{"type": "CUBE", "position": "(0,0,0)"},
+            {"type": "CUBE", "position": "(0,0,1)"},
+            {"type": "CUBE", "position": "(0,0,2)"},
+            {"type": "CUBE", "position": "(0,0,3)"},
+            {"type": "CUBE", "position": "(0,0,4)"},
+            {"type": "CUBE", "position": "(1,0,4)"},
+            {"type": "CUBE", "position": "(-1,0,4)"}],
+
    "An E shaped flat house":
             [{"type": "CUBE", "position": "(0,0,0)"},
              {"type": "CUBE", "position": "(0,0,1)"},

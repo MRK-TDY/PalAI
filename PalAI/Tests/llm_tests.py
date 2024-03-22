@@ -1,4 +1,5 @@
 import csv
+import gc
 import json
 import os
 import yaml
@@ -178,7 +179,7 @@ def runttest(prompt, model_type):
     print(f"The test took {round(runtime, 4)} seconds to run.")
 
 
-def save_metrics_to_excel(metrics_list, file_name="Metrics/5run-llm_comparison.xlsx"):
+def save_metrics_to_excel(metrics_list, file_name="Metrics/2run-instruct-llm_comparison.xlsx"):
     # Convert the list of dictionaries to a DataFrame
     new_data_df = pd.DataFrame(metrics_list)
 
@@ -199,7 +200,7 @@ async def testbricklayer(model_type, model_name=None):
         prompts_file = yaml.safe_load(file)
 
         ##  We might not want to run all of the baseline tests
-        max_iterations = 5
+        max_iterations = 9
         for prompt in islice(baselines_json["bricklayer_baselines"].keys(), max_iterations):
 
             pal_ai = PalAI(prompts_file, model_type)
@@ -207,7 +208,7 @@ async def testbricklayer(model_type, model_name=None):
                 pal_ai.llm_client.SetModel(model_name)
 
             total_accuracy, total_precision, total_score, total_runtime, price_total = 0,0,0,0,0
-            number_of_runs = 5
+            number_of_runs = 2
             # Run each test N times = number_of_runs
             for x in range(0, number_of_runs):
                 start_time = time.time()
@@ -259,14 +260,23 @@ async def testbricklayer(model_type, model_name=None):
                 'Runtime': round(total_runtime, 4)}]
 
             save_metrics_to_excel((metrics_list))
+            gc.collect()
 
 
 if __name__ == '__main__':
-     asyncio.run(testbricklayer("anyscale"))
-     asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-7b-chat-hf'))
-     asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-13b-chat-hf'))
-     asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
-     asyncio.run(testbricklayer("gpt"))
+    ## Chat Models
+     #asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-7b-chat-hf'))
+     #asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-13b-chat-hf'))
+     #asyncio.run(testbricklayer("anyscale", 'meta-llama/Llama-2-70b-chat-hf'))
+     #asyncio.run(testbricklayer("gpt"))
+
+    ## Instruct Models
+     #asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
+     #asyncio.run(testbricklayer("anyscale", "mistralai/Mistral-7B-Instruct-v0.1"))
+     #asyncio.run(testbricklayer("anyscale", 'mlabonne/NeuralHermes-2.5-Mistral-7B'))
+     #asyncio.run(testbricklayer("anyscale", 'mistralai/Mixtral-8x7B-Instruct-v0.1'))
+     asyncio.run(testbricklayer("anyscale", 'codellama/CodeLlama-70b-Instruct-hf'))
+
 
 ## Anyscale Model Names
 # 'meta-llama/Llama-2-7b-chat-hf'
