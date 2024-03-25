@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import json
+from collections import deque
 
 
 class PostProcess:
@@ -33,6 +34,34 @@ class PostProcess:
         for s in self.styles["styles"].keys():
             styles += f"{s}: {self.styles['styles'][s]['description']}\n"
         return styles
+
+    def fill_empty_spaces(self):
+        label = 0
+        neighbors = [(0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0),
+                     (1, 0, 0), (-1, 0, 0)]
+        yDim, xDim, zDim = self.pixel_grid.shape
+        labelArray = np.zeros_like(self.pixel_grid)
+        statusArray = np.zeros_like(self.pixel_grid, dtype=bool)
+        print(self.pixel_grid)
+
+        for k in range(yDim):  # Apply the algorithm layer by layer
+            for i in range(xDim):
+                for j in range(zDim):
+                    if not statusArray[k, i, j]:
+                        if self.pixel_grid[k, i, j] == -1:  # empty space
+                            label += 1
+                            queue1 = deque()
+                            queue1.append((k, i, j))
+                            while queue1:
+                                y, x, z = queue1.popleft()
+                                if not statusArray[y, x, z]:
+                                    statusArray[y, x, z] = True
+                                    labelArray[y, x, z] = label
+                                    for dy, dx, dz in neighbors:
+                                        ny, nx, nz = y +dy, x + dx, z + dz
+                                        if 0 <= nx < xDim and 0 <= nz < zDim and 0 <= ny < yDim and not statusArray[ny, nx, nz] and self.pixel_grid[ny, nx, nz] == -1:
+                                            queue1.append((ny, nx, nz))
+            print(labelArray)
 
     def style(self, style):
         self.remove_floating_blocks()
