@@ -40,7 +40,8 @@ def kernel_evaluate(prompt, output):
         matches = pp.apply_kernel(baseline_kernel)
 
         print("Expected Layer: " + str(baseline_kernel))
-
+        if(total_blocks <= 0):
+            return 0,0,0
         accuracy = len(output) / total_blocks
         precision = len(matches) # not an accurate measure of precision but we should measure then number of matches
 
@@ -210,7 +211,7 @@ def runttest(prompt, model_type):
     print(f"The test took {round(runtime, 4)} seconds to run.")
 
 
-def save_metrics_to_excel(metrics_list, file_name="Metrics/tests-instruct-llm_comparison.xlsx"):
+def save_metrics_to_excel(metrics_list, file_name="Metrics/kernel-instruct-llm_comparison.xlsx"):
     # Convert the list of dictionaries to a DataFrame
     new_data_df = pd.DataFrame(metrics_list)
 
@@ -240,7 +241,7 @@ async def testbricklayer(model_type, model_name=None):
 
             total_accuracy, total_precision, total_score, total_runtime, price_total = 0,0,0,0,0
             kernel_total_accuracy, kernel_total_precision, kernel_total_score = 0,0,0
-            number_of_runs = 2
+            number_of_runs = 1
             # Run each test N times = number_of_runs
             for x in range(0, number_of_runs):
                 start_time = time.time()
@@ -310,10 +311,10 @@ if __name__ == '__main__':
      #asyncio.run(testbricklayer("gpt"))
 
     ## Instruct Models
-     asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
-     asyncio.run(testbricklayer("anyscale", "mistralai/Mistral-7B-Instruct-v0.1"))
-     #asyncio.run(testbricklayer("anyscale", 'mlabonne/NeuralHermes-2.5-Mistral-7B'))
-     #asyncio.run(testbricklayer("anyscale", 'mistralai/Mixtral-8x7B-Instruct-v0.1'))
+     #asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
+     #asyncio.run(testbricklayer("anyscale", "mistralai/Mistral-7B-Instruct-v0.1"))
+     asyncio.run(testbricklayer("anyscale", 'mlabonne/NeuralHermes-2.5-Mistral-7B'))
+     asyncio.run(testbricklayer("anyscale", 'mistralai/Mixtral-8x7B-Instruct-v0.1'))
      #asyncio.run(testbricklayer("anyscale", 'codellama/CodeLlama-70b-Instruct-hf'))
 
 
