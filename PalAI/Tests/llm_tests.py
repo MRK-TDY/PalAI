@@ -44,11 +44,11 @@ def kernel_evaluate(prompt, output):
         accuracy = len(output) / total_blocks
         precision = len(matches) # not an accurate measure of precision but we should measure then number of matches
 
-        overall_score = (1 if matches > 0 else 0) / accuracy
+        overall_score = (1 if len(matches) > 0 else 0) / accuracy
 
-        print("Accuracy: " + str(accuracy))
-        print("Precision: " + str(precision))
-        print("Overall Score: " + str(round(overall_score, 4)))
+        print("Kernel Accuracy: " + str(accuracy))
+        print("Kernel Precision: " + str(precision))
+        print("Kernel Score: " + str(round(overall_score, 4)))
 
         return accuracy, precision, overall_score
 
@@ -210,7 +210,7 @@ def runttest(prompt, model_type):
     print(f"The test took {round(runtime, 4)} seconds to run.")
 
 
-def save_metrics_to_excel(metrics_list, file_name="Metrics/2run-instruct-llm_comparison.xlsx"):
+def save_metrics_to_excel(metrics_list, file_name="Metrics/tests-instruct-llm_comparison.xlsx"):
     # Convert the list of dictionaries to a DataFrame
     new_data_df = pd.DataFrame(metrics_list)
 
@@ -238,8 +238,8 @@ async def testbricklayer(model_type, model_name=None):
             if model_name != None:
                 pal_ai.llm_client.SetModel(model_name)
 
-            total_accuracy, total_precision, total_score, total_runtime, price_total, = 0,0,0,0,0
-            kernel_total_accuracy, kernel_total_precision, kernel_total_score = 0
+            total_accuracy, total_precision, total_score, total_runtime, price_total = 0,0,0,0,0
+            kernel_total_accuracy, kernel_total_precision, kernel_total_score = 0,0,0
             number_of_runs = 2
             # Run each test N times = number_of_runs
             for x in range(0, number_of_runs):
@@ -310,11 +310,11 @@ if __name__ == '__main__':
      #asyncio.run(testbricklayer("gpt"))
 
     ## Instruct Models
-     #asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
-     #asyncio.run(testbricklayer("anyscale", "mistralai/Mistral-7B-Instruct-v0.1"))
+     asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
+     asyncio.run(testbricklayer("anyscale", "mistralai/Mistral-7B-Instruct-v0.1"))
      #asyncio.run(testbricklayer("anyscale", 'mlabonne/NeuralHermes-2.5-Mistral-7B'))
      #asyncio.run(testbricklayer("anyscale", 'mistralai/Mixtral-8x7B-Instruct-v0.1'))
-     asyncio.run(testbricklayer("anyscale", 'codellama/CodeLlama-70b-Instruct-hf'))
+     #asyncio.run(testbricklayer("anyscale", 'codellama/CodeLlama-70b-Instruct-hf'))
 
 
 ## Anyscale Model Names

@@ -176,20 +176,21 @@
     ]
   },
   "kernels": {
-     "A single block on the center": [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
+     "A single block on the center": [[-1, -1, -1], [-1, 1, -1], [-1, -1, -1]],
 
-     "A 4 block line": [[0,1,0], [0,1,0], [0,1,0], [0,1,0]],
+     "A 4 block line": [
+       [-1,-1,-1,-1,-1,-1],
+       [-1,1,1,1,1,-1],
+       [-1,-1,-1,-1,-1,-1]],
 
-     "A square shape house 2 blocks wide": [[[0,0,0], [0,1,1], [0,1,1], [0,0,0]]],
+     "A square shape house 2 blocks wide": [[[-1,-1,-1,-1], [-1,1,1,-1], [-1,1,1,-1], [-1,-1,-1,-1]]],
 
-    "An H shaped flat house": [[1, 0, 1], [1, 1, 1], [1, 0, 1]],
-
+    "An H shaped flat house": [[-1,-1,-1,-1,-1],[-1,1,-1,1,-1], [-1,1,1,1,-1], [-1,1,-1,1,-1],[-1,-1,-1,-1,-1]]
   },
  "bricklayer_baselines": {
 
      "A single block on the center":
             [{"type": "CUBE", "position": "(0,0,0)"}],
-
 
      "A 4 block line":
             [{"type": "CUBE", "position": "(0,0,0)"},
