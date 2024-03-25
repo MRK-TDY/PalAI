@@ -232,7 +232,7 @@ async def testbricklayer(model_type, model_name=None):
         prompts_file = yaml.safe_load(file)
 
         ##  We might not want to run all of the baseline tests
-        max_iterations = 9
+        max_iterations = 11
         for prompt in islice(baselines_json["bricklayer_baselines"].keys(), max_iterations):
 
             pal_ai = PalAI(prompts_file, model_type)
@@ -241,7 +241,7 @@ async def testbricklayer(model_type, model_name=None):
 
             total_accuracy, total_precision, total_score, total_runtime, price_total = 0,0,0,0,0
             kernel_total_accuracy, kernel_total_precision, kernel_total_score = 0,0,0
-            number_of_runs = 1
+            number_of_runs = 2
             # Run each test N times = number_of_runs
             for x in range(0, number_of_runs):
                 start_time = time.time()
@@ -313,9 +313,9 @@ if __name__ == '__main__':
     ## Instruct Models
      #asyncio.run(testbricklayer("anyscale", 'google/gemma-7b-it'))
      #asyncio.run(testbricklayer("anyscale", "mistralai/Mistral-7B-Instruct-v0.1"))
-     asyncio.run(testbricklayer("anyscale", 'mlabonne/NeuralHermes-2.5-Mistral-7B'))
-     asyncio.run(testbricklayer("anyscale", 'mistralai/Mixtral-8x7B-Instruct-v0.1'))
-     #asyncio.run(testbricklayer("anyscale", 'codellama/CodeLlama-70b-Instruct-hf'))
+     #asyncio.run(testbricklayer("anyscale", 'mlabonne/NeuralHermes-2.5-Mistral-7B'))
+     #asyncio.run(testbricklayer("anyscale", 'mistralai/Mixtral-8x7B-Instruct-v0.1'))
+     asyncio.run(testbricklayer("anyscale", 'codellama/CodeLlama-70b-Instruct-hf'))
 
 
 ## Anyscale Model Names
