@@ -39,16 +39,20 @@ class PostProcess:
         label = 0
         neighbors = [(0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0),
                      (1, 0, 0), (-1, 0, 0)]
-        yDim, xDim, zDim = self.pixel_grid.shape
-        labelArray = np.zeros_like(self.pixel_grid)
-        statusArray = np.zeros_like(self.pixel_grid, dtype=bool)
-        print(self.pixel_grid)
+        building_array = np.copy(self.pixel_grid)
+
+        #pad outside of the building such that all empty spaces on the edges are connected
+        building_array = np.pad(building_array, ((0, 1), (1, 1), (1, 1)), mode='constant', constant_values=-1)
+        yDim, xDim, zDim = building_array.shape
+
+        labelArray = np.zeros_like(building_array)
+        statusArray = np.zeros_like(building_array, dtype=bool)
 
         for k in range(yDim):  # Apply the algorithm layer by layer
             for i in range(xDim):
                 for j in range(zDim):
                     if not statusArray[k, i, j]:
-                        if self.pixel_grid[k, i, j] == -1:  # empty space
+                        if building_array[k, i, j] == -1:  # empty space
                             label += 1
                             queue1 = deque()
                             queue1.append((k, i, j))
@@ -57,14 +61,25 @@ class PostProcess:
                                 if not statusArray[y, x, z]:
                                     statusArray[y, x, z] = True
                                     labelArray[y, x, z] = label
+                                    if label > 1:
+                                        # found empty space, fill it in
+                                        self.grid[k][i - 1][j - 1] = {
+                                                "type": "CUBE",
+                                                "position": f"({i - 1}, {k}, {j - 1})"
+                                                }
+                                        self.pixel_grid[k, i - 1, j - 1] = 1
                                     for dy, dx, dz in neighbors:
                                         ny, nx, nz = y +dy, x + dx, z + dz
-                                        if 0 <= nx < xDim and 0 <= nz < zDim and 0 <= ny < yDim and not statusArray[ny, nx, nz] and self.pixel_grid[ny, nx, nz] == -1:
+                                        if 0 <= nx < xDim and 0 <= nz < zDim \
+                                            and 0 <= ny < yDim \
+                                            and not statusArray[ny, nx, nz] \
+                                            and building_array[ny, nx, nz] == -1:
                                             queue1.append((ny, nx, nz))
-            print(labelArray)
+
 
     def style(self, style):
         self.remove_floating_blocks()
+        self.fill_empty_spaces()
         for rule in self.styles["styles"][style]["rules"]:
             matching_positions = self.apply_kernel(rule["filter"])
             for effect in rule["effects"]:
@@ -77,6 +92,8 @@ class PostProcess:
         return self.grid_to_json()
 
     def remove_floating_blocks(self):
+        # TODO: edge case where building is a single block deletes building
+
         # Remove blocks that are not supported by any other block
         floating_block_kernel = [
                 [[0, 0, 0],
@@ -122,13 +139,13 @@ class PostProcess:
         if not isinstance(filter_matrix[0][0], list):
             filter_matrix = [filter_matrix]
 
-        filter_depth = len(filter_matrix)
-        filter_height = len(filter_matrix[0])
+        filter_height = len(filter_matrix)
+        filter_depth = len(filter_matrix[0])
         filter_width = len(filter_matrix[0][0])
 
         # Assume the filter dimensions are odd sizes
-        depth_offset = filter_depth // 2
         height_offset = filter_height // 2
+        depth_offset = filter_depth // 2
         width_offset = filter_width // 2
 
         filtered_values = []
@@ -137,29 +154,29 @@ class PostProcess:
             for x in range(self.size_x):
                 for z in range(self.size_z):
                     for orientation in range(4):
-                        # rotated_filter = filter_matrix
                         rotated_filter = rotate_filter(filter_matrix, orientation)
                         applies = True
-                        for fd in range(filter_depth):
-                            for fh in range(filter_height):
+                        for fh in range(filter_height):
+                            for fd in range(filter_depth):
                                 for fw in range(filter_width):
-                                    ny, nx, nz = y + fd - depth_offset, x + fw - width_offset, z + fh - height_offset
+                                    ny, nx, nz = y + fh - height_offset, x + fw - width_offset, z + fd - depth_offset
                                     # Check bounds
                                     if 0 <= ny < self.size_y and 0 <= nx < self.size_x and 0 <= nz < self.size_z:
                                         value = self.pixel_grid[ny][nx][nz]
                                     else:
-                                        value = -1  # Outside bounds, treat as not matching
+                                        value = -1  # Outside bounds, treat as empty space
 
-                                    if rotated_filter[fd][fh][fw] != 0 and rotated_filter[fd][fh][fw] != value:
+                                    if rotated_filter[fh][fd][fw] != 0 and rotated_filter[fh][fd][fw] != value:
                                         applies = False
-                                        break  # Break out of the innermost loop only
+                                        break
                                 if not applies:
-                                    break  # Break out of the second loop
+                                    break
                             if not applies:
-                                break  # Break out of the third loop
+                                break
 
                         if applies:
-                            filtered_values.append(((y, x, z), orientation))  # Orientation handling removed for simplicity
+                            filtered_values.append(((y, x, z), orientation))
+                            break # only first orientation matches
 
         return filtered_values
 
