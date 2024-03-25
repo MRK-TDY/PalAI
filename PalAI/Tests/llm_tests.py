@@ -238,7 +238,8 @@ async def testbricklayer(model_type, model_name=None):
             if model_name != None:
                 pal_ai.llm_client.SetModel(model_name)
 
-            total_accuracy, total_precision, total_score, total_runtime, price_total = 0,0,0,0,0
+            total_accuracy, total_precision, total_score, total_runtime, price_total, = 0,0,0,0,0
+            kernel_total_accuracy, kernel_total_precision, kernel_total_score = 0
             number_of_runs = 2
             # Run each test N times = number_of_runs
             for x in range(0, number_of_runs):
@@ -257,13 +258,17 @@ async def testbricklayer(model_type, model_name=None):
                 price_total += round(price_rate * tokens_used, 4)
                 print("Estimated cost: " + str(round(price_rate * tokens_used, 5)) + "$")
 
+                k_accuracy, k_precision, k_score = kernel_evaluate(prompt, new_layer)
+
                 # Record the end time
                 end_time = time.time()
 
                 # Calculate and print the total runtime
                 runtime = end_time - start_time
 
-
+                kernel_total_accuracy += k_accuracy
+                kernel_total_precision += k_precision
+                kernel_total_score += k_score
                 total_accuracy += accuracy
                 total_precision += precision
                 total_score += overall_score
@@ -283,9 +288,12 @@ async def testbricklayer(model_type, model_name=None):
                 'Endpoint': model_type,
                 'Model Name': pal_ai.llm_client.model_name,
                 'Prompt': prompt,
-                'Accuracy Score': total_accuracy,
-                'Precision Score': total_precision,
+                'Accuracy': total_accuracy,
+                'Precision': total_precision,
                 'Overall Score': total_score,
+                'Kernel Accuracy': kernel_total_accuracy,
+                'Kernel Precision': kernel_total_precision,
+                'Kernel Overall Score': kernel_total_score,
                 'Price Rate': price_rate,
                 'Estimated Price Total': price_total,
                 'Runtime': round(total_runtime, 4)}]
