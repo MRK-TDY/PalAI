@@ -66,7 +66,7 @@ class AnyscaleClient(LLMClient):
             if ("USER" in p):
                 bUser = True
                 bAssistant = False
-            if ("ARCHITECT" in p):
+            if ("ARCHITECT" in p or "PalAI" in p):
                 bAssistant = True
                 bUser = False
                 assistant_index += 1
