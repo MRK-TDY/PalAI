@@ -33,7 +33,7 @@ with open(os.path.join(os.path.dirname(__file__), 'prompts.yaml'), 'r') as file:
     prompts_file = yaml.safe_load(file)
 
 def create_pal_instance():
-    return PalAI(prompts_file, "gpt", 'gpt-4-0125-preview')
+    return PalAI(prompts_file, "anyscale")
     #             "gpt", 'gpt-4-0125-preview')
 
 
