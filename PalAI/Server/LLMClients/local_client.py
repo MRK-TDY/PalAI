@@ -1,40 +1,32 @@
 from configparser import RawConfigParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+from langchain_community.chat_models.huggingface import ChatHuggingFace
 from langchain.schema.messages import HumanMessage
 from PalAI.Server.LLMClients.llm_client import LLMClient
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from langchain_core.output_parsers import StrOutputParser
-from langchain_openai import ChatOpenAI
 import colorama
 import os
 
-class GPTClient(LLMClient):
+class LocalClient(LLMClient):
 
     def __init__(self, prompts_file, **kwargs):
         LLMClient.__init__(self, prompts_file)
 
-        self.api_key = self.config.get('openai', 'api_key')
         self.model_name = self.config.get('openai', 'model_name')
         self.verbose = kwargs.get('verbose', False)
+        # self.device = kwargs.get('device', 'cuda')
+        self.model_name = kwargs.get('model_name', 'mistralai/Mistral-7B-Instruct-v0.2')
+        model = AutoModelForCausalLM.from_pretrained(self.model_name, device_map='cuda')
+        tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 
-        if self.api_key is not None:
-            self.llm = ChatOpenAI(model=self.model_name, temperature=self.temperature, api_key=self.api_key, max_tokens=self.max_tokens)
-        self.price_rate = 0.0000005
+        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', max_new_tokens=500)
+        self.hf = HuggingFacePipeline(pipeline=pipe)
+        self.price_rate = 0
 
-        if('gpt4' in self.model_name):
-            self.price_rate = 0.00003
 
-    def SetModel(self, model_name):
-        self.model_name = model_name
-
-        if ('gpt-3' in model_name):
-            self.price_rate = 0.0000005
-        elif ('gpt-4' in self.model_name):
-            self.price_rate = 0.00003
-
-        self.llm = ChatOpenAI(model=self.model_name, temperature=self.temperature, api_key=self.api_key,
-                              max_tokens=self.max_tokens)
-
-    async def get_llm_response(self, system_message, prompt, image_path = ""):
+    async def get_llm_response(self, system_message, prompt):
         if self.verbose:
             print(f"{colorama.Fore.GREEN}System message:{colorama.Fore.RESET} {system_message}")
             print(f"{colorama.Fore.BLUE}Prompt:{colorama.Fore.RESET} {prompt}")
@@ -42,27 +34,11 @@ class GPTClient(LLMClient):
         self.prompt_total += system_message
         self.prompt_total += prompt
 
-
-        if image_path != "":
-            with open(image_path, "rb") as image_file:
-                image = base64.b64encode(image_file.read()).decode('utf-8')
-
-            prompt = ChatPromptTemplate.from_messages([
-                ("system", "{system_message}"),
-                HumanMessage(content=[
-                    {"type": "text", "text": f"{prompt}"},
-                    {"type": "image_url",
-                     "image_url": f"data:image/jpeg;base64,{image}"}
-                ])
-            ])
-            llm = self.mm_llm
-
-        else:
-            prompt = ChatPromptTemplate.from_messages([
-                ("system", "{system_message}"),
-                ("user", f"{prompt}")
-            ])
-            llm = self.llm
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", "{system_message}"),
+            ("user", f"{prompt}")
+        ])
+        llm = self.hf
 
         self.chain = prompt | llm | StrOutputParser()
         response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})

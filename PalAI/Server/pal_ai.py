@@ -4,7 +4,7 @@ import os
 from colorama import Fore
 import colorama
 
-from PalAI.Server.LLMClients import gpt_client, together_client, google_client, anyscale_client
+from PalAI.Server.LLMClients import gpt_client, together_client, google_client, anyscale_client, local_client
 from PalAI.Server.post_process import PostProcess
 
 class PalAI():
@@ -40,6 +40,8 @@ class PalAI():
                 self.llm_client = google_client.GoogleClient(prompts_file)
             case 'anyscale':
                 self.llm_client = anyscale_client.AnyscaleClient(prompts_file)
+            case 'local':
+                self.llm_client = local_client.LocalClient(prompts_file, verbose = True)
 
         self.building = []
         self.history = []
@@ -107,7 +109,7 @@ class PalAI():
 
                 system_message = self.system_prompt.format(example=example)
 
-                response = await  self.llm_client.get_llm_response(system_message, formatted_prompt)
+                response = await self.llm_client.get_llm_response(system_message, formatted_prompt)
                 self.history.append(f"Layer {i}:")
                 self.history.append(current_layer_prompt)
                 self.history.append(self.extract_history(formatted_prompt, response))
