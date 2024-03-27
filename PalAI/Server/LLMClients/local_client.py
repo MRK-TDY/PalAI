@@ -6,6 +6,7 @@ from langchain.schema.messages import HumanMessage
 from PalAI.Server.LLMClients.llm_client import LLMClient
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from langchain_core.output_parsers import StrOutputParser
+import torch
 import colorama
 import os
 
@@ -18,10 +19,10 @@ class LocalClient(LLMClient):
         self.verbose = kwargs.get('verbose', False)
         # self.device = kwargs.get('device', 'cuda')
         self.model_name = kwargs.get('model_name', 'mistralai/Mistral-7B-Instruct-v0.2')
-        model = AutoModelForCausalLM.from_pretrained(self.model_name, device_map='cuda')
+        model = AutoModelForCausalLM.from_pretrained(self.model_name, device_map='cuda', torch_dtype = torch.bfloat16)
         tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 
-        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', max_new_tokens=500)
+        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', torch_dtype=torch.bfloat16, max_new_tokens=500)
         self.hf = HuggingFacePipeline(pipeline=pipe)
         self.price_rate = 0
 
