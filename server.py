@@ -129,6 +129,6 @@ def handle_post(ws):
 
 
 if __name__ == '__main__':
-    server = pywsgi.WSGIServer(('127.0.0.1', PORT), app, handler_class=WebSocketHandler)
-    print(f"Running on ws://127.0.0.1:{PORT}")
+    server = pywsgi.WSGIServer(('0.0.0.0', PORT), app, handler_class=WebSocketHandler)
+    print(f"Running on ws://0.0.0.0:{PORT}")
     server.serve_forever()
