@@ -9,7 +9,7 @@ from PalAI.Server.post_process import PostProcess
 
 class PalAI():
 
-    def __init__(self, prompts_file, llm="gpt", web_socket = None):
+    def __init__(self, prompts_file, llm=None, web_socket = None):
         colorama.init(autoreset=True)
 
         self.material_types = ["Generic White",
@@ -31,17 +31,20 @@ class PalAI():
                  "Dark Concrete"]
 
 
-        match llm:
-            case 'gpt':
-                self.llm_client = gpt_client.GPTClient(prompts_file)
-            case 'together':
-                self.llm_client = together_client.TogetherClient(prompts_file)
-            case 'google':
-                self.llm_client = google_client.GoogleClient(prompts_file)
-            case 'anyscale':
-                self.llm_client = anyscale_client.AnyscaleClient(prompts_file)
-            case 'local':
-                self.llm_client = local_client.LocalClient(prompts_file, verbose = True)
+        if llm is not None and isinstance(llm, str):
+            match llm:
+                case 'gpt':
+                    self.llm_client = gpt_client.GPTClient(prompts_file)
+                case 'together':
+                    self.llm_client = together_client.TogetherClient(prompts_file)
+                case 'google':
+                    self.llm_client = google_client.GoogleClient(prompts_file)
+                case 'anyscale':
+                    self.llm_client = anyscale_client.AnyscaleClient(prompts_file)
+                case 'local':
+                    self.llm_client = local_client.LocalClient(prompts_file, verbose = True)
+        elif llm is not None:
+            self.llm_client = llm
 
         self.building = []
         self.history = []

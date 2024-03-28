@@ -12,6 +12,7 @@ from PalAI.Server.pal_ai import PalAI
 from PalAI.Server.housedescription import BuildingDescriptor
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
+from PalAI.Server.LLMClients import gpt_client, together_client, google_client, anyscale_client, local_client
 
 
 
@@ -32,8 +33,21 @@ PORT = config.getint('server', 'port')
 with open(os.path.join(os.path.dirname(__file__), 'prompts.yaml'), 'r') as file:
     prompts_file = yaml.safe_load(file)
 
+
+match config.get('llm', 'type'):
+    case 'gpt':
+        llm_client = gpt_client.GPTClient(prompts_file)
+    case 'together':
+        llm_client = together_client.TogetherClient(prompts_file)
+    case 'google':
+        llm_client = google_client.GoogleClient(prompts_file)
+    case 'anyscale':
+        llm_client = anyscale_client.AnyscaleClient(prompts_file)
+    case 'local':
+        llm_client = local_client.LocalClient(prompts_file, verbose = True)
+
 def create_pal_instance():
-    return PalAI(prompts_file, config.get('llm', 'type'))
+    return PalAI(prompts_file, llm)
     #             "gpt", 'gpt-4-0125-preview')
 
 
