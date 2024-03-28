@@ -47,7 +47,7 @@ match config.get('llm', 'type'):
         llm_client = local_client.LocalClient(prompts_file, verbose = True)
 
 def create_pal_instance():
-    return PalAI(prompts_file, llm)
+    return PalAI(prompts_file, llm_client)
     #             "gpt", 'gpt-4-0125-preview')
 
 
