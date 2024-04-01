@@ -23,7 +23,7 @@ class LocalClient(LLMClient):
         model = AutoModelForCausalLM.from_pretrained(self.model_name, device_map='cuda', torch_dtype = torch.bfloat16)
         tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 
-        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', torch_dtype=torch.bfloat16, max_new_tokens=500)
+        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', torch_dtype=torch.bfloat16, max_new_tokens=1000)
         self.hf = HuggingFacePipeline(pipeline=pipe)
         self.price_rate = 0
 
