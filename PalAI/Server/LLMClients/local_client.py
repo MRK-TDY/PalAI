@@ -23,7 +23,7 @@ class LocalClient(LLMClient):
         model = AutoModelForCausalLM.from_pretrained(self.model_name, device_map='cuda', torch_dtype = torch.bfloat16)
         tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 
-        pipe = pipeline("text2text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', torch_dtype=torch.bfloat16, max_new_tokens=500)
+        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', torch_dtype=torch.bfloat16, max_new_tokens=500)
         self.hf = HuggingFacePipeline(pipeline=pipe)
         self.price_rate = 0
 
@@ -46,7 +46,7 @@ class LocalClient(LLMClient):
         llm = self.hf
 
         self.chain = prompt | llm | StrOutputParser()
-        response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})[length:]
+        response = (await self.chain.ainvoke({"system_message": system_message, "prompt": prompt}))[length:]
 
         if self.verbose:
             print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
