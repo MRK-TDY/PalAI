@@ -9,6 +9,7 @@ from langchain_core.output_parsers import StrOutputParser
 import torch
 import colorama
 import os
+import yaml
 
 class LocalClient(LLMClient):
 
@@ -22,7 +23,7 @@ class LocalClient(LLMClient):
         model = AutoModelForCausalLM.from_pretrained(self.model_name, device_map='cuda', torch_dtype = torch.bfloat16)
         tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 
-        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', torch_dtype=torch.bfloat16, max_new_tokens=500)
+        pipe = pipeline("text2text-generation", model=model, tokenizer=tokenizer, device_map = 'cuda', torch_dtype=torch.bfloat16, max_new_tokens=500)
         self.hf = HuggingFacePipeline(pipeline=pipe)
         self.price_rate = 0
 
@@ -36,13 +37,14 @@ class LocalClient(LLMClient):
         self.prompt_total += prompt
 
         prompt = ChatPromptTemplate.from_messages([
-            ("system", "{system_message}"),
-            ("user", f"{prompt}")
+            ("system", "<s>[INST]{system_message}[/INST]"),
+            ("user", f"[INST]{prompt}[/INST]")
         ])
         llm = self.hf
 
         self.chain = prompt | llm | StrOutputParser()
-        response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})
+        length = len(prompt[0]) + len(prompt[1])
+        response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})[length:]
 
         if self.verbose:
             print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
@@ -81,3 +83,15 @@ class LocalClient(LLMClient):
             print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
 
         return response
+
+
+if __name__ == "main":
+    with open(os.path.join(os.path.dirname(__file__), '../../../../prompts.yaml'), 'r') as file:
+        prompts_file = yaml.safe_load(file)
+    example = prompts_file["basic_example"]
+    system = prompts_file.get('system_prompt', "").format(example=example)
+
+    prompt = "I want a tiny house"
+
+    client = LocalClient(prompts_file, verbose = True)
+    print(client.get_llm_response(system, prompt))
