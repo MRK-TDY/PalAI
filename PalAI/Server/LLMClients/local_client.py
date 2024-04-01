@@ -36,14 +36,16 @@ class LocalClient(LLMClient):
         self.prompt_total += system_message
         self.prompt_total += prompt
 
+        system_message = f"<s>[INST]{system_message}[/INST]</s>"
+        prompt = f"[INST]{prompt}[/INST]"
+        length = len(prompt) + len(system_message)
         prompt = ChatPromptTemplate.from_messages([
-            ("system", "<s>[INST]{system_message}[/INST]"),
-            ("user", f"[INST]{prompt}[/INST]")
+            ("system", system_message),
+            ("user", prompt)
         ])
         llm = self.hf
 
         self.chain = prompt | llm | StrOutputParser()
-        length = len(prompt[0]) + len(prompt[1])
         response = await self.chain.ainvoke({"system_message": system_message, "prompt": prompt})[length:]
 
         if self.verbose:
