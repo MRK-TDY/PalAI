@@ -6,6 +6,7 @@ import colorama
 
 from PalAI.Server.LLMClients import gpt_client, together_client, google_client, anyscale_client, local_client
 from PalAI.Server.post_process import PostProcess
+from PalAI.Server.decorator import Decorator
 
 class PalAI():
 
@@ -84,6 +85,8 @@ class PalAI():
 
         await self.apply_style()
         print(f"{Fore.BLUE}Applied style {self.style}")
+
+        await self.decorate()
 
         self.api_result["result"] = self.building
         return self.api_result
@@ -167,6 +170,18 @@ class PalAI():
     async def apply_style(self):
         self.post_process.import_building(self.building)
         self.building = self.post_process.style(self.style)
+
+    async def decorate(self):
+        decorator = Decorator()
+        decorator.import_building(self.building)
+        self.decorations = decorator.decorate()
+
+        self.api_result["decorations"] = self.decorations
+
+        if self.ws is not None:
+            message = {"value": self.decorations}
+            message["event"] = "decorations"
+            self.ws.send(json.dumps(message))
 
     def json_to_pal_script(self, building):
         """
