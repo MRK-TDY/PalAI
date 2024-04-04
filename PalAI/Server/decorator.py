@@ -2,6 +2,7 @@ import numpy as np
 import json
 import os
 import random
+import copy
 
 class Decorator:
     def __init__(self, style_sheet = "decorations.json"):
@@ -12,8 +13,9 @@ class Decorator:
         self.decorations.append({"name": "EMPTY", "adjacency": ["", "", "", ""], "limit": 0})
 
     def import_building(self, api_building):
+        self.floor_list = copy.deepcopy(api_building)
         to_remove = []
-        for b in api_building:
+        for b in self.floor_list:
             if b["type"] != "CUBE":
                 to_remove.append(b)
             else:
@@ -21,9 +23,9 @@ class Decorator:
                 b["options"] = self.decorations
 
         for i in to_remove:
-            api_building.remove(i)
+            self.floor_list.remove(i)
 
-        positions = [self.get_block_dict_position(b) for b in api_building]
+        positions = [self.get_block_dict_position(b) for b in self.floor_list]
 
         self.size_y = max(positions, key=lambda x: x[0])[0] + 1
         self.size_x = max(positions, key=lambda x: x[1])[1] + 1
@@ -36,19 +38,16 @@ class Decorator:
         ]
         self.pixel_grid = np.ones((self.size_y, self.size_x, self.size_z), dtype=int) * -1
 
-        for b in api_building:
+        for b in self.floor_list:
             pos = self.get_block_dict_position(b)
             self.grid[pos[0]][pos[1]][pos[2]] = b
             self.pixel_grid[pos[0], pos[1], pos[2]] = 1
 
 
-        print("BEFORE")
-        for f in api_building:
-            print(f"Floor: {f['position']}")
 
         # Remove blocks on top of existing blocks, we are only interested in floors
         to_remove = []
-        for b in api_building:
+        for b in self.floor_list:
             pos = self.get_block_dict_position(b)
             for y in range(pos[0] + 1, self.size_y):
                 if self.grid[y][pos[1]][pos[2]] is not None:
@@ -61,15 +60,10 @@ class Decorator:
                     break #If there is an empty space above a block there may be another floor above
 
         for i in to_remove:
-            api_building.remove(i)
-
-        print("AFTER")
-        self.floor_list = api_building
-        for f in self.floor_list:
-            print(f"Floor: {f['position']}")
+            self.floor_list.remove(i)
 
         # Recalculate size_y
-        positions = [self.get_block_dict_position(b) for b in api_building]
+        positions = [self.get_block_dict_position(b) for b in self.floor_list]
         self.size_y = max(positions, key=lambda x: x[0])[0] + 1
 
     def get_block_dict_position(self, block):
