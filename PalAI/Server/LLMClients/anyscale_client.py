@@ -87,3 +87,16 @@ class AnyscaleClient(LLMClient):
 
         return user, assistant, instructions
 
+    def extractResponse(self, user, assistant, request, response):
+
+        for u in user:
+            response.replace(u, "")
+
+        for a in assistant:
+            response.replace(a,"")
+
+        for r in request:
+            response.replace(r, "")
+
+
+        return response
