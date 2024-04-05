@@ -62,7 +62,7 @@ class PalAI():
 
     async def build(self, prompt, ws = None):
         self.prompt = prompt
-
+        self.original_prompt = prompt
         if ws is not None:
             self.ws = ws
 
@@ -71,7 +71,7 @@ class PalAI():
         #TODO: do requests that may be parallel in parallel
 
         await self.get_architect_plan()
-        print(f"{Fore.BLUE}Received architect plan")
+        print(f"{Fore.BLUE}Received architect plan {self.plan_list}" )
 
         await self.build_structure()
         print(f"{Fore.BLUE}Received basic structure")
@@ -91,19 +91,19 @@ class PalAI():
 
     async def get_architect_plan(self):
         self.prompt = await self.llm_client.get_llm_response(self.prompts_file["plan_system_message"],
-                                                                self.prompts_file["plan_prompt"].format(self.prompt))
+                                                                self.prompts_file["plan_prompt"].format(self.prompt), type='architect')
         self.api_result["architect"] = [l for l in self.prompt.split("\n") if l != ""]
-        self.plan_list = [i for i in self.prompt.split("\n") if i.lower().startswith(f"layer")]
+        self.plan_list = [i for i in self.prompt.split("\n") if i.lower().startswith(f"layer") or i.lower().startswith(f" layer") or i.lower().startswith(f"  layer")]
 
     async def build_structure(self):
             for i, layer_prompt in enumerate(self.plan_list):
                 current_layer_prompt = self.prompt_template.format(prompt=layer_prompt, layer=i)
 
-                if len(self.history) > 0:
-                    complete_history = ('\n\n').join(self.history)
-                    formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
-                else:
-                    formatted_prompt = current_layer_prompt
+                #if len(self.history) > 0:
+                #    complete_history = ('\n\n').join(self.history)
+                #    formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
+                #else:
+                formatted_prompt = current_layer_prompt
 
                 if i == 0:
                     example = self.prompts_file["basic_example"]
@@ -111,8 +111,8 @@ class PalAI():
                     example =  self.prompts_file["basic_example"]
 
                 system_message = self.system_prompt.format(example=example)
-
-                response = await self.llm_client.get_llm_response(system_message, formatted_prompt)
+                print("GOING FOR BRICKLAYER")
+                response = await self.llm_client.get_llm_response(system_message, formatted_prompt, type='bricklayer')
                 self.history.append(f"Layer {i}:")
                 self.history.append(current_layer_prompt)
                 self.history.append(self.extract_history(formatted_prompt, response))
@@ -132,7 +132,7 @@ class PalAI():
         plan = "\n".join(self.plan_list)
         building = self.json_to_pal_script(self.building)
         add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{building}."
-        add_ons = await self.llm_client.get_llm_response(self.prompts_file["add_on_system_message"], add_on_prompt)
+        add_ons = await self.llm_client.get_llm_response(self.prompts_file["add_on_system_message"], add_on_prompt, type="addons")
         add_ons = self.extract_building_information(add_ons)
         self.building = self.overlap_blocks(self.building, add_ons)
         self.api_result["add_on_agent"] = self.building
@@ -147,7 +147,7 @@ class PalAI():
         materials_response = await self.llm_client.get_llm_response(
                 self.prompts_file["material_system_message"].format(materials= self.material_types,
                                                                     styles = self.post_process.get_available_styles()),
-                self.prompt)
+                self.original_prompt, type='materials')
         material = {}
         for l in materials_response.split("\n"):
             l = l.upper().split(": ")
@@ -165,8 +165,14 @@ class PalAI():
 
 
     async def apply_style(self):
-        self.post_process.import_building(self.building)
-        self.building = self.post_process.style(self.style)
+        try:
+            self.post_process.import_building(self.building)
+            self.building = self.post_process.style(self.style)
+        except:
+            self.style = "no style"
+            print("Style Error")
+            self.ws.send(json.dumps("Error found with post-processing"))
+
 
     def json_to_pal_script(self, building):
         """
@@ -230,13 +236,16 @@ class PalAI():
 
         blocks = []
         for block in building_info:
-            block = block.split('|')
-            position = block[1].split(',')
-            aux = {'type': block[0], 'position': f"({position[1]},{block[2]},{position[0]})"}
-            if len(block) == 5:
-                position = block[4].split(',')
-                aux['tags'] = {"type": block[3].upper(), "position": f"({position[1]},{block[2]},{position[0]})"}
-            blocks.append(aux)
+            try:
+                block = block.split('|')
+                position = block[1].split(',')
+                aux = {'type': block[0], 'position': f"({position[1]},{block[2]},{position[0]})"}
+                if len(block) == 5:
+                    position = block[4].split(',')
+                    aux['tags'] = {"type": block[3].upper(), "position": f"({position[1]},{block[2]},{position[0]})"}
+                blocks.append(aux)
+            except:
+                continue
 
         return blocks
 

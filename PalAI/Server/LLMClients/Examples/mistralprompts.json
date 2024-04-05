@@ -1,0 +1,182 @@
+{
+  "bricklayer_examples": {
+    "Example1": {
+      "user": "Create an L-shaped house flat on the ground, 4 blocks long",
+      "assistant": "To create an L-shaped house we will create a row of 4 cubes along the X-axis, from points (0,0) to (4,0), followed by 2 cubes at the end, placed perpendicularly, along the y-axis, from (0,0) to (0,2).\n\nFirst the long side:\nB:CUBE|0,0\nB:CUBE|1,0\n  B:CUBE|2,0\n  B:CUBE|3,0\n\nThen the short side:\nB:CUBE|0,1\nB:CUBE|0,2\n"
+    },
+    "Example2": {
+      "user": "Create an H-shaped house flat on the ground.",
+      "assistant": "To create an H-shaped house we will create 2 rows of 3 cubes and one in the midle with just one cube.\n\n  Let's start with the first leg:\nB:CUBE|0,0\n B:CUBE|1,0\n B:CUBE|2,0\n\nThen the second leg:\nB:CUBE|0,2\nB:CUBE|1,2\n  B:CUBE|2,2\n\nThen the bridge between them:\nB:CUBE|1,1\n"
+    },
+    "Example3": {
+      "user": "Create a 2 block wide square house.",
+      "assistant": "To create a square house flat on the ground 2 rows of 2 cubes \n\n  Let's start with the first:\nB:CUBE|0,0\n B:CUBE|1,0\n and the second B:CUBE|0,1 \nB:CUBE|1,1\n"
+    },
+    "Example4": {
+      "user": "Create a 4 block wide square house.",
+      "assistant": "To create a square house flat on the ground 4 rows of 4 cubes \n\n  Let's start with the first:\nB:CUBE|0,0\n B:CUBE|1,0\n \nB:CUBE|2,0\n B:CUBE|3,0\n the second \nB:CUBE|0,1\n B:CUBE|1,1\n \nB:CUBE|2,1\n B:CUBE|3,1\n the third \nB:CUBE|0,2\n B:CUBE|1,2\n \nB:CUBE|2,2\n B:CUBE|3,2\n and the third \nB:CUBE|0,3\n B:CUBE|1,3\n \nB:CUBE|2,3\n B:CUBE|3,3\n"
+    },
+    "Example5": {
+      "user": "Create a T-shaped house flat on the ground.",
+      "assistant": "To create a T-shaped house, we will start with a base row of 5 cubes along the X-axis, from points (0,0) to (4,0), then add a perpendicular row of 3 cubes centered over the base row.\n\nFirst, the base:\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0\nB:CUBE|4,0\n\nThen, the perpendicular row:\nB:CUBE|2,1\nB:CUBE|2,2\nB:CUBE|2,3\n"
+    },
+    "Example6": {
+      "user": "Create a plus sign-shaped house flat on the ground.",
+      "assistant": "To create a plus sign-shaped house, we will place a vertical row of 3 cubes and intersect it with a horizontal row of 3 cubes, both centered at the same point.\n\nFirst, the vertical row:\nB:CUBE|1,0\nB:CUBE|1,1\nB:CUBE|1,2\n\nThen, the horizontal row:\nB:CUBE|0,1\nB:CUBE|1,1\nB:CUBE|2,1\n"
+    },
+    "Example7": {
+      "user": "Create a zigzag pattern flat on the ground.",
+      "assistant": "To create a zigzag pattern, we'll alternate placing cubes diagonally and horizontally.\n\nStarting from (0,0), place the first cube:\nB:CUBE|0,0\n\nThen move diagonally:\nB:CUBE|1,1\n\nNow, place two horizontally:\nB:CUBE|2,1\nB:CUBE|3,1\n\nRepeat the pattern:\nB:CUBE|4,2\nB:CUBE|5,2\nB:CUBE|6,2\nB:CUBE|7,3\n"
+    },
+    "Example8": {
+      "user": "Create a spiral pattern starting from the center.",
+      "assistant": "Creating a spiral pattern requires progressively increasing the perimeter of squares.\n\nStart by placing the first cube at the center:\nB:CUBE|0,0\n\nExpand around it to make a 3x3 square:\nB:CUBE|-1,-1 to B:CUBE|1,-1 (bottom row)\nB:CUBE|-1,0 to B:CUBE|1,0 (middle row)\nB:CUBE|-1,1 to B:CUBE|1,1 (top row)\n\nContinue expanding outward to form the next layers of the spiral, increasing the square's size by 2 blocks for each layer."
+    }
+  },
+  "bricklayer_system_message": "\nYou are PalAI, an AI in control of a program that creates buildings in virtual environments.\n  Your job is to respond to users' requests with pal-script, a special code that will be used to generate the requests building.\n  Pal-script is a simple language in which each line of code represents a block in the building.\n  A line has the following format:\n  {example}\n\n  Lines can't contain anything other than what was specified above.\n  Lines must start with `B:` and then the type of block, followed by `|` and then the location of the block.\n  BLOCK_TYPE is the type of block. The blocks you have access to are these: CUBE.\n  LOCATION is the location of the block. It is given as x,y. It should be noted that the position (0,0) is the center and you can use negative values \n  Note that the building is built layer by layer, so you only need to worry about the current layer, which is why the location is only two values.\n  You will start by explaining which blocks you will use and where, in order to create the requested building.\n Please think before you speak\n",
+  "architect_examples": {
+    "Example0": {
+      "user": "Create an L-shaped house flat on the ground",
+      "assistant": "In order to build an L shaped house we must place 4 square shapes on the ground, there's no need for other layers.\nLayer 0: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side.\n"
+    },
+    "Example1": {
+      "user": "Create an L-shaped house flat",
+      "assistant": "In order to build an L shaped house we must place 4 square shapes on the ground and lets add anotehr layer.\nLayer 0: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side.\nLayer 1: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side.\n"
+    },
+    "Example2": {
+      "user": "I want to build a house that widens at the top.",
+      "assistant": "In order to build a house that widens at the top we must place 3 square shapes on top of each other.\nLayer 0: A square shape 4 blocks wide.\nLayer 1: Here we repeat the last layer, placing again a square shape 4 blocks wide.\n Layer 2: We widen the shape according to the user request.\n"
+    },
+    "Example3": {
+      "user": "I want to build a pyramid.",
+      "assistant": "\"In order to build a pyramid, we will create a structure that narrows as it goes up, resulting in a pointed top.\n\nLayer 0: A square shape 5 blocks wide on each side to serve as the base.\nLayer 1: A smaller square shape, 3 blocks wide, centered on top of the previous layer.\nLayer 2: A single block centered on top of the previous layer.\n"
+    },
+    "Example4": {
+      "user": "I want a tower with a balcony.",
+      "assistant": "In order to build a tower with a balcony, we will create a tall structure with an extending section on one side.\nLayer 0: A square shape 3 blocks wide on each side to form the base of the tower.\nLayer 1: Repeat the same square shape 3 blocks wide to continue the tower's structure.\n Layer 2: Create a square shape 3 blocks wide for the tower, and extend a row of blocks out on one side to form the balcony.\n"
+    },
+    "Example5": {
+      "user": "I want a squared 3-floor house",
+      "assistant": "In order to build a house that widens at the top we must place 3 square shapes on top of each other.\n\nLayer 0: A square shape 4 blocks wide.\nLayer 1: Here we repeat the last layer, placing again a square shape 4 blocks wide.\n Layer 2: Here we repeated the last layer, placing again a sqaure shape 4 blocks wide\n"
+    },
+    "Example16": {
+      "user": "I want a simple bungalow house.",
+      "assistant": "To build a simple bungalow house, we'll create a compact and flat design.\n\nLayer 0: A square shape, 5 blocks on each side, serves as the entire house structure, representing the bungalow's footprint."
+    },
+    "Example17": {
+      "user": "Build a two-story rectangular house.",
+      "assistant": "To construct a two-story rectangular house, we'll stack two layers to form the house's floors.\n\nLayer 0: A rectangle 6 blocks wide and 4 blocks deep, forming the ground floor.\nLayer 1: Repeat the same dimensions directly above Layer 0 to create the second floor."
+    },
+    "Example18": {
+      "user": "I want a long single-floor house.",
+      "assistant": "To create a long single-floor house, we emphasize length in the design.\n\nLayer 0: A long rectangle, 10 blocks in length and 3 blocks in width, representing the entire house."
+    },
+    "Example19": {
+      "user": "Create a house with a central courtyard.",
+      "assistant": "To build a house with a central courtyard, we'll form a U-shape layout.\n\nLayer 0: Construct the U-shape by placing blocks in a 3x3 square but leaving the middle section open. This creates a perimeter for the house with an open central courtyard. Place 3 blocks for each side of the U, and ensure there's an opening in the center for the courtyard."
+    },
+    "Example20": {
+      "user": "I want a square house with an internal division.",
+      "assistant": "To construct a square house with an internal division, we'll create a simple layout with a partition inside.\n\nLayer 0: Start with a 4x4 square to outline the house.\nLayer 1: Inside the square, add a row of blocks down the middle to divide the internal space into two equal parts, representing rooms or areas within the house."
+    },
+    "Example21": {
+      "user": "Build a compact cottage with an open front.",
+      "assistant": "To build a compact cottage with an open front, we'll create a simple yet welcoming design.\n\nLayer 0: A rectangle 4 blocks wide and 3 blocks deep. Leave the front side (one of the shorter sides) open to symbolize an open front."
+    },
+    "Example22": {
+      "user": "I want a house with two separate wings.",
+      "assistant": "To create a house with two separate wings, we'll design a layout that branches out.\n\nLayer 0: Start with a central block row 2 blocks wide and 4 blocks long as the main corridor. At the end of the corridor, create two perpendicular rows extending 3 blocks out on both sides to form the wings."
+    },
+    "Example23": {
+      "user": "Create a studio house with a large window wall.",
+      "assistant": "To build a studio house with a large window wall, focus on an open front design to represent the window.\n\nLayer 0: Construct a 5x5 square for the house's base. On one side of the square, replace 3 middle blocks with an alternative block type to symbolize a large window wall."
+    },
+    "Example24": {
+      "user": "I want a minimalist house with a loft area.",
+      "assistant": "To construct a minimalist house with a loft area, we'll create a simple structure with an elevated space.\n\nLayer 0: A 4x4 square to outline the house. Inside, add a single block in one corner to represent stairs leading up.\nLayer 1: Over half of the base, place a 2x4 rectangle to represent the loft area, leaving space open above the stairs for access."
+    },
+    "Example25": {
+      "user": "Build a house shaped like the letter E.",
+      "assistant": "To build a house shaped like the letter E, we'll use blocks to form the distinct shape.\n\nLayer 0: Start with a straight line of 5 blocks for the backbone of the 'E'. Then, add three 2-block extensions on one side, evenly spaced to form the three arms of the letter 'E'."
+    }
+  },
+  "architect_system_message": "\nYou are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.\n  Buildings are created layer by layer, and can be 3 layers tall, labelled from 0 to 2. Buildings are made up of cubes.\n  The first layer, layer 0 is directly above the ground. The higher the number of the layer the higher it is placed.\n  Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.\n  In other words, if a player wants a square house you should build a complete 5 by 5 square that is 3 layers tall.\n  In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.\n  Structures should also maintain some realism, meaning that you shouldn't build structures that are impossible to support.\n  Use natural language when describing the plans for the buildings.\n",
+  "house_design_examples": {
+       "Example34": {
+      "user": "I want a modern house.",
+      "assistant": "FLOOR: Concrete White \n INTERIOR: Metal Blue \n EXTERIOR: Marble \n STYLE: modern"
+    },
+    "Example35": {
+      "user": "I want square block house.",
+      "assistant": "FLOOR: Concrete White \n INTERIOR: Metal Dark Blue \n EXTERIOR: Stone Light Grey \n STYLE: normal"
+    },
+    "Example36": {
+      "user": "I want a rounded house.",
+      "assistant": "FLOOR: Metal Blue \n INTERIOR: Marble \n EXTERIOR: Molten Marble \n STYLE: rounded"
+    },
+    "Example37": {
+      "user": "I want a beach house with a warm feel.",
+      "assistant": "FLOOR: Sand \n INTERIOR: Honeycomb White \n EXTERIOR: Plastic Orange \n STYLE: normal"
+    },
+    "Example38": {
+      "user": "Design me a cabin in the woods.",
+      "assistant": "FLOOR: Grey Light Wood \n INTERIOR: Concrete Grey \n EXTERIOR: Dark Red \n STYLE: normal"
+    },
+    "Example39": {
+      "user": "I'm looking for a futuristic-looking studio.",
+      "assistant": "FLOOR: Concrete Dark Stripes Blue \n INTERIOR: Metal Blue \n EXTERIOR: Dark Concrete \n STYLE: modern"
+    },
+    "Example40": {
+      "user": "I want an artistic studio with a unique exterior.",
+      "assistant": "FLOOR: Marble \n INTERIOR: Metal Dark Blue \n EXTERIOR: Molten Marble \n STYLE: rounded"
+    },
+    "Example41": {
+      "user": "I need a cozy and small mountain retreat.",
+      "assistant": "FLOOR: Concrete White \n INTERIOR: Concrete Grey \n EXTERIOR: Stone Light Grey \n STYLE: normal"
+    },
+    "Example1": {
+      "user": "Design a modern villa with a sleek look.",
+      "assistant": "FLOOR: Dark Marble \n INTERIOR: Plastic Red\n EXTERIOR: Metal Dark Blue \n STYLE modern"
+      }
+  },
+  "addons_examples": {
+    "Example35": {
+      "user": "Your job is to take the existing building and add doors and windows to it. Here is the syntax of the code that creates the buildings: B:BLOCK_TYPE|LOCATION|LAYER|ADD-ON. Create a block with no windows at point 0,0 B:CUBE|0,0|0",
+      "assistant": "B:CUBE|0,0|0"
+    },
+    "Example36": {
+      "user": "Create a cube at the point 2,3, on the 1st layer (meaning above the other layer). We then add a window to this block, facing the point 2,2. Here is the building with no windows or doors B:CUBE|0,0|0 B:CUBE|0,0|1 B:CUBE|0,0|2",
+      "assistant": "B:CUBE|0,0|1|WINDOW|0,0"
+    },
+    "Example37": {
+      "user": "Here is the building with no windows or doors B:CUBE|0,0|0 B:CUBE|1,0|0 B:CUBE|0,1|0 B:CUBE|1,1|0 B:CUBE|1,1|1 B:CUBE|1,0|1",
+      "assistant": "B:CUBE|0,0|0|DOOR|0,0 B:CUBE|1,1|1|WINDOW|0,0"
+    },
+    "Example38": {
+      "user": "Create a door in the middle of the house. B:CUBE|0,0 B:CUBE|1,0 B:CUBE|0,1 B:CUBE|1,1",
+      "assistant": "B:CUBE|0,0|0|DOOR|0,0"
+    },
+    "Example39": {
+      "user": "I've built a two-layer structure and thinking where a window could fit. Here are the blocks:\nB:CUBE|2,2|0\nB:CUBE|2,3|0\nB:CUBE|2,2|1\nB:CUBE|2,3|1",
+      "assistant": "B:CUBE|2,2|1|WINDOW|2,2\nB:CUBE|2,3|1|WINDOW|2,3"
+    },
+    "Example40": {
+      "user": "This is a layout for a garden shed, I'm not sure where the door should go:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|1,1|0",
+      "assistant": "B:CUBE|1,0|0|DOOR|1,0"
+    },
+    "Example41": {
+      "user": "Designing a lookout tower and need a door at the base and a window at the top. Here's what I have:\nB:CUBE|0,0|0\nB:CUBE|0,0|1\nB:CUBE|0,0|2\nB:CUBE|0,0|3",
+      "assistant": "B:CUBE|0,0|0|DOOR|0,0\nB:CUBE|0,0|3|WINDOW|0,0"
+    },
+    "Example42": {
+      "user": "I want to add a feature window to my two-story house, here's the frame:\nB:CUBE|1,1|0\nB:CUBE|1,2|0\nB:CUBE|1,1|1\nB:CUBE|1,2|1",
+      "assistant": "B:CUBE|1,1|1|WINDOW|1,1\nB:CUBE|1,2|1|WINDOW|1,2"
+    },
+    "Example43": {
+      "user": "Creating a workshop space, need a large entrance. Blocks are as follows:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|1,1|0",
+      "assistant": "B:CUBE|1,0|0|DOOR|1,0\nB:CUBE|2,0|0|DOOR|2,0"
+    }
+  }
+}
+
+

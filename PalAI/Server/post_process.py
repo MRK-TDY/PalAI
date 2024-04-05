@@ -80,16 +80,19 @@ class PostProcess:
     def style(self, style):
         self.remove_floating_blocks()
         self.fill_empty_spaces()
-        for rule in self.styles["styles"][style]["rules"]:
-            matching_positions = self.apply_kernel(rule["filter"])
-            for effect in rule["effects"]:
-                for c in matching_positions:
-                    placeholders = { "rotation" : int(c[1]) }
-                    block = self.grid[c[0][0]][c[0][1]][c[0][2]]
-                    block[effect["key"]] = effect["value"].format_map(placeholders)
-                    if block[effect["key"]].isdigit():
-                        block[effect["key"]] = int(block[effect["key"]])
-        return self.grid_to_json()
+        if(style in  self.styles["styles"]):
+            for rule in self.styles["styles"][style]["rules"]:
+                matching_positions = self.apply_kernel(rule["filter"])
+                for effect in rule["effects"]:
+                    for c in matching_positions:
+                        placeholders = { "rotation" : int(c[1]) }
+                        block = self.grid[c[0][0]][c[0][1]][c[0][2]]
+                        block[effect["key"]] = effect["value"].format_map(placeholders)
+                        if block[effect["key"]].isdigit():
+                            block[effect["key"]] = int(block[effect["key"]])
+            return self.grid_to_json()
+        else:
+            return self.grid_to_json()
 
     def remove_floating_blocks(self):
         # TODO: edge case where building is a single block deletes building
