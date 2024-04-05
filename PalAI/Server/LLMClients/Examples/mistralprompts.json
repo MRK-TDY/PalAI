@@ -30,7 +30,7 @@
     },
     "Example8": {
       "user": "Create a spiral pattern starting from the center.",
-      "assistant": "Creating a spiral pattern requires progressively increasing the perimeter of squares.\n\nStart by placing the first cube at the center:\nB:CUBE|0,0\n\nExpand around it to make a 3x3 square:\nB:CUBE|-1,-1 to B:CUBE|1,-1 (bottom row)\nB:CUBE|-1,0 to B:CUBE|1,0 (middle row)\nB:CUBE|-1,1 to B:CUBE|1,1 (top row)\n\nContinue expanding outward to form the next layers of the spiral, increasing the square's size by 2 blocks for each layer."
+      "assistant": "Creating a spiral pattern requires progressively increasing the perimeter of squares.\n\nStart by placing the first cube at the center:\nB:CUBE|0,0\n\nExpand around it to make a 3x3 square:\nB:CUBE|-1,-1 to B:CUBE|1,-1 (bottom row)\nB:CUBE|-1,0 to B:CUBE|1,0 (middle row)\nB:CUBE|-1,1 to B:CUBE|1,1 (top row)\n"
     }
   },
   "bricklayer_system_message": "\nYou are PalAI, an AI in control of a program that creates buildings in virtual environments.\n  Your job is to respond to users' requests with pal-script, a special code that will be used to generate the requests building.\n  Pal-script is a simple language in which each line of code represents a block in the building.\n  A line has the following format:\n  {example}\n\n  Lines can't contain anything other than what was specified above.\n  Lines must start with `B:` and then the type of block, followed by `|` and then the location of the block.\n  BLOCK_TYPE is the type of block. The blocks you have access to are these: CUBE.\n  LOCATION is the location of the block. It is given as x,y. It should be noted that the position (0,0) is the center and you can use negative values \n  Note that the building is built layer by layer, so you only need to worry about the current layer, which is why the location is only two values.\n  You will start by explaining which blocks you will use and where, in order to create the requested building.\n Please think before you speak\n",
@@ -104,39 +104,39 @@
   "house_design_examples": {
        "Example34": {
       "user": "I want a modern house.",
-      "assistant": "FLOOR:Concrete White\nINTERIOR: Metal Blue\nEXTERIOR: Marble\nSTYLE:modern"
+      "assistant": "\nFLOOR:Concrete White\nINTERIOR: Metal Blue\nEXTERIOR: Marble\nSTYLE:modern"
     },
     "Example35": {
       "user": "I want square block house.",
-      "assistant": "FLOOR:Concrete White\nINTERIOR:Metal Dark Blue \nEXTERIOR:Stone Light Grey\nSTYLE:normal"
+      "assistant": "\nFLOOR:Concrete White\nINTERIOR:Metal Dark Blue \nEXTERIOR:Stone Light Grey\nSTYLE:normal"
     },
     "Example36": {
       "user": "I want a rounded house.",
-      "assistant": "FLOOR: Metal Blue\nINTERIOR:Marble\nEXTERIOR: Molten Marble\nSTYLE:rounded"
+      "assistant": "\nFLOOR: Metal Blue\nINTERIOR:Marble\nEXTERIOR: Molten Marble\nSTYLE:rounded"
     },
     "Example37": {
       "user": "I want a beach house with a warm feel.",
-      "assistant": "FLOOR:Sand\nINTERIOR:Honeycomb White\nEXTERIOR:Plastic Orange\nSTYLE:normal"
+      "assistant": "\nFLOOR:Sand\nINTERIOR:Honeycomb White\nEXTERIOR:Plastic Orange\nSTYLE:normal"
     },
     "Example38": {
       "user": "Design me a cabin in the woods.",
-      "assistant": "FLOOR:Grey Light Wood\nINTERIOR:Concrete Grey\nEXTERIOR:Dark Red\nSTYLE: normal"
+      "assistant": "\nFLOOR:Grey Light Wood\nINTERIOR:Concrete Grey\nEXTERIOR:Dark Red\nSTYLE: normal"
     },
     "Example39": {
       "user": "I'm looking for a futuristic-looking studio.",
-      "assistant": "FLOOR:Concrete Dark Stripes Blue\nINTERIOR:Metal Blue\nEXTERIOR:Dark Concrete\nSTYLE:modern"
+      "assistant": "\nFLOOR:Concrete Dark Stripes Blue\nINTERIOR:Metal Blue\nEXTERIOR:Dark Concrete\nSTYLE:modern"
     },
     "Example40": {
       "user": "I want an artistic studio with a unique exterior.",
-      "assistant": "FLOOR:Marble\nINTERIOR:Metal Dark Blue\nEXTERIOR:Molten Marble\nSTYLE:rounded"
+      "assistant": "\nFLOOR:Marble\nINTERIOR:Metal Dark Blue\nEXTERIOR:Molten Marble\nSTYLE:rounded"
     },
     "Example41": {
       "user": "I need a cozy and small mountain retreat.",
-      "assistant": "FLOOR:Concrete White\nINTERIOR:Concrete Grey\nEXTERIOR:Stone Light Grey\nSTYLE:normal"
+      "assistant": "\nFLOOR:Concrete White\nINTERIOR:Concrete Grey\nEXTERIOR:Stone Light Grey\nSTYLE:normal"
     },
     "Example1": {
       "user": "Design a modern villa with a sleek look.",
-      "assistant": "FLOOR:Dark Marble\nINTERIOR:Plastic Red\nEXTERIOR:Metal Dark Blue\nSTYLE:modern"
+      "assistant": "\nFLOOR:Dark Marble\nINTERIOR:Plastic Red\nEXTERIOR:Metal Dark Blue\nSTYLE:modern"
       }
   },
   "addons_examples": {

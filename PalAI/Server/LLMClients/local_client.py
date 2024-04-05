@@ -44,37 +44,43 @@ class LocalClient(LLMClient):
 
         self.prompt_total += system_message
         self.prompt_total += prompt
-
         messages = self.preparePrompt(prompt, type)
 
-        length= len(prompt) + len(system_message)
+        length = 0
+        for m in messages:
+            length += len(m["content"])
         encodeds = self.tokenizer.apply_chat_template(messages, return_tensors="pt")
 
         model_inputs = encodeds.to("cuda")
         self.model.to("cuda")
-        generated_ids = self.model.generate(model_inputs, max_new_tokens=250, do_sample=True, temperature=0.1, num_return_sequences=1, pad_token_id=self.tokenizer.eos_token_id) #, repetition_penalty=0.0)
+        generated_ids = self.model.generate(model_inputs, max_new_tokens=300, do_sample=True, temperature=0.1, num_return_sequences=1, pad_token_id=self.tokenizer.eos_token_id) #, repetition_penalty=0.0)
         decoded = self.tokenizer.batch_decode(generated_ids)
         response = decoded[0]
-
+        #print("--------------------------------------------------------- \n LLM RESPONSE " + str(response))
         #if self.verbose:
         #    print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
 
-        #print("---------------------- \n Original LLM RESPONSE: " + str(response))
-        response = self.extractResponse(response, messages)
+        response = self.extractResponse(response, messages, type, length)
         print("---------------------------------------- \n Filtered LLM RESPONSE: " + str(response))
         print("----------------------------------------------------------")
         return response
 
-    def extractResponse(self, response, messages):
-        
-        for m in messages:
-            response = response.replace(m["content"], "")
+    def extractResponse(self, response, messages, type="normal", length=0):
+
         response = response.replace("[/INST]", "")
         response = response.replace("[INST]", "")
         response = response.replace("</s>", "")
         response = response.replace("<s>", "")
         response = response.replace("  ", "")
+        length += 1
+#        if (type == "materials"):
+        response = response[length:]
+#            print("Total:" + response + "\n Length:" + str(length))
+#        else:
+#            for m in messages:
+#                response = response.replace(m["content"], "")
         response = response.replace("\n \n", "")
+
         return response
 
     async def get_llm_single_response(self, context_type,context_file, original_prompt, debug=False):
@@ -118,16 +124,16 @@ class LocalClient(LLMClient):
         prompt = prompt.replace("\n", "")
 
         if (type == 'architect'):
-            print("Architect: \n" + prompt)
+            #print("Architect: \n" + prompt)
             messages = mistral_examples.getArchitectExamples(prompt)
         elif (type == 'bricklayer'):
-            print("Bricklayer: \n" + prompt)
+            #print("Bricklayer: \n" + prompt)
             messages = mistral_examples.getBrickExamples(prompt)
         elif (type == 'materials'):
-            print("Materials: \n" + prompt)
+            #print("Materials: \n" + prompt)
             messages = mistral_examples.getMaterialExamples(prompt)
         elif (type == 'addons'):
-            print("Addons: \n" + prompt)
+            #print("Addons: \n" + prompt)
             messages = mistral_examples.getAddOnsExamples(prompt)
         else:
             messages = mistral_examples.getArchitectExamples(prompt)
@@ -150,3 +156,4 @@ if __name__ == "main":
 from configparser import RawConfigParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+

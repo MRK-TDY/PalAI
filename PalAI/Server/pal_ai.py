@@ -76,11 +76,11 @@ class PalAI():
         await self.build_structure()
         print(f"{Fore.BLUE}Received basic structure")
 
-        await self.get_artist_response()
-        print(f"{Fore.BLUE}Received artist response")
-
         await self.apply_add_ons()
         print(f"{Fore.BLUE}Received add-ons")
+
+        await self.get_artist_response()
+        print(f"{Fore.BLUE}Received artist response")
 
         await self.apply_style()
         print(f"{Fore.BLUE}Applied style {self.style}")
@@ -149,15 +149,19 @@ class PalAI():
                 self.original_prompt, type='materials')
         material = {}
         for l in materials_response.split("\n"):
-            l = l.upper().split(": ")
+            l = l.upper().split(":")
+            print("HERE IS L: " + str(l))
             if len(l) == 2:
-                print("L: " + str(l))
                 if "STYLE" in l[0]:
                     self.style = l[1].lower().strip()
-                if l[0] in ["INTERIOR", "EXTERIOR", "FLOOR", "STYLE"]:
-                    material[l[0]] = l[1].strip()
+                    material["STYLE"] = l[1].strip()
+                elif "FLOOR" in l[0]:
+                    material["FLOOR"] = l[1].strip()
+                elif "INTERIOR" in l[0]:
+                    material["INTERIOR"] = l[1].strip()
+                elif "EXTERIOR" in l[0]:
+                    material["EXTERIOR"] = l[1].strip()
 
-        print("MATERIALS RESPONSE: " + str(materials_response.split("\n")))
         self.api_result["materials"] = material
         if self.ws is not None:
             print("WS Material: " + str(material))
@@ -248,7 +252,6 @@ class PalAI():
                 blocks.append(aux)
             except:
                 continue
-
         return blocks
 
     def extract_materials(self, material_response):
