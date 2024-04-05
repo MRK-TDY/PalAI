@@ -104,39 +104,39 @@
   "house_design_examples": {
        "Example34": {
       "user": "I want a modern house.",
-      "assistant": "FLOOR: Concrete White \n INTERIOR: Metal Blue \n EXTERIOR: Marble \n STYLE: modern"
+      "assistant": "FLOOR:Concrete White\nINTERIOR: Metal Blue\nEXTERIOR: Marble\nSTYLE:modern"
     },
     "Example35": {
       "user": "I want square block house.",
-      "assistant": "FLOOR: Concrete White \n INTERIOR: Metal Dark Blue \n EXTERIOR: Stone Light Grey \n STYLE: normal"
+      "assistant": "FLOOR:Concrete White\nINTERIOR:Metal Dark Blue \nEXTERIOR:Stone Light Grey\nSTYLE:normal"
     },
     "Example36": {
       "user": "I want a rounded house.",
-      "assistant": "FLOOR: Metal Blue \n INTERIOR: Marble \n EXTERIOR: Molten Marble \n STYLE: rounded"
+      "assistant": "FLOOR: Metal Blue\nINTERIOR:Marble\nEXTERIOR: Molten Marble\nSTYLE:rounded"
     },
     "Example37": {
       "user": "I want a beach house with a warm feel.",
-      "assistant": "FLOOR: Sand \n INTERIOR: Honeycomb White \n EXTERIOR: Plastic Orange \n STYLE: normal"
+      "assistant": "FLOOR:Sand\nINTERIOR:Honeycomb White\nEXTERIOR:Plastic Orange\nSTYLE:normal"
     },
     "Example38": {
       "user": "Design me a cabin in the woods.",
-      "assistant": "FLOOR: Grey Light Wood \n INTERIOR: Concrete Grey \n EXTERIOR: Dark Red \n STYLE: normal"
+      "assistant": "FLOOR:Grey Light Wood\nINTERIOR:Concrete Grey\nEXTERIOR:Dark Red\nSTYLE: normal"
     },
     "Example39": {
       "user": "I'm looking for a futuristic-looking studio.",
-      "assistant": "FLOOR: Concrete Dark Stripes Blue \n INTERIOR: Metal Blue \n EXTERIOR: Dark Concrete \n STYLE: modern"
+      "assistant": "FLOOR:Concrete Dark Stripes Blue\nINTERIOR:Metal Blue\nEXTERIOR:Dark Concrete\nSTYLE:modern"
     },
     "Example40": {
       "user": "I want an artistic studio with a unique exterior.",
-      "assistant": "FLOOR: Marble \n INTERIOR: Metal Dark Blue \n EXTERIOR: Molten Marble \n STYLE: rounded"
+      "assistant": "FLOOR:Marble\nINTERIOR:Metal Dark Blue\nEXTERIOR:Molten Marble\nSTYLE:rounded"
     },
     "Example41": {
       "user": "I need a cozy and small mountain retreat.",
-      "assistant": "FLOOR: Concrete White \n INTERIOR: Concrete Grey \n EXTERIOR: Stone Light Grey \n STYLE: normal"
+      "assistant": "FLOOR:Concrete White\nINTERIOR:Concrete Grey\nEXTERIOR:Stone Light Grey\nSTYLE:normal"
     },
     "Example1": {
       "user": "Design a modern villa with a sleek look.",
-      "assistant": "FLOOR: Dark Marble \n INTERIOR: Plastic Red\n EXTERIOR: Metal Dark Blue \n STYLE modern"
+      "assistant": "FLOOR:Dark Marble\nINTERIOR:Plastic Red\nEXTERIOR:Metal Dark Blue\nSTYLE:modern"
       }
   },
   "addons_examples": {

@@ -76,11 +76,11 @@ class PalAI():
         await self.build_structure()
         print(f"{Fore.BLUE}Received basic structure")
 
-        await self.apply_add_ons()
-        print(f"{Fore.BLUE}Received add-ons")
-
         await self.get_artist_response()
         print(f"{Fore.BLUE}Received artist response")
+
+        await self.apply_add_ons()
+        print(f"{Fore.BLUE}Received add-ons")
 
         await self.apply_style()
         print(f"{Fore.BLUE}Applied style {self.style}")
@@ -111,7 +111,6 @@ class PalAI():
                     example =  self.prompts_file["basic_example"]
 
                 system_message = self.system_prompt.format(example=example)
-                print("GOING FOR BRICKLAYER")
                 response = await self.llm_client.get_llm_response(system_message, formatted_prompt, type='bricklayer')
                 self.history.append(f"Layer {i}:")
                 self.history.append(current_layer_prompt)
@@ -152,13 +151,16 @@ class PalAI():
         for l in materials_response.split("\n"):
             l = l.upper().split(": ")
             if len(l) == 2:
-                if l[0] == "STYLE":
+                print("L: " + str(l))
+                if "STYLE" in l[0]:
                     self.style = l[1].lower().strip()
                 if l[0] in ["INTERIOR", "EXTERIOR", "FLOOR", "STYLE"]:
                     material[l[0]] = l[1].strip()
 
+        print("MATERIALS RESPONSE: " + str(materials_response.split("\n")))
         self.api_result["materials"] = material
         if self.ws is not None:
+            print("WS Material: " + str(material))
             message = {"value": material}
             message["event"] = "material"
             self.ws.send(json.dumps(message))

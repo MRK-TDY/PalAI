@@ -112,8 +112,9 @@ class LocalClient(LLMClient):
 
     def preparePrompt(self, prompt,type):
 
-        prompt = prompt.replace("USER: ","")
+        prompt = prompt.replace("USER: ", "")
         prompt = prompt.replace("ARCHITECT:", "")
+        prompt = prompt.replace("ASSISTANT:", "")
         prompt = prompt.replace("\n", "")
 
         if (type == 'architect'):

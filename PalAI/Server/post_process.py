@@ -80,7 +80,7 @@ class PostProcess:
     def style(self, style):
         self.remove_floating_blocks()
         self.fill_empty_spaces()
-        if(style in  self.styles["styles"]):
+        if(style in self.styles["styles"]):
             for rule in self.styles["styles"][style]["rules"]:
                 matching_positions = self.apply_kernel(rule["filter"])
                 for effect in rule["effects"]:
