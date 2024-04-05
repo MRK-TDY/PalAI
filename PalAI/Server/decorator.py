@@ -114,10 +114,10 @@ class Decorator:
                     return False
 
             if r == "WALL":
-                neighbor = self.pixel_grid[new_pos[0]] \
+                neighbor = self.grid[new_pos[0]] \
                         [new_pos[1]] \
                         [new_pos[2]]
-                if neighbor != 1:
+                if neighbor is not None:
                     return False
 
             elif r == "EMPTY":
@@ -137,6 +137,7 @@ class Decorator:
 
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
         collapsed = []
+        used_decorations_count = {d["name"]: 0 for d in self.decorations if d["limit"] > 0}
 
         # foreach floor level
         for y in range(self.size_y):
@@ -144,19 +145,38 @@ class Decorator:
             current_floor = [b for b in self.floor_list if self.get_block_dict_position(b)[0] == y]
             for b in current_floor:
                 b["options"] = self.decorations.copy()
+                to_remove = []
                 for o in b["options"]:
                     if not self._is_valid_option(o, b):
-                        b["options"].remove(o)
+                        to_remove.append(o)
+
+                for o in to_remove:
+                    b["options"].remove(o)
 
 
             # Pick the block with the smallest entropy
             while len(current_floor) > 0:
 
                 #Collapse minimum entropy block
-                min_entropy_block = sorted(current_floor, key=lambda x: len(x["options"]))[0]
+                min_entropy_block = sorted(current_floor, key=lambda x: len(x["options"])+ random.random())[0]
                 current_floor.remove(min_entropy_block)
                 choice = random.choice(min_entropy_block["options"])
                 c = {"type": choice["name"], "rotation": choice["rotation"], "position": min_entropy_block["position"]}
+
+                if choice["limit"] > 0:
+                    used_decorations_count[choice["name"]] += 1
+                    if used_decorations_count[choice["name"]] >= choice["limit"]:
+                        for b in current_floor:
+                            b["options"] = [o for o in b["options"] if o["name"] != choice["name"]]
+
+                for i, r in enumerate(choice["adjacency"]):
+                    if r == "EMPTY":
+                        new_pos = (y, self.get_block_dict_position(min_entropy_block)[1] + directions[i][0], \
+                                self.get_block_dict_position(min_entropy_block)[2] + directions[i][1])
+                        neighbor = self.grid[new_pos[0]][new_pos[1]][new_pos[2]]
+                        if neighbor is not None:
+                            neighbor["options"] = [o for o in neighbor["options"] if o["name"] == "EMPTY"]
+
 
                 if c["type"] != "EMPTY":
                     collapsed.append(c)

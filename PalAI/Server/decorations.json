@@ -3,7 +3,7 @@
         {
             "name": "Table",
             "limit": 2,
-            "adjacency": ["WALL", "", "EMPTY", ""],
+            "adjacency": ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
             "subdivision": 1
         },
         {
