@@ -37,7 +37,7 @@ def kernel_evaluate(prompt, output):
         total_blocks = [block for row in baseline_kernel for block in row].count(1)
         pp = PostProcess()
         pp.import_building(output)
-        matches = pp.apply_kernel(baseline_kernel)
+        matches = pp._apply_kernel(baseline_kernel)
 
         print("Expected Layer: " + str(baseline_kernel))
         if(total_blocks <= 0):

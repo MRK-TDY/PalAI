@@ -5,12 +5,21 @@ from collections import deque
 
 
 class PostProcess:
-    def __init__(self, style_sheet = "styles.json"):
+    def __init__(self, style_sheet="styles.json"):
+        """Responsible for applying post-processing and style rules to a building
 
-        with open(os.path.join(os.path.dirname(__file__), style_sheet), 'r') as fptr:
+        :param style_sheet: list of available styles
+        :type style_sheet: (str) relative path to the style sheet json
+        """
+        with open(os.path.join(os.path.dirname(__file__), style_sheet), "r") as fptr:
             self.styles = json.load(fptr)
 
     def import_building(self, building):
+        """ Imports a building from a list of blocks, required to be called before applying any style rules
+
+        :param building: building to be imported
+        :type building: list(dict) list of blocks
+        """
         positions = [self.get_block_dict_position(b) for b in building]
 
         self.size_x = max(positions, key=lambda x: x[0])[0] + 1
@@ -22,7 +31,9 @@ class PostProcess:
             [[None for _ in range(self.size_z)] for _ in range(self.size_x)]
             for _ in range(self.size_y)
         ]
-        self.pixel_grid = np.ones((self.size_y, self.size_x, self.size_z), dtype=int) * -1
+        self.pixel_grid = (
+            np.ones((self.size_y, self.size_x, self.size_z), dtype=int) * -1
+        )
 
         for b in building:
             pos = self.get_block_dict_position(b)
@@ -30,19 +41,38 @@ class PostProcess:
             self.pixel_grid[pos[1], pos[0], pos[2]] = 1
 
     def get_available_styles(self):
+        """ Returns a list of available styles
+
+        :return: Formatted paragraph of available styles and their descriptions
+        :rtype: str
+        """
         styles = ""
         for s in self.styles["styles"].keys():
             styles += f"{s}: {self.styles['styles'][s]['description']}\n"
         return styles
 
     def fill_empty_spaces(self):
+        """ Fills in empty spaces in the building with cubes
+        An empty space is a region of grid spaces that do not contain any blocks
+        And are surrounded by blocks on all sides and above (but not necessarily below)"""
         label = 0
-        neighbors = [(0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0),
-                     (1, 0, 0), (-1, 0, 0)]
+        neighbors = [
+            (0, 0, 1),
+            (0, 0, -1),
+            (0, 1, 0),
+            (0, -1, 0),
+            (1, 0, 0),
+            (-1, 0, 0),
+        ]
         building_array = np.copy(self.pixel_grid)
 
-        #pad outside of the building such that all empty spaces on the edges are connected
-        building_array = np.pad(building_array, ((0, 1), (1, 1), (1, 1)), mode='constant', constant_values=-1)
+        # pad outside of the building such that all empty spaces on the edges are connected
+        building_array = np.pad(
+            building_array,
+            ((0, 1), (1, 1), (1, 1)),
+            mode="constant",
+            constant_values=-1,
+        )
         yDim, xDim, zDim = building_array.shape
 
         labelArray = np.zeros_like(building_array)
@@ -64,28 +94,37 @@ class PostProcess:
                                     if label > 1:
                                         # found empty space, fill it in
                                         self.grid[k][i - 1][j - 1] = {
-                                                "type": "CUBE",
-                                                "position": f"({i - 1}, {k}, {j - 1})"
-                                                }
+                                            "type": "CUBE",
+                                            "position": f"({i - 1}, {k}, {j - 1})",
+                                        }
                                         self.pixel_grid[k, i - 1, j - 1] = 1
                                     for dy, dx, dz in neighbors:
-                                        ny, nx, nz = y +dy, x + dx, z + dz
-                                        if 0 <= nx < xDim and 0 <= nz < zDim \
-                                            and 0 <= ny < yDim \
-                                            and not statusArray[ny, nx, nz] \
-                                            and building_array[ny, nx, nz] == -1:
+                                        ny, nx, nz = y + dy, x + dx, z + dz
+                                        if (
+                                            0 <= nx < xDim
+                                            and 0 <= nz < zDim
+                                            and 0 <= ny < yDim
+                                            and not statusArray[ny, nx, nz]
+                                            and building_array[ny, nx, nz] == -1
+                                        ):
                                             queue1.append((ny, nx, nz))
 
-
     def style(self, style):
+        """Applies the chosen style to the building
+
+        :param style: style to be applied
+        :type style: str
+        :return: building after applying the style
+        :rtype: list(dict)
+        """
         self.remove_floating_blocks()
         self.fill_empty_spaces()
-        if(style in self.styles["styles"]):
+        if style in self.styles["styles"]:
             for rule in self.styles["styles"][style]["rules"]:
                 matching_positions = self.apply_kernel(rule["filter"])
                 for effect in rule["effects"]:
                     for c in matching_positions:
-                        placeholders = { "rotation" : int(c[1]) }
+                        placeholders = {"rotation": int(c[1])}
                         block = self.grid[c[0][0]][c[0][1]][c[0][2]]
                         block[effect["key"]] = effect["value"].format_map(placeholders)
                         if block[effect["key"]].isdigit():
@@ -95,27 +134,28 @@ class PostProcess:
             return self.grid_to_json()
 
     def remove_floating_blocks(self):
+        """Removes floating blocks from the building
+        A floating block is a block that is not supported by any other block"""
         # TODO: edge case where building is a single block deletes building
+        # TODO: there may be multiple floating blocks together, which are not being removed
 
         # Remove blocks that are not supported by any other block
         floating_block_kernel = [
-                [[0, 0, 0],
-                 [0, -1, 0],
-                 [0, 0, 0]],
-
-                [[0, -1, 0],
-                 [-1, 1, -1],
-                 [0, -1, 0]],
-
-                [[0, 0, 0],
-                 [0, -1, 0],
-                 [0, 0, 0]]]
+            [[0, 0, 0], [0, -1, 0], [0, 0, 0]],
+            [[0, -1, 0], [-1, 1, -1], [0, -1, 0]],
+            [[0, 0, 0], [0, -1, 0], [0, 0, 0]],
+        ]
         matching_positions = self.apply_kernel(floating_block_kernel)
         for c in matching_positions:
             self.grid[c[0][0]][c[0][1]][c[0][2]] = None
             self.pixel_grid[c[0][0], c[0][1], c[0][2]] = -1
 
     def grid_to_json(self):
+        """ Converts the grid to a list of blocks, the common format for buildings
+
+        :return: list of blocks
+        :rtype: list(dict)
+        """
         json = []
         for yz in self.grid:
             for z in yz:
@@ -125,6 +165,17 @@ class PostProcess:
         return json
 
     def apply_kernel(self, filter_matrix):
+        """ Applies a filter to the building grid
+        A filter is a matrix of values 0, 1 or -1
+        0: Any value
+        1: Matches against a block
+        -1: Matches against an empty space
+
+        :param filter_matrix: filter to be applied
+        :type filter_matrix: list(list(int) or list(list(list(int))))
+        :return: matches found in the building grid
+        :rtype: tuple((y, x, z), rotation)
+        """
         def rotate_filter(filter_matrix, rotation):
             # Rotate the filter matrix according to the rotation value (0, 90, 180, 270 degrees)
             new_filter = []
@@ -162,14 +213,27 @@ class PostProcess:
                         for fh in range(filter_height):
                             for fd in range(filter_depth):
                                 for fw in range(filter_width):
-                                    ny, nx, nz = y + fh - height_offset, x + fw - width_offset, z + fd - depth_offset
+                                    ny, nx, nz = (
+                                        y + fh - height_offset,
+                                        x + fw - width_offset,
+                                        z + fd - depth_offset,
+                                    )
                                     # Check bounds
-                                    if 0 <= ny < self.size_y and 0 <= nx < self.size_x and 0 <= nz < self.size_z:
+                                    if (
+                                        0 <= ny < self.size_y
+                                        and 0 <= nx < self.size_x
+                                        and 0 <= nz < self.size_z
+                                    ):
                                         value = self.pixel_grid[ny][nx][nz]
                                     else:
-                                        value = -1  # Outside bounds, treat as empty space
+                                        value = (
+                                            -1
+                                        )  # Outside bounds, treat as empty space
 
-                                    if rotated_filter[fh][fd][fw] != 0 and rotated_filter[fh][fd][fw] != value:
+                                    if (
+                                        rotated_filter[fh][fd][fw] != 0
+                                        and rotated_filter[fh][fd][fw] != value
+                                    ):
                                         applies = False
                                         break
                                 if not applies:
@@ -179,12 +243,11 @@ class PostProcess:
 
                         if applies:
                             filtered_values.append(((y, x, z), orientation))
-                            break # only first orientation matches
+                            break  # only first orientation matches
 
         return filtered_values
 
-
-
     def get_block_dict_position(self, block):
+        """Returns the position of a block in the grid, in the format (y, x, z)"""
         position = block["position"].replace("(", "").replace(")", "").split(",")
         return [eval(x) for x in position]
