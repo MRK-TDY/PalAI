@@ -61,6 +61,7 @@ class TestClient(unittest.TestCase):
     def test_artist(self):
         pal_ai = self._create_pal_ai()
         pal_ai.prompt = "I want a house full of curves, use a bland white for the floor, for the interior use ahoneycomb of the same color, and for the exterior use a material that is found on the beach."
+        pal_ai.original_prompt = pal_ai.prompt
         asyncio.run(pal_ai.get_artist_response())
 
         artist_response = pal_ai.api_result["materials"]
