@@ -12,137 +12,155 @@ from PalAI.Server.pal_ai import PalAI
 from PalAI.Server.housedescription import BuildingDescriptor
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
-from PalAI.Server.LLMClients import gpt_client, together_client, google_client, anyscale_client, local_client
-
+from PalAI.Server.LLMClients import (
+    gpt_client,
+    together_client,
+    google_client,
+    anyscale_client,
+    local_client,
+)
 
 
 # Set up a directory to store uploaded images
-UPLOAD_FOLDER = 'Server/Uploads'
+UPLOAD_FOLDER = "Server/Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 
 
 app = Flask(__name__)
 sockets = Sockets(app)
 
 config = RawConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
-PORT = config.getint('server', 'port')
+PORT = config.getint("server", "port")
 
-with open(os.path.join(os.path.dirname(__file__), 'prompts.yaml'), 'r') as file:
+with open(os.path.join(os.path.dirname(__file__), "prompts.yaml"), "r") as file:
     prompts_file = yaml.safe_load(file)
 
 
-match config.get('llm', 'type'):
-    case 'gpt':
+match config.get("llm", "type"):
+    case "gpt":
         llm_client = gpt_client.GPTClient(prompts_file)
-    case 'together':
+    case "together":
         llm_client = together_client.TogetherClient(prompts_file)
-    case 'google':
+    case "google":
         llm_client = google_client.GoogleClient(prompts_file)
-    case 'anyscale':
+    case "anyscale":
         llm_client = anyscale_client.AnyscaleClient(prompts_file)
-    case 'local':
-        llm_client = local_client.LocalClient(prompts_file, verbose = True)
+    case "local":
+        llm_client = local_client.LocalClient(prompts_file, verbose=True)
+
 
 def create_pal_instance():
     return PalAI(prompts_file, llm_client)
-    #             "gpt", 'gpt-4-0125-preview')
-
+    # return PalAI("gpt", 'gpt-4-0125-preview')
 
 
 def create_descriptor_instance():
-    return BuildingDescriptor(config.get('openai', 'api_key'))
+    return BuildingDescriptor(config.get("openai", "api_key"))
 
-@sockets.route('/echo', websocket=True)
+
+@sockets.route("/echo", websocket=True)
 def test_connect(ws):
     while not ws.closed:
         message = ws.receive()
         if message:
-            print('Client connected')
+            print("Client connected")
             ws.send(message)
 
-## Is this needed
-@sockets.route('/disconnect')
-def test_disconnect():
-    print('Client disconnected')
 
-@sockets.route('/build')
+@sockets.route("/disconnect")
+def test_disconnect():
+    print("Client disconnected")
+
+
+@sockets.route("/build")
 def handle_post(ws):
-    print('Client Build Request')
+    """Main function to handle building requests.
+    Takes in a JSON with a prompt and returns a JSON with the generated building.
+    """
+
+    print("Client Build Request")
     while not ws.closed:
         message = ws.receive()
-        print('Received message' + str(message))
+        print("Received message" + str(message))
         if message:
             try:
                 json_data = json.loads(message)
-                print('Building: ' + str(json_data))
-                if 'prompt' in json_data:
+                print("Building: " + str(json_data))
+                if "prompt" in json_data:
                     pal = create_pal_instance()
-                    result = asyncio.run(pal.build(json_data['prompt'], ws))
+                    result = asyncio.run(pal.build(json_data["prompt"], ws))
                     result["event"] = "result"
                     result["message"] = "Data processed"
                     ws.send(json.dumps(result))
-                    print('Sent Json Response: ' + str(result))
+                    print("Sent Json Response: " + str(result))
                 else:
-                    ws.send(json.dumps({'message': 'Missing or invalid JSON payload'}))
-                    print('Missing or invalid JSON payload')
+                    ws.send(json.dumps({"message": "Missing or invalid JSON payload"}))
+                    print("Missing or invalid JSON payload")
             except Exception as e:
                 traceback.print_exc()
-                ws.send(json.dumps({'message': 'Error processing request', 'error': str(e)}))
-                print('message: Error processing request')
+                ws.send(
+                    json.dumps({"message": "Error processing request", "error": str(e)})
+                )
+                print("message: Error processing request")
         else:
-            ws.send(json.dumps({'message': 'No message received'}))
+            ws.send(json.dumps({"message": "No message received"}))
             print("No message received")
 
-@sockets.route('/description')
+
+@sockets.route("/description")
 def handle_post(ws):
-    print('Client Build Request')
+    """ Takes in 4 images and describes the building given.
+    """
+
+    print("Client Build Request")
     while not ws.closed:
         message = ws.receive()
-        print('Received message' + str(message))
+        print("Received message" + str(message))
         if message:
             try:
                 json_object = json.loads(message)
                 # Generate or specify your filename here. For example:
-                filenameFront = 'front.png'
-                filenameRight = 'right.png'
-                filenameLeft = 'left.png'
-                filenameBack = 'back.png'
+                filenameFront = "front.png"
+                filenameRight = "right.png"
+                filenameLeft = "left.png"
+                filenameBack = "back.png"
 
                 file_path = os.path.join(UPLOAD_FOLDER, filenameFront)
                 imgdata = base64.b64decode(json_object["front"])
-                with open(file_path, 'wb') as fileFront:
+                with open(file_path, "wb") as fileFront:
                     fileFront.write(imgdata)
 
                 file_path = os.path.join(UPLOAD_FOLDER, filenameRight)
                 imgdata = base64.b64decode(json_object["right"])
-                with open(file_path, 'wb') as fileRight:
+                with open(file_path, "wb") as fileRight:
                     fileRight.write(imgdata)
 
                 file_path = os.path.join(UPLOAD_FOLDER, filenameLeft)
                 imgdata = base64.b64decode(json_object["left"])
-                with open(file_path, 'wb') as fileLeft:
+                with open(file_path, "wb") as fileLeft:
                     fileLeft.write(imgdata)
 
                 file_path = os.path.join(UPLOAD_FOLDER, filenameBack)
                 imgdata = base64.b64decode(json_object["back"])
-                with open(file_path, 'wb') as fileBack:
+                with open(file_path, "wb") as fileBack:
                     fileBack.write(imgdata)
 
                 descriptor = create_descriptor_instance()
                 response = descriptor.get_image_description()
                 ws.send(json.dumps(response))
-                print('Sent Json Response: ' + str(response))
+                print("Sent Json Response: " + str(response))
 
             except Exception as e:
                 traceback.print_exc()
-                ws.send(json.dumps({'message': 'Error processing request', 'error': str(e)}))
-                print('message: Error processing request')
+                ws.send(
+                    json.dumps({"message": "Error processing request", "error": str(e)})
+                )
+                print("message: Error processing request")
 
 
-if __name__ == '__main__':
-    server = pywsgi.WSGIServer(('0.0.0.0', PORT), app, handler_class=WebSocketHandler)
+if __name__ == "__main__":
+    server = pywsgi.WSGIServer(("0.0.0.0", PORT), app, handler_class=WebSocketHandler)
     print(f"Running on ws://0.0.0.0:{PORT}")
     server.serve_forever()
