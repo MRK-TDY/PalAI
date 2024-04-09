@@ -12,11 +12,21 @@ from PalAI.Server.LLMClients import (
     local_client,
 )
 from PalAI.Server.post_process import PostProcess
+from PalAI.Server.decorator import Decorator
 
 
 class PalAI:
 
     def __init__(self, prompts_file, llm=None, web_socket=None):
+        """
+
+        :param prompts_file: all prompts to be used
+        :type prompts_file: dict
+        :param llm: llm client to be used or type of client (gpt, together, google, anyscale, local)
+        :type llm: str or LLMClient
+        :param web_socket: web socket to send messages to
+        :type web_socket: web_socket
+        """
         colorama.init(autoreset=True)
 
         self.material_types = [
@@ -70,6 +80,14 @@ class PalAI:
         os.chdir(os.path.dirname(__file__))
 
     async def build(self, prompt, ws=None):
+        """Constructs the entire building based on the prompt
+
+        :type prompt: string
+        :param ws: web socket to send messages to
+        :type ws: web_socket
+        :return: complete building
+        :rtype: list(dict)
+        """
         self.prompt = prompt
         self.original_prompt = prompt
         if ws is not None:
@@ -94,23 +112,27 @@ class PalAI:
         await self.apply_style()
         print(f"{Fore.BLUE}Applied style {self.style}")
 
+        await self.decorate()
+
         self.api_result["result"] = self.building
         return self.api_result
 
     async def get_architect_plan(self):
-        self.prompt = await self.llm_client.get_agent_response(
-            "architect", self.prompts_file["plan_prompt"].format(self.prompt)
+        """Gets the architect's plan for the building"""
+        self.prompt = await self.llm_client.get_llm_response(
+            self.prompts_file["plan_system_message"],
+            self.prompts_file["plan_prompt"].format(self.prompt),
+            type="architect",
         )
         self.api_result["architect"] = [l for l in self.prompt.split("\n") if l != ""]
         self.plan_list = [
             i
             for i in self.prompt.split("\n")
-            if i.lower().startswith(f"layer")
-            or i.lower().startswith(f" layer")
-            or i.lower().startswith(f"  layer")
+            if i.lstrip().lower().startswith(f"layer")
         ]
 
     async def build_structure(self):
+        """Adds the blocks of the structure, layer by layer and using only cubes for now"""
         for i, layer_prompt in enumerate(self.plan_list):
             current_layer_prompt = self.prompt_template.format(
                 prompt=layer_prompt, layer=i
@@ -122,9 +144,14 @@ class PalAI:
             # else:
             formatted_prompt = current_layer_prompt
 
+            if i == 0:
+                example = self.prompts_file["basic_example"]
+            else:
+                example = self.prompts_file["basic_example"]
 
-            response = await self.llm_client.get_agent_response(
-                "bricklayer", formatted_prompt
+            system_message = self.system_prompt.format(example=example)
+            response = await self.llm_client.get_llm_response(
+                system_message, formatted_prompt, type="bricklayer"
             )
             self.history.append(f"Layer {i}:")
             self.history.append(current_layer_prompt)
@@ -143,8 +170,23 @@ class PalAI:
             print(f"{Fore.GREEN}Received layer {i} of structure")
 
     async def apply_add_ons(self):
+        def json_to_pal_script(building):
+            """
+            Converts a building from JSON to be used to communicate with the LLM
+            :param building: json formatted building
+            :returns : (str) same building in the format that LLM's consume
+            """
+            pal_script = ""
+            for i in building:
+                type = i["type"]
+                position = i["position"].replace("(", "").replace(")", "").split(",")
+
+                pal_script += f"B:{type}|{position[2]},{position[0]}|{position[1]}"
+                pal_script += "\n"
+            return pal_script
+        """Adds doors and windows to the building"""
         plan = "\n".join(self.plan_list)
-        building = self.json_to_pal_script(self.building)
+        building = json_to_pal_script(self.building)
         add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{building}."
         add_ons = await self.llm_client.get_agent_response(
             "add_ons",
@@ -190,6 +232,7 @@ class PalAI:
             self.ws.send(json.dumps(message))
 
     async def apply_style(self):
+        """Applies the style received from the artist"""
         try:
             self.post_process.import_building(self.building)
             self.building = self.post_process.style(self.style)
@@ -209,16 +252,17 @@ class PalAI:
             type = i["type"]
             position = i["position"].replace("(", "").replace(")", "").split(",")
 
-            pal_script += f"B:{type}|{position[2]},{position[0]}|{position[1]}"
-            pal_script += "\n"
-        return pal_script
 
     def overlap_blocks(self, base_structure, extra_blocks):
-        """
-        Overlaps a base structure with a set of extra blocks
-        Returns a structure containing all blocks of both sets, prioritizing the first argument
+        """ Overlaps a base structure with a set of extra blocks
+        If there are multiple blocks in the same position, the one in the base structure is kept
+
         :param base_structure: set of blocks with priority
+        :type base_structure: list(dict)
         :param extra_blocks: set of blocks with no priority
+        :type extra_blocks: list(dict)
+        :return: structure containing all blocks of both sets, prioritizing the first argument
+        :rtype: list(dict)
         """
         for b in extra_blocks:
             if any([x for x in base_structure if x["position"] == b["position"]]):
@@ -226,12 +270,14 @@ class PalAI:
         return base_structure
 
     def extract_history(self, user_message, response):
-        """
-        Extracts history from the response.
+        """Extracts history from the response.
         Only includes lines that create blocks and doesn't include add-ons to blocks.
         This is because latter layers may not know this part of the syntax
+
         :param response: LLM response
-        :return string: Only relevant history
+        :type response: str
+        :return: Only relevant history
+        :rtype: str
         """
         aux = "User Request: " + user_message + "\n"
         for line in response.split("\n"):
@@ -243,10 +289,12 @@ class PalAI:
         return aux
 
     def extract_building_information(self, text, level=None):
-        """
-        Extracts building information from the API response.
-        :param text: API response
+        """Extracts building information from the API response.
+
+        :param text: LLM response
+        :type text: str
         :return list: List of dictionaries, where each dictionary represents a block.
+        :rtype: list(dict)
         """
         lines = text.split("\n")
         building_info = []
@@ -254,9 +302,12 @@ class PalAI:
         # match lines that have two `|` characters
         for line in lines:
             if line.startswith("B:"):
-                if level is not None:
-                    line += f"|{level}"  # if a level is given then it is not present in the script at this point
-                building_info.append(line[2:])
+                try:
+                    if level is not None:
+                        line += f"|{level}"  # if a level is given then it is not present in the script at this point
+                    building_info.append(line[2:])
+                except:
+                    print(f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}")
 
         blocks = []
         for block in building_info:
@@ -275,16 +326,7 @@ class PalAI:
                     }
                 blocks.append(aux)
             except:
+                print(f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}")
                 continue
         return blocks
 
-    def extract_materials(self, material_response):
-        materials = {}
-        for line in material_response.split("\n"):
-            if ": " in line:
-                parts = line.upper().split(": ")
-                if parts[0] in ["FLOOR", "INTERIOR", "EXTERIOR"]:
-                    # TODO: should we verify if material is on list?
-                    materials[parts[0]] = parts[1]
-
-        return materials

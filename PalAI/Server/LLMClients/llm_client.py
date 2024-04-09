@@ -1,22 +1,27 @@
 import os
 from configparser import RawConfigParser
 
-class LLMClient():
+
+class LLMClient:
 
     def __init__(self, prompts_file):
+        """Abstract class representing a client for any LLM
+
+        :param prompts_file: prompts to be used
+        :type prompts_file: dict
+        """
         self.prompts_file = prompts_file
-        self.system_prompt = self.prompts_file.get('system_prompt', "")
-        self.prompt_template = self.prompts_file.get('prompt_template', "")
+        self.system_prompt = self.prompts_file.get("system_prompt", "")
+        self.prompt_template = self.prompts_file.get("prompt_template", "")
         self.prompt_total = ""
         self.price_rate = 0.00000015
         os.chdir(os.path.dirname(__file__))
 
         self.config = RawConfigParser()
-        self.config.read('../../../config.ini')
-        self.temperature = float(self.config.get('llm', 'temperature'))
-        self.max_tokens = int(self.config.get('llm', 'max_tokens'))
-        self.verbose = bool(self.config.get('llm', 'verbose'))
-
+        self.config.read("../../../config.ini")
+        self.temperature = float(self.config.get("llm", "temperature"))
+        self.max_tokens = int(self.config.get("llm", "max_tokens"))
+        self.verbose = bool(self.config.get("llm", "verbose"))
 
     async def get_llm_response(self, system_message, prompt, image_path=""):
         pass
@@ -47,7 +52,7 @@ class LLMClient():
 
     # When it is necessary to treat the prompt more carefully. When systems need user -> assistant type of queries
     def preparePrompt(self, system_message):
-        prompt_array = system_message.split('\n')
+        prompt_array = system_message.split("\n")
         user = []
         assistant = [""]
         instructions = ""
@@ -55,23 +60,23 @@ class LLMClient():
         bUser = False
         bAssistant = False
         for p in prompt_array:
-            if(len(p) < 2):
+            if len(p) < 2:
                 continue
-            if("EXAMPLE" in p):
+            if "EXAMPLE" in p:
                 continue
-            if ("USER" in p):
+            if "USER" in p:
                 bUser = True
                 bAssistant = False
-            if ("ARCHITECT" in p):
+            if "ARCHITECT" in p:
                 bAssistant = True
                 bUser = False
                 assistant_index += 1
 
-            if (bUser):
+            if bUser:
                 user.append(p)
 
-            elif (bAssistant):
-                if(len(assistant) <= assistant_index):
+            elif bAssistant:
+                if len(assistant) <= assistant_index:
                     assistant.append(p)
                 else:
                     assistant[assistant_index] += p
@@ -79,21 +84,22 @@ class LLMClient():
             else:
                 instructions += p
 
-
         return user, assistant, instructions
 
     def SetModel(self, model_name):
         self.model_name = model_name
 
-        if ('13b' in model_name):
+        if "13b" in model_name:
             self.price_rate = 0.00000025
         else:
             self.price_rate = 0.00000015
 
-    async def get_llm_single_response(self, context_type,context_file, prompt, debug=False):
+    async def get_llm_single_response(
+        self, context_type, context_file, prompt, debug=False
+    ):
 
         system_message = context_file[context_type + "_system_message"]
-        examples =context_file[context_type + "_examples"]
+        examples = context_file[context_type + "_examples"]
         user = []
         assistant = []
         for key in examples.keys():
@@ -117,16 +123,12 @@ class LLMClient():
 
         # Note: not all arguments are currently supported and will be ignored by the backend.
         chat_completion = self.client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=0.1
+            model=self.model_name, messages=messages, temperature=0.1
         )
 
-        if (debug):
+        if debug:
             print(chat_completion.choices[0].message.content)
 
         self.prompt_total += chat_completion.choices[0].message.content
 
         return chat_completion.choices[0].message.content
-
-
