@@ -19,13 +19,33 @@ class LLMClient():
 
 
     async def get_llm_response(self, system_message, prompt, image_path=""):
-        print(response)
+        pass
 
+
+    async def get_agent_response(self, agent, prompt, **kwargs):
+        system_message = ""
+        match agent:
+            case "architect":
+                system_message = self.prompts_file["architect"]
+            case "bricklayer":
+                system_message = self.prompts_file["bricklayer"]
+            case "materials":
+                system_message = self.prompts_file["house_design"]
+                materials = kwargs.get("materials", "")
+                styles = kwargs.get("styles", "")
+                system_message.format(materials=materials, styles = styles)
+            case "add_ons":
+                system_message = self.prompts_file["addons"]
+            case _:
+                system_message = self.prompts_file["architect"]
+
+
+        return self.get_llm_response(system_message, prompt, **kwargs)
 
     def getTotalPromptsUsed(self):
         return self.prompt_total
 
-# When it is necessary to treat the prompt more carefully. When systems need user -> assistant type of queries
+    # When it is necessary to treat the prompt more carefully. When systems need user -> assistant type of queries
     def preparePrompt(self, system_message):
         prompt_array = system_message.split('\n')
         user = []
