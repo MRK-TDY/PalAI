@@ -43,8 +43,26 @@ class LocalClient(LLMClient):
         self.price_rate = 0
 
     async def get_agent_response(self, agent, prompt):
+        system_message = ""
+        match agent:
+            case "architect":
+                system_message = self.prompts_file["architect"]
+            case "bricklayer":
+                system_message = self.prompts_file["bricklayer"]
+            case "materials":
+                system_message = self.prompts_file["materials"]
+                materials = kwargs.get("materials", "")
+                styles = kwargs.get("styles", "")
+                system_message.format(materials=materials, styles = styles)
+            case "add_ons":
+                system_message = self.prompts_file["add_ons"]
+            case _:
+                system_message = self.prompts_file["architect"]
+
+
         messages = self.preparePrompt(prompt, agent)
-        return await self.get_llm_response("", prompt, messages=messages)
+        kwargs["messages"] = messages
+        return await self.get_llm_response(system_message, prompt, **kwargs)
 
     async def get_llm_response(self, system_message, prompt, **kwargs):
 
@@ -101,49 +119,6 @@ class LocalClient(LLMClient):
         #            for m in messages:
         #                response = response.replace(m["content"], "")
         response = response.replace("\n \n", "")
-
-        return response
-
-    async def get_llm_single_response(
-        self, context_type, context_file, original_prompt, debug=False
-    ):
-
-        if self.verbose:
-            print("Single response")
-        system_message = context_file[context_type + "_system_message"]
-        examples = context_file[context_type + "_examples"]
-        user = []
-        assistant = []
-        for key in examples.keys():
-            user.append(examples[key]["user"])
-            assistant.append(examples[key]["assistant"])
-
-        messages = []
-        messages.append(("system", system_message))
-        self.prompt_total += system_message
-
-        for i, user_prompt in enumerate(user):
-            messages.append(("user", user_prompt))
-            messages.append(("assistant", assistant[i]))
-            self.prompt_total += user_prompt
-            self.prompt_total += assistant[i]
-
-        self.prompt_total += original_prompt
-
-        prompt = ChatPromptTemplate.from_messages(messages)
-        llm = self.llm
-
-        self.chain = prompt | llm | StrOutputParser()
-        response = await self.chain.ainvoke(
-            {
-                "system_message": system_message,
-                "example": messages,
-                "prompt": original_prompt,
-            }
-        )
-
-        if self.verbose:
-            print(f"{Fore.CYAN}Response:{Fore.RESET} {response}")
 
         return response
 
