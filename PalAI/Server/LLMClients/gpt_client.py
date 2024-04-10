@@ -34,7 +34,7 @@ class GPTClient(LLMClient):
         self.llm = ChatOpenAI(model=self.model_name, temperature=self.temperature, api_key=self.api_key,
                               max_tokens=self.max_tokens)
 
-    async def get_llm_response(self, system_message, prompt, image_path = ""):
+    async def get_llm_response(self, system_message, prompt, image_path = "", **kwargs):
         if self.verbose:
             print(f"{colorama.Fore.GREEN}System message:{colorama.Fore.RESET} {system_message}")
             print(f"{colorama.Fore.BLUE}Prompt:{colorama.Fore.RESET} {prompt}")

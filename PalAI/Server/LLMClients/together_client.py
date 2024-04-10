@@ -17,7 +17,7 @@ class TogetherClient(LLMClient):
         together.api_key = self.api_key
 
 
-    async def get_llm_response(self, system_message, prompt, image_path=""):
+    async def get_llm_response(self, system_message, prompt, image_path="", **kwargs):
 
           actual_prompt = self.prompts_file["plan_system_message"]
           actual_prompt += prompt

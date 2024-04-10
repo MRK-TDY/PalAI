@@ -6,11 +6,12 @@ from PalAI.Server.LLMClients.llm_client import LLMClient
 
 class AnyscaleClient(LLMClient):
 
-    def __init__(self, prompts_file):
+    def __init__(self, prompts_file, **kwargs):
         LLMClient.__init__(self, prompts_file)
         self.api_key = self.config.get('anyscale', 'api_key')
         self.model_name = 'mistralai/Mistral-7B-Instruct-v0.1'
 
+        self.verbose = kwargs.get("verbose", False)
         self.client = openai.OpenAI(
             base_url="https://api.endpoints.anyscale.com/v1",
             api_key=self.api_key
@@ -18,7 +19,7 @@ class AnyscaleClient(LLMClient):
 
 
 
-    async def get_llm_response(self, system_message, prompt, image_path="", debug=False):
+    async def get_llm_response(self, system_message, prompt, image_path="", **kwargs):
 
           user, assistant, instructions = self.preparePrompt(system_message)
 
@@ -43,10 +44,9 @@ class AnyscaleClient(LLMClient):
               temperature=0.1
           )
 
-          if(debug):
+          if(self.verbose):
               print(chat_completion.choices[0].message.content)
 
-          print(chat_completion.choices[0].message.content)
           return chat_completion.choices[0].message.content
 
 

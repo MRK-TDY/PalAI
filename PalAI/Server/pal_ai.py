@@ -119,10 +119,9 @@ class PalAI:
 
     async def get_architect_plan(self):
         """Gets the architect's plan for the building"""
-        self.prompt = await self.llm_client.get_llm_response(
-            self.prompts_file["plan_system_message"],
-            self.prompts_file["plan_prompt"].format(self.prompt),
-            type="architect",
+        self.prompt = await self.llm_client.get_agent_response(
+            "architect",
+            self.prompts_file["plan_prompt"].format(self.prompt)
         )
         self.api_result["architect"] = [l for l in self.prompt.split("\n") if l != ""]
         self.plan_list = [
@@ -144,14 +143,14 @@ class PalAI:
             # else:
             formatted_prompt = current_layer_prompt
 
-            if i == 0:
-                example = self.prompts_file["basic_example"]
-            else:
-                example = self.prompts_file["basic_example"]
+            # if i == 0:
+            #     example = self.prompts_file["basic_example"]
+            # else:
+            #     example = self.prompts_file["basic_example"]
 
-            system_message = self.system_prompt.format(example=example)
-            response = await self.llm_client.get_llm_response(
-                system_message, formatted_prompt, type="bricklayer"
+            response = await self.llm_client.get_agent_response(
+                "bricklayer",
+                formatted_prompt
             )
             self.history.append(f"Layer {i}:")
             self.history.append(current_layer_prompt)
@@ -211,8 +210,7 @@ class PalAI:
 
         material = {}
         for l in materials_response.split("\n"):
-            l = l.upper().split(":")
-            print("HERE IS L: " + str(l))
+            l = [i.strip() for i in l.upper().split(":")]
             if len(l) == 2:
                 if "STYLE" in l[0]:
                     self.style = l[1].lower().strip()
@@ -240,6 +238,18 @@ class PalAI:
             self.style = "no style"
             print("Style Error")
             self.ws.send(json.dumps("Error found with post-processing"))
+
+    async def decorate(self):
+        decorator = Decorator()
+        decorator.import_building(self.building)
+        self.decorations = decorator.decorate()
+
+        self.api_result["decorations"] = self.decorations
+
+        if self.ws is not None:
+            message = {"value": self.decorations}
+            message["event"] = "decorations"
+            self.ws.send(json.dumps(message))
 
     def json_to_pal_script(self, building):
         """

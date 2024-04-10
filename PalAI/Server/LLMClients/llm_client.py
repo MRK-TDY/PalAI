@@ -23,7 +23,7 @@ class LLMClient:
         self.max_tokens = int(self.config.get("llm", "max_tokens"))
         self.verbose = bool(self.config.get("llm", "verbose"))
 
-    async def get_llm_response(self, system_message, prompt, image_path=""):
+    async def get_llm_response(self, system_message, prompt, image_path="", **kwargs):
         pass
 
 
@@ -35,17 +35,17 @@ class LLMClient:
             case "bricklayer":
                 system_message = self.prompts_file["bricklayer"]
             case "materials":
-                system_message = self.prompts_file["house_design"]
+                system_message = self.prompts_file["materials"]
                 materials = kwargs.get("materials", "")
                 styles = kwargs.get("styles", "")
                 system_message.format(materials=materials, styles = styles)
             case "add_ons":
-                system_message = self.prompts_file["addons"]
+                system_message = self.prompts_file["add_ons"]
             case _:
                 system_message = self.prompts_file["architect"]
 
 
-        return self.get_llm_response(system_message, prompt, **kwargs)
+        return await self.get_llm_response(system_message, prompt, **kwargs)
 
     def getTotalPromptsUsed(self):
         return self.prompt_total
@@ -94,41 +94,3 @@ class LLMClient:
         else:
             self.price_rate = 0.00000015
 
-    async def get_llm_single_response(
-        self, context_type, context_file, prompt, debug=False
-    ):
-
-        system_message = context_file[context_type + "_system_message"]
-        examples = context_file[context_type + "_examples"]
-        user = []
-        assistant = []
-        for key in examples.keys():
-            user.append(examples[key]["user"])
-            assistant.append(examples[key]["assistant"])
-
-        messages = []
-        messages.append({"role": "system", "content": system_message})
-        self.prompt_total += system_message
-
-        for i, user_prompt in enumerate(user):
-            messages.append({"role": "user", "content": user_prompt})
-            messages.append({"role": "assistant", "content": assistant[i]})
-            self.prompt_total += user_prompt
-            self.prompt_total += assistant[i]
-
-        prompt = prompt.replace("ARCHITECT:\n", "")
-        messages.append({"role": "user", "content": prompt})
-
-        self.prompt_total += prompt
-
-        # Note: not all arguments are currently supported and will be ignored by the backend.
-        chat_completion = self.client.chat.completions.create(
-            model=self.model_name, messages=messages, temperature=0.1
-        )
-
-        if debug:
-            print(chat_completion.choices[0].message.content)
-
-        self.prompt_total += chat_completion.choices[0].message.content
-
-        return chat_completion.choices[0].message.content
