@@ -42,7 +42,7 @@ class LocalClient(LLMClient):
         self.hf = HuggingFacePipeline(pipeline=self.pipe)
         self.price_rate = 0
 
-    async def get_agent_response(self, agent, prompt):
+    async def get_agent_response(self, agent, prompt, **kwargs):
         system_message = ""
         match agent:
             case "architect":

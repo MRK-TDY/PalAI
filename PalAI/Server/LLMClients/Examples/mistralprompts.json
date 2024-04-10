@@ -33,8 +33,7 @@
             "assistant": "Creating a spiral pattern requires progressively increasing the perimeter of squares.\n\nStart by placing the first cube at the center:\nB:CUBE|0,0\n\nExpand around it to make a 3x3 square:\nB:CUBE|-1,-1 to B:CUBE|1,-1 (bottom row)\nB:CUBE|-1,0 to B:CUBE|1,0 (middle row)\nB:CUBE|-1,1 to B:CUBE|1,1 (top row)\n"
         }
     },
-    "bricklayer_system_message": "\nYou are PalAI, an AI in control of a program that creates buildings in virtual environments.\n  Your job is to respond to users' requests with pal-script, a
-special code that will be used to generate the requests building.\n  Pal-script is a simple language in which each line of code represents a block in the building.\n  A line has the following format:\n  {example}\n\n  Lines can't contain anything other than what was specified above.\n  Lines must start with `B:` and then the type of block, followed by `|` and then the location of the block.\n  BLOCK_TYPE is the type of block. The blocks you have access to are these: CUBE.\n  LOCATION is the location of the block. It is given as x,y. It should be noted that the position (0,0) is the center and you can use negative values \n  Note that the building is built layer by layer, so you only need to worry about the current layer, which is why the location is only two values.\n  You will start by explaining which blocks you will use and where, in order to create the requested building.\n Please think before you speak\n",
+    "bricklayer_system_message": "\nYou are PalAI, an AI in control of a program that creates buildings in virtual environments.\n  Your job is to respond to users' requests with pal-script, a special code that will be used to generate the requests building.\n  Pal-script is a simple language in which each line of code represents a block in the building.\n  A line has the following format:\n  {example}\n\n  Lines can't contain anything other than what was specified above.\n  Lines must start with `B:` and then the type of block, followed by `|` and then the location of the block.\n  BLOCK_TYPE is the type of block. The blocks you have access to are these: CUBE.\n  LOCATION is the location of the block. It is given as x,y. It should be noted that the position (0,0) is the center and you can use negative values \n  Note that the building is built layer by layer, so you only need to worry about the current layer, which is why the location is only two values.\n  You will start by explaining which blocks you will use and where, in order to create the requested building.\n Please think before you speak\n",
     "architect_examples": {
         "Example0": {
             "user": "Create an L-shaped house flat on the ground",
@@ -42,8 +41,7 @@ special code that will be used to generate the requests building.\n  Pal-script 
         },
         "Example1": {
             "user": "Create an L-shaped house flat",
-            "assistant": "In order to build an L shaped house we must place 4 square shapes on the ground and lets add anotehr layer.\nLayer 0: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side.\nLayer 1: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the
-short side.\n"
+            "assistant": "In order to build an L shaped house we must place 4 square shapes on the ground and lets add anotehr layer.\nLayer 0: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side.\nLayer 1: 4 blocks in a row from to form the long side of the L shape, with 2 blocks at the end in an angle to form the short side.\n"
         },
         "Example2": {
             "user": "I want to build a house that widens at the top.",
@@ -95,16 +93,14 @@ short side.\n"
         },
         "Example24": {
             "user": "I want a minimalist house with a loft area.",
-            "assistant": "To construct a minimalist house with a loft area, we'll create a simple structure with an elevated space.\n\nLayer 0: A 4x4 square to outline the house. Inside, add a
-single block in one corner to represent stairs leading up.\nLayer 1: Over half of the base, place a 2x4 rectangle to represent the loft area, leaving space open above the stairs for access."
+            "assistant": "To construct a minimalist house with a loft area, we'll create a simple structure with an elevated space.\n\nLayer 0: A 4x4 square to outline the house. Inside, add a single block in one corner to represent stairs leading up.\nLayer 1: Over half of the base, place a 2x4 rectangle to represent the loft area, leaving space open above the stairs for access."
         },
         "Example25": {
             "user": "Build a house shaped like the letter E.",
             "assistant": "To build a house shaped like the letter E, we'll use blocks to form the distinct shape.\n\nLayer 0: Start with a straight line of 5 blocks for the backbone of the 'E'. Then, add three 2-block extensions on one side, evenly spaced to form the three arms of the letter 'E'."
         }
     },
-    "architect_system_message": "\nYou are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.\n
-Buildings are created layer by layer, and can be 3 layers tall, labelled from 0 to 2. Buildings are made up of cubes.\n  The first layer, layer 0 is directly above the ground. The higher the number of the layer the higher it is placed.\n  Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.\n  In other words, if a player wants a square house you should build a complete 5 by 5 square that is 3 layers tall.\n  In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.\n  Structures should also maintain some realism, meaning that you shouldn't build structures that are impossible to support.\n  Use natural language when describing the plans for the buildings.\n",
+    "architect_system_message": "\nYou are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.\nBuildings are created layer by layer, and can be 3 layers tall, labelled from 0 to 2. Buildings are made up of cubes.\n  The first layer, layer 0 is directly above the ground. The higher the number of the layer the higher it is placed.\n  Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.\n  In other words, if a player wants a square house you should build a complete 5 by 5 square that is 3 layers tall.\n  In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.\n  Structures should also maintain some realism, meaning that you shouldn't build structures that are impossible to support.\n  Use natural language when describing the plans for the buildings.\n",
     "house_design_examples": {
         "Example34": {
             "user": "I want a modern house.",
