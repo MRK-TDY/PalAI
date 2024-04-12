@@ -2,7 +2,7 @@ import json
 import os
 
 from colorama import Fore
-import colorama
+import logging
 
 from PalAI.Server.LLMClients import (
     gpt_client,
@@ -17,7 +17,7 @@ from PalAI.Server.decorator import Decorator
 
 class PalAI:
 
-    def __init__(self, prompts_file, llm=None, web_socket=None):
+    def __init__(self, prompts_file, llm, logger=None, web_socket=None):
         """
 
         :param prompts_file: all prompts to be used
@@ -27,7 +27,6 @@ class PalAI:
         :param web_socket: web socket to send messages to
         :type web_socket: web_socket
         """
-        colorama.init(autoreset=True)
 
         self.material_types = [
             "Generic White",
@@ -49,19 +48,37 @@ class PalAI:
             "Dark Concrete",
         ]
 
+        if logger is not None:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logging.INFO)
+            console_formatter = logging.Formatter('%(levelname)s - %(message)s')
+            console_handler.setFormatter(console_formatter)
+            self.logger.addHandler(console_handler)
+
         if llm is not None and isinstance(llm, str):
             match llm:
                 case "gpt":
-                    self.llm_client = gpt_client.GPTClient(prompts_file)
+                    self.llm_client = gpt_client.GPTClient(
+                        prompts_file, logger=self.logger
+                    )
                 case "together":
-                    self.llm_client = together_client.TogetherClient(prompts_file)
+                    self.llm_client = together_client.TogetherClient(
+                        prompts_file, logger=self.logger
+                    )
                 case "google":
-                    self.llm_client = google_client.GoogleClient(prompts_file)
+                    self.llm_client = google_client.GoogleClient(
+                        prompts_file, logger=self.logger
+                    )
                 case "anyscale":
-                    self.llm_client = anyscale_client.AnyscaleClient(prompts_file)
+                    self.llm_client = anyscale_client.AnyscaleClient(
+                        prompts_file, logger=self.logger
+                    )
                 case "local":
                     self.llm_client = local_client.LocalClient(
-                        prompts_file, verbose=True
+                        prompts_file, verbose=True, logger=self.logger
                     )
         elif llm is not None:
             self.llm_client = llm
@@ -93,35 +110,36 @@ class PalAI:
         if ws is not None:
             self.ws = ws
 
-        print(f"{Fore.BLUE}Received prompt{Fore.RESET}: {prompt}")
+        self.logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 
         # TODO: do requests that may be parallel in parallel
 
         await self.get_architect_plan()
-        print(f"{Fore.BLUE}Received architect plan {self.plan_list}")
+        self.logger.info(f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}")
 
         await self.build_structure()
-        print(f"{Fore.BLUE}Received basic structure")
+        self.logger.info(f"{Fore.BLUE}Received basic structure{Fore.RESET}")
 
         await self.apply_add_ons()
-        print(f"{Fore.BLUE}Received add-ons")
+        self.logger.info(f"{Fore.BLUE}Received add-ons{Fore.RESET}")
 
         await self.get_artist_response()
-        print(f"{Fore.BLUE}Received artist response")
+        self.logger.info(f"{Fore.BLUE}Received artist response{Fore.RESET}")
 
         await self.apply_style()
-        print(f"{Fore.BLUE}Applied style {self.style}")
+        self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
 
         await self.decorate()
+        self.logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
 
         self.api_result["result"] = self.building
+        self.logger.info(f"{Fore.GREEN}Finished Request{Fore.RESET}")
         return self.api_result
 
     async def get_architect_plan(self):
         """Gets the architect's plan for the building"""
         self.prompt = await self.llm_client.get_agent_response(
-            "architect",
-            self.prompts_file["plan_prompt"].format(self.prompt)
+            "architect", self.prompts_file["plan_prompt"].format(self.prompt)
         )
         self.api_result["architect"] = [l for l in self.prompt.split("\n") if l != ""]
         self.plan_list = [
@@ -149,8 +167,7 @@ class PalAI:
             #     example = self.prompts_file["basic_example"]
 
             response = await self.llm_client.get_agent_response(
-                "bricklayer",
-                formatted_prompt
+                "bricklayer", formatted_prompt
             )
             self.history.append(f"Layer {i}:")
             self.history.append(current_layer_prompt)
@@ -166,7 +183,7 @@ class PalAI:
                 l for l in response.split("\n") if l != ""
             ]
 
-            print(f"{Fore.GREEN}Received layer {i} of structure")
+            self.logger.info(f"{Fore.BLUE}Received layer {i} of structure{Fore.RESET}")
 
     async def apply_add_ons(self):
         def json_to_pal_script(building):
@@ -183,14 +200,12 @@ class PalAI:
                 pal_script += f"B:{type}|{position[2]},{position[0]}|{position[1]}"
                 pal_script += "\n"
             return pal_script
+
         """Adds doors and windows to the building"""
         plan = "\n".join(self.plan_list)
         building = json_to_pal_script(self.building)
         add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{building}."
-        add_ons = await self.llm_client.get_agent_response(
-            "add_ons",
-            add_on_prompt
-        )
+        add_ons = await self.llm_client.get_agent_response("add_ons", add_on_prompt)
         add_ons = self.extract_building_information(add_ons)
         self.building = self.overlap_blocks(self.building, add_ons)
         self.api_result["add_on_agent"] = self.building
@@ -202,11 +217,11 @@ class PalAI:
 
     async def get_artist_response(self):
         materials_response = await self.llm_client.get_agent_response(
-                "materials",
-                self.original_prompt,
-                materials=self.material_types,
-                styles=self.post_process.get_available_styles(),
-            )
+            "materials",
+            self.original_prompt,
+            materials=self.material_types,
+            styles=self.post_process.get_available_styles(),
+        )
 
         material = {}
         for l in materials_response.split("\n"):
@@ -224,7 +239,6 @@ class PalAI:
 
         self.api_result["materials"] = material
         if self.ws is not None:
-            print("WS Material: " + str(material))
             message = {"value": material}
             message["event"] = "material"
             self.ws.send(json.dumps(message))
@@ -234,9 +248,9 @@ class PalAI:
         try:
             self.post_process.import_building(self.building)
             self.building = self.post_process.style(self.style)
-        except:
+        except Exception as e:
             self.style = "no style"
-            print("Style Error")
+            self.logger.warning(f"{Fore.RED}Style Error {e}{Fore.RESET}")
             self.ws.send(json.dumps("Error found with post-processing"))
 
     async def decorate(self):
@@ -251,20 +265,9 @@ class PalAI:
             message["event"] = "decorations"
             self.ws.send(json.dumps(message))
 
-    def json_to_pal_script(self, building):
-        """
-        Converts a building from JSON to be used to communicate with the LLM
-        :returns : (str) same building in the format that LLM's consume
-        :param building: json formatted building
-        """
-        pal_script = ""
-        for i in building:
-            type = i["type"]
-            position = i["position"].replace("(", "").replace(")", "").split(",")
-
 
     def overlap_blocks(self, base_structure, extra_blocks):
-        """ Overlaps a base structure with a set of extra blocks
+        """Overlaps a base structure with a set of extra blocks
         If there are multiple blocks in the same position, the one in the base structure is kept
 
         :param base_structure: set of blocks with priority
@@ -317,7 +320,9 @@ class PalAI:
                         line += f"|{level}"  # if a level is given then it is not present in the script at this point
                     building_info.append(line[2:])
                 except:
-                    print(f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}")
+                    self.logger.warning(
+                        f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}"
+                    )
 
         blocks = []
         for block in building_info:
@@ -336,7 +341,8 @@ class PalAI:
                     }
                 blocks.append(aux)
             except:
-                print(f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}")
+                self.logger.warning(
+                    f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}"
+                )
                 continue
         return blocks
-

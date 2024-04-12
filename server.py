@@ -2,6 +2,7 @@ import base64
 import json
 
 import traceback
+import logging
 from flask import Flask
 from flask_sockets import Sockets
 import yaml
@@ -29,6 +30,21 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app = Flask(__name__)
 sockets = Sockets(app)
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), 'records.log'))
+file_handler.setLevel(logging.DEBUG)
+file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+
+# Create a console handler to output logs to the console with INFO level
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_formatter = logging.Formatter('%(levelname)s - %(message)s')
+console_handler.setFormatter(console_formatter)
+logger.addHandler(console_handler)
+
 config = RawConfigParser()
 config.read("config.ini")
 
@@ -40,19 +56,19 @@ with open(os.path.join(os.path.dirname(__file__), "prompts.yaml"), "r") as file:
 
 match config.get("llm", "type"):
     case "gpt":
-        llm_client = gpt_client.GPTClient(prompts_file)
+        llm_client = gpt_client.GPTClient(prompts_file, logger)
     case "together":
-        llm_client = together_client.TogetherClient(prompts_file)
+        llm_client = together_client.TogetherClient(prompts_file, logger)
     case "google":
-        llm_client = google_client.GoogleClient(prompts_file)
+        llm_client = google_client.GoogleClient(prompts_file, logger)
     case "anyscale":
-        llm_client = anyscale_client.AnyscaleClient(prompts_file)
+        llm_client = anyscale_client.AnyscaleClient(prompts_file, logger)
     case "local":
-        llm_client = local_client.LocalClient(prompts_file, verbose=True)
+        llm_client = local_client.LocalClient(prompts_file, logger)
 
 
 def create_pal_instance():
-    return PalAI(prompts_file, llm_client)
+    return PalAI(prompts_file, llm_client, logger)
     # return PalAI("gpt", 'gpt-4-0125-preview')
 
 
@@ -65,13 +81,13 @@ def test_connect(ws):
     while not ws.closed:
         message = ws.receive()
         if message:
-            print("Client connected")
+            logger.info("Client connected")
             ws.send(message)
 
 
 @sockets.route("/disconnect")
 def test_disconnect():
-    print("Client disconnected")
+    logger.info("Client disconnected")
 
 
 @sockets.route("/build")
@@ -80,33 +96,33 @@ def handle_post(ws):
     Takes in a JSON with a prompt and returns a JSON with the generated building.
     """
 
-    print("Client Build Request")
+    logger.info("Client Build Request")
     while not ws.closed:
         message = ws.receive()
-        print("Received message" + str(message))
+        logger.info("Received message" + str(message))
         if message:
             try:
                 json_data = json.loads(message)
-                print("Building: " + str(json_data))
+                logger.info("Building: " + str(json_data))
                 if "prompt" in json_data:
                     pal = create_pal_instance()
                     result = asyncio.run(pal.build(json_data["prompt"], ws))
                     result["event"] = "result"
                     result["message"] = "Data processed"
                     ws.send(json.dumps(result))
-                    print("Sent Json Response: " + str(result))
+                    logger.debug("Sent Json Response: " + str(result))
                 else:
                     ws.send(json.dumps({"message": "Missing or invalid JSON payload"}))
-                    print("Missing or invalid JSON payload")
+                    logger.warning("Missing or invalid JSON payload")
             except Exception as e:
                 traceback.print_exc()
                 ws.send(
                     json.dumps({"message": "Error processing request", "error": str(e)})
                 )
-                print("message: Error processing request")
+                logger.warning("message: Error processing request")
         else:
             ws.send(json.dumps({"message": "No message received"}))
-            print("No message received")
+            logger.warning("No message received")
 
 
 @sockets.route("/description")
@@ -114,10 +130,10 @@ def handle_post(ws):
     """ Takes in 4 images and describes the building given.
     """
 
-    print("Client Build Request")
+    logger.info("Client Build Request")
     while not ws.closed:
         message = ws.receive()
-        print("Received message" + str(message))
+        logger.info("Received message" + str(message))
         if message:
             try:
                 json_object = json.loads(message)
@@ -150,17 +166,17 @@ def handle_post(ws):
                 descriptor = create_descriptor_instance()
                 response = descriptor.get_image_description()
                 ws.send(json.dumps(response))
-                print("Sent Json Response: " + str(response))
+                logger.debug("Sent Json Response: " + str(response))
 
             except Exception as e:
                 traceback.print_exc()
                 ws.send(
                     json.dumps({"message": "Error processing request", "error": str(e)})
                 )
-                print("message: Error processing request")
+                logger.warning("message: Error processing request")
 
 
 if __name__ == "__main__":
     server = pywsgi.WSGIServer(("0.0.0.0", PORT), app, handler_class=WebSocketHandler)
-    print(f"Running on ws://0.0.0.0:{PORT}")
+    logger.info(f"Running on ws://0.0.0.0:{PORT}")
     server.serve_forever()

@@ -15,10 +15,11 @@ from PalAI.Server.LLMClients.Examples import mistral_examples
 
 class LocalClient(LLMClient):
 
-    def __init__(self, prompts_file, **kwargs):
-        LLMClient.__init__(self, prompts_file)
+    def __init__(self, prompts_file, logger, **kwargs):
+        LLMClient.__init__(self, prompts_file, logger)
 
         # self.model_name = self.config.get('openai', 'model_name')
+        self.logger = logger
         self.verbose = kwargs.get("verbose", False)
         self.device = kwargs.get("device", "cuda")
         # Get Model Name
@@ -53,12 +54,11 @@ class LocalClient(LLMClient):
                 system_message = self.prompts_file["materials"]
                 materials = kwargs.get("materials", "")
                 styles = kwargs.get("styles", "")
-                system_message.format(materials=materials, styles = styles)
+                system_message.format(materials=materials, styles=styles)
             case "add_ons":
                 system_message = self.prompts_file["add_ons"]
             case _:
                 system_message = self.prompts_file["architect"]
-
 
         messages = self.preparePrompt(prompt, agent)
         kwargs["messages"] = messages
@@ -67,8 +67,8 @@ class LocalClient(LLMClient):
     async def get_llm_response(self, system_message, prompt, **kwargs):
 
         if self.verbose:
-            print(f"{Fore.GREEN}System message:{Fore.RESET} {system_message}")
-            print(f"{Fore.BLUE}Prompt:{Fore.RESET} {prompt}")
+            self.logger.info(f"{Fore.GREEN}System message:{Fore.RESET} {system_message}")
+            self.logger.info(f"{Fore.BLUE}Prompt:{Fore.RESET} {prompt}")
 
         self.prompt_total += system_message
         self.prompt_total += prompt
@@ -92,13 +92,13 @@ class LocalClient(LLMClient):
 
         decoded = self.tokenizer.batch_decode(generated_ids)
         response = decoded[0]
-        # print("--------------------------------------------------------- \n LLM RESPONSE " + str(response))
+        # self.logger.info("--------------------------------------------------------- \n LLM RESPONSE " + str(response))
         # if self.verbose:
-        #    print(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
+        #    self.logger.info(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
 
         response = self.extractResponse(response, messages, type, length)
         if self.verbose:
-            print(f"{Fore.CYAN} Filtered LLM RESPONSE: {Fore.RESET}\n" + str(response))
+            self.logger.info(f"{Fore.CYAN} Filtered LLM RESPONSE: {Fore.RESET}\n" + str(response))
 
         return response
 
@@ -114,7 +114,7 @@ class LocalClient(LLMClient):
 
         #        if (type == "materials"):
         response = response[length + 1 :]
-        #            print("Total:" + response + "\n Length:" + str(length))
+        #            self.logger.info("Total:" + response + "\n Length:" + str(length))
         #        else:
         #            for m in messages:
         #                response = response.replace(m["content"], "")
@@ -130,16 +130,16 @@ class LocalClient(LLMClient):
         prompt = prompt.replace("\n", "")
 
         if type == "architect":
-            # print("Architect: \n" + prompt)
+            # self.logger.info("Architect: \n" + prompt)
             messages = mistral_examples.getArchitectExamples(prompt)
         elif type == "bricklayer":
-            # print("Bricklayer: \n" + prompt)
+            # self.logger.info("Bricklayer: \n" + prompt)
             messages = mistral_examples.getBrickExamples(prompt)
         elif type == "materials":
-            # print("Materials: \n" + prompt)
+            # self.logger.info("Materials: \n" + prompt)
             messages = mistral_examples.getMaterialExamples(prompt)
         elif type == "addons":
-            # print("Addons: \n" + prompt)
+            # self.logger.info("Addons: \n" + prompt)
             messages = mistral_examples.getAddOnsExamples(prompt)
         else:
             messages = mistral_examples.getArchitectExamples(prompt)

@@ -1,15 +1,16 @@
 import os
 from configparser import RawConfigParser
-
+import logging
 
 class LLMClient:
 
-    def __init__(self, prompts_file):
+    def __init__(self, prompts_file, logger):
         """Abstract class representing a client for any LLM
 
         :param prompts_file: prompts to be used
         :type prompts_file: dict
         """
+        self.logger = logger
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get("system_prompt", "")
         self.prompt_template = self.prompts_file.get("prompt_template", "")
