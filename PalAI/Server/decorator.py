@@ -2,6 +2,7 @@ import numpy as np
 import json
 import os
 import random
+from functools import reduce
 import copy
 
 
@@ -159,7 +160,7 @@ class Decorator:
         # TODO: foreach level of subdivisions
 
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-        collapsed = []
+        placed_decor = []
         used_decorations_count = {
             d["name"]: 0 for d in self.decorations if d["limit"] > 0
         }
@@ -195,6 +196,49 @@ class Decorator:
                     "position": min_entropy_block["position"],
                 }
 
+                if c["type"] != "EMPTY":
+                    placed_decor.append(c)
+
+                # Recursively apply callbacks
+                callbacker = choice
+                base_position = min_entropy_block["position"]
+                while callbacker.get("callback", None) is not None:
+                    if random.random() > callbacker.get("callback_chance", 1):
+                        break
+                    base_position = base_position.replace("(", "").replace(")", "").split(',')
+                    base_position[1] = eval(base_position[1]) + callbacker.get("height", 0)
+                    base_position = f"({base_position[0]},{base_position[1]},{base_position[2]})"
+                    total_weight = reduce(
+                        lambda x, y: x + y.get("weight", 1), callbacker["callback"], 0
+                    )
+                    rand = random.random() * total_weight
+                    for option in callbacker["callback"]:
+                        if rand < option["weight"]:
+                            chosen = [
+                                i
+                                for i in self.decorations
+                                if i["name"] == option["name"]
+                            ][0]
+                            break
+                        rand -= option["weight"]
+
+                    if chosen.get("limit", 0) != 0:
+                        if used_decorations_count[chosen["name"]] >= chosen["limit"]:
+                            break
+
+                        used_decorations_count[chosen["name"]] += 1
+
+                        if chosen["name"] != "EMPTY":
+                            placed_decor.append(
+                                {
+                                    "type": chosen["name"],
+                                    "rotation": chosen["rotation"],
+                                    "position": base_position,  # + chosen.get("height", 0),
+                                }
+                            )
+                    callbacker = chosen
+
+                # Check limit and remove options from other blocks if reached
                 if choice["limit"] > 0:
                     used_decorations_count[choice["name"]] += 1
                     if used_decorations_count[choice["name"]] >= choice["limit"]:
@@ -203,6 +247,7 @@ class Decorator:
                                 o for o in b["options"] if o["name"] != choice["name"]
                             ]
 
+                # Update options of neighbors based on this choice
                 for i, r in enumerate(choice["adjacency"]):
                     if r == "EMPTY":
                         new_pos = (
@@ -218,9 +263,7 @@ class Decorator:
                                 o for o in neighbor["options"] if o["name"] == "EMPTY"
                             ]
 
-                if c["type"] != "EMPTY":
-                    collapsed.append(c)
-
+                # Update the neighbor options based on their own adjacency rules
                 for i, d in enumerate(directions):
                     pos = self.get_block_dict_position(c)
                     new_pos = (pos[0], pos[1] + d[0], pos[2] + d[1])
@@ -245,4 +288,4 @@ class Decorator:
                             if self._is_valid_option(o, neighbor)
                         ]
 
-            return collapsed
+            return placed_decor

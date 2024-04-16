@@ -4,7 +4,35 @@
             "name": "Table",
             "limit": 2,
             "adjacency": ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
-            "subdivision": 1
+            "subdivision": 3,
+            "height": 0.4,
+            "callback_chance": 0.5,
+            "callback": [
+                {
+                    "name": "Vase",
+                    "weight": 0.5
+                }
+            ]
+        },
+        {
+            "name": "Rug",
+            "limit": 3,
+            "adjacency": ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
+            "subdivision": 2,
+            "height": 0.1,
+            "callback_chance": 0.5,
+            "callback": [
+                {
+                    "name": "Table",
+                    "weight": 0.5
+                }
+            ]
+        },
+        {
+            "name": "Vase",
+            "limit": 30,
+            "adjacency": ["", "", "", ""],
+            "subdivision": 2
         },
         {
             "name": "Fridge",
