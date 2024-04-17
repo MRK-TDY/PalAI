@@ -2,7 +2,7 @@
     "decorations": [
         {
             "name": "Table",
-            "limit": 2,
+            "limit": 50,
             "adjacency": ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
             "subdivision": 3,
             "height": 0.4,
@@ -30,9 +30,16 @@
         },
         {
             "name": "Vase",
-            "limit": 30,
+            "limit": 3,
             "adjacency": ["", "", "", ""],
             "subdivision": 2
+        },
+        {
+            "name": "Chair",
+            "limit": 10,
+            "adjacency": ["EMPTY", "", "Table", ""],
+            "subdivision": 1,
+            "room": "Kitchen"
         },
         {
             "name": "Fridge",
