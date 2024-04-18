@@ -36,6 +36,7 @@ class Decorator:
                     rotated_decorations.append(aux)
                 adjacency = new_adjacency
 
+        self.directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
         self.decorations += rotated_decorations
         self.decorations.append(
             {"name": "EMPTY", "adjacency": ["", "", "", ""], "limit": 0, "rotation": 0}
@@ -147,9 +148,9 @@ class Decorator:
                 return valid
 
             elif r == "EMPTY":
-                # There is an empty space if there is a block but nothing else
+                # There is an empty space if there is a block
                 if (
-                    len(self.grid[new_pos[0]][new_pos[1]][new_pos[2]]) != 1
+                    len(self.grid[new_pos[0]][new_pos[1]][new_pos[2]]) < 1
                     or "type" not in self.grid[new_pos[0]][new_pos[1]][new_pos[2]][0]
                 ):
                     return False
@@ -157,9 +158,14 @@ class Decorator:
                 valid = False
                 for floor in current_floor_list:
                     if list(self.get_block_dict_position(floor)) == list(new_pos):
-                        for o in floor["options"]:
-                            if o["name"] == r:
-                                valid = True
+                        if "name" in floor and floor["name"] == r:
+                            valid = True
+                            break
+                        if "options" in floor:
+                            for o in floor["options"]:
+                                if o["name"] == r:
+                                    valid = True
+                                    break
                 return valid
 
         return True
@@ -172,8 +178,7 @@ class Decorator:
         """
         # TODO: foreach level of subdivisions
 
-        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-        placed_decor = []
+        placed_decors = []
         used_decorations_count = {
             d["name"]: 0 for d in self.decorations if d["limit"] > 0
         }
@@ -194,133 +199,170 @@ class Decorator:
                 for o in to_remove:
                     b["options"].remove(o)
 
-            # Pick the block with the smallest entropy
             while len(current_floor) > 0:
-
+                # Unlike regular WFC we don't choose the lowest entropy block
+                # This is because of the limits
+                # Choosing the lowest entropy would cause the blocks with less options to fill first
                 # Collapse minimum entropy block
-                min_entropy_block = sorted(
-                    current_floor, key=lambda x: len(x["options"]) + random.random()
-                )[0]
-                current_floor.remove(min_entropy_block)
-                if len(min_entropy_block["options"]) == 0:
+                # min_entropy_block = sorted(
+                #     current_floor, key=lambda x: len(x["options"]) + random.random()
+                # )[0]
+                current_block = sorted(current_floor, key=lambda _: random.random())[0]
+                if len(current_block["options"]) == 0:
                     continue
-                choice = random.choice(min_entropy_block["options"])
-                c = {
-                    "type": choice["name"],
-                    "rotation": choice["rotation"],
-                    "position": min_entropy_block["position"],
-                }
+                current_decor = random.choice(current_block["options"])
 
-                if c["type"] != "EMPTY":
-                    placed_decor.append(c)
+                # Add the chosen decoration
+                self._add_decoration(
+                    current_decor, current_block, placed_decors, current_floor
+                )
 
                 # Recursively apply callbacks
-                callbacker = choice
-                base_position = min_entropy_block["position"]
-                while callbacker.get("callback", None) is not None:
-                    if random.random() > callbacker.get("callback_chance", 1):
-                        break
-                    base_position = (
-                        base_position.replace("(", "").replace(")", "").split(",")
-                    )
-                    base_position[1] = eval(base_position[1]) + callbacker.get(
-                        "height", 0
-                    )
-                    base_position = (
-                        f"({base_position[0]},{base_position[1]},{base_position[2]})"
-                    )
-                    total_weight = reduce(
-                        lambda x, y: x + y.get("weight", 1), callbacker["callback"], 0
-                    )
-                    rand = random.random() * total_weight
-                    for option in callbacker["callback"]:
-                        if rand < option["weight"]:
-                            chosen = [
-                                i
-                                for i in self.decorations
-                                if i["name"] == option["name"]
-                            ][0]
-                            break
-                        rand -= option["weight"]
-
-                    if chosen.get("limit", 0) != 0:
-                        if used_decorations_count[chosen["name"]] >= chosen["limit"]:
-                            break
-
-                        used_decorations_count[chosen["name"]] += 1
-
-                        if chosen["name"] != "EMPTY":
-                            d = {
-                                "type": chosen["name"],
-                                "rotation": chosen["rotation"],
-                                "position": base_position,  # + chosen.get("height", 0),
-                            }
-                            placed_decor.append(d)
-                            pos = self.get_block_dict_position(d)
-                            pos[0] = int(pos[0])
-
-                    callbacker = chosen
+                self._apply_callback(
+                    current_decor,
+                    used_decorations_count,
+                    current_block,
+                    placed_decors,
+                    current_floor,
+                )
 
                 # Check limit and remove options from other blocks if reached
-                if choice["limit"] > 0:
-                    used_decorations_count[choice["name"]] += 1
-                    if used_decorations_count[choice["name"]] >= choice["limit"]:
-                        for b in current_floor:
-                            b["options"] = [
-                                o for o in b["options"] if o["name"] != choice["name"]
-                            ]
+                self._check_limits(current_decor, used_decorations_count, current_floor)
 
                 # Update options of neighbors based on this choice
-                for i, r in enumerate(choice["adjacency"]):
-                    new_pos = (
-                        y,
-                        self.get_block_dict_position(min_entropy_block)[1]
-                        + directions[i][0],
-                        self.get_block_dict_position(min_entropy_block)[2]
-                        + directions[i][1],
-                    )
-                    if r == "EMPTY":
-                        for neighbor in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
-                            neighbor["options"] = [
-                                o for o in neighbor["options"] if o["name"] == "EMPTY"
-                            ]
-                    elif r == "WALL":
-                        pass
-                    elif r == "":
-                        pass
-                    else:
-                        for neighbor in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
-                            neighbor["options"] = [
-                                copy.copy(o)
-                                for o in self.decorations
-                                if o["name"] == r
-                            ]
+                self._update_neighbors(
+                    current_decor, current_block, current_floor, placed_decors
+                )
 
                 # Update the neighbor options based on their own adjacency rules
-                for i, d in enumerate(directions):
-                    pos = self.get_block_dict_position(c)
-                    new_pos = (pos[0], pos[1] + d[0], pos[2] + d[1])
+                pos = self.get_block_dict_position(current_block)
+                self._validate_cell(pos, current_floor)
 
-                    # TODO: collapse other blocks based on option chosen
-                    if (
-                        new_pos[0] < 0
-                        or new_pos[1] < 0
-                        or new_pos[2] < 0
-                        or new_pos[0] >= self.size_y
-                        or new_pos[1] >= self.size_x
-                        or new_pos[2] >= self.size_z
-                    ):
-                        continue
+            return placed_decors
 
-                    # Update options of all neighbors
+    def _apply_callback(
+        self,
+        current_decoration,
+        used_decorations_count,
+        current_block,
+        placed_decors,
+        current_floor,
+    ):
+        callbacker = current_decoration
+        base_position = current_block["position"]
+        while callbacker.get("callback", None) is not None:
+            if random.random() > callbacker.get("callback_chance", 1):
+                break
+            base_position = base_position.replace("(", "").replace(")", "").split(",")
+            base_position[1] = eval(base_position[1]) + callbacker.get("height", 0)
+            base_position = (
+                f"({base_position[0]},{base_position[1]},{base_position[2]})"
+            )
+            total_weight = reduce(
+                lambda x, y: x + y.get("weight", 1), callbacker["callback"], 0
+            )
+            rand = random.random() * total_weight
+            for option in callbacker["callback"]:
+                if rand < option["weight"]:
+                    chosen = [
+                        i for i in self.decorations if i["name"] == option["name"]
+                    ][0]
+                    break
+                rand -= option["weight"]
 
-                    for neighbor in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
-                        if "options" in neighbor:
-                            neighbor["options"] = [
-                                o
-                                for o in neighbor["options"]
-                                if self._is_valid_option(o, neighbor, current_floor)
-                            ]
+            if chosen.get("limit", 0) != 0:
+                if used_decorations_count[chosen["name"]] >= chosen["limit"]:
+                    break
 
+                used_decorations_count[chosen["name"]] += 1
 
-            return placed_decor
+                if chosen["name"] != "EMPTY":
+                    self._add_decoration(
+                        chosen, current_block, placed_decors, current_floor
+                    )
+
+            callbacker = chosen
+
+    def _check_limits(self, decor, used_decorations_count, current_floor):
+        if decor["limit"] > 0:
+            used_decorations_count[decor["name"]] += 1
+            if used_decorations_count[decor["name"]] >= decor["limit"]:
+                for b in current_floor:
+                    b["options"] = [
+                        o for o in b["options"] if o["name"] != decor["name"]
+                    ]
+
+    def _validate_cell(self, pos, current_floor):
+        for d in self.directions:
+            new_pos = (pos[0], pos[1] + d[0], pos[2] + d[1])
+
+            # TODO: collapse other blocks based on option chosen
+            if (
+                new_pos[0] < 0
+                or new_pos[1] < 0
+                or new_pos[2] < 0
+                or new_pos[0] >= self.size_y
+                or new_pos[1] >= self.size_x
+                or new_pos[2] >= self.size_z
+            ):
+                continue
+
+            # Update options of all neighbors
+            for neighbor in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
+                if "options" in neighbor:
+                    neighbor["options"] = [
+                        o
+                        for o in neighbor["options"]
+                        if self._is_valid_option(o, neighbor, current_floor)
+                    ]
+
+    def _update_neighbors(
+        self, chosen_decor, chosen_block, current_floor, placed_decors
+    ):
+        for i, r in enumerate(chosen_decor["adjacency"]):
+            new_pos = (
+                self.get_block_dict_position(chosen_block)[0],
+                self.get_block_dict_position(chosen_block)[1] + self.directions[i][0],
+                self.get_block_dict_position(chosen_block)[2] + self.directions[i][1],
+            )
+            if r == "EMPTY":
+                pass
+                # for neighbor in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
+                #     neighbor["options"] = [
+                #         o for o in neighbor["options"] if o["name"] == "EMPTY"
+                #     ]
+            elif r == "WALL":
+                pass
+            elif r == "":
+                pass
+            else:
+                placed = False
+                for floor in current_floor:
+                    if list(self.get_block_dict_position(floor)) == list(new_pos):
+                        if "options" in floor:
+                            for d in floor["options"]:
+                                if d["name"] == r:
+                                    self._add_decoration(
+                                        d, floor, placed_decors, current_floor
+                                    )
+                                    placed = True
+                                    break
+                        if placed:
+                            break
+
+    def _add_decoration(self, decor, block, placed_decors, current_floor):
+        position = self.get_block_dict_position(block)
+
+        if block in current_floor:
+            current_floor.remove(block)
+
+        position[0] = int(position[0])
+        c = {
+            "type": decor["name"],
+            "rotation": decor["rotation"],
+            "position": block["position"],
+        }
+
+        if c["type"] != "EMPTY":
+            placed_decors.append(c)
+            self.grid[position[0]][position[1]][position[2]].append(c)

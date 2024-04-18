@@ -2,7 +2,7 @@
     "decorations": [
         {
             "name": "Table",
-            "limit": 50,
+            "limit": 5,
             "adjacency": ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
             "subdivision": 3,
             "height": 0.4,
