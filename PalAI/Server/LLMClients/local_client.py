@@ -11,7 +11,7 @@ from colorama import Fore
 import os
 import yaml
 from PalAI.Server.LLMClients.Examples import mistral_examples
-
+from huggingface_hub import login
 
 class LocalClient(LLMClient):
 
@@ -22,17 +22,22 @@ class LocalClient(LLMClient):
         self.logger = logger
         self.verbose = kwargs.get("verbose", False)
         self.device = kwargs.get("device", "cuda")
+        login(self.config.get("hugging_face", "login_key"))
+        self.model_name = self.config.get("local", "model_name")
         # Get Model Name
-        self.model_name = kwargs.get("model_name", "mistralai/Mistral-7B-Instruct-v0.1")
+        #self.model_name = kwargs.get("model_name", "mistralai/Mistral-7B-Instruct-v0.1")
         # Load Model
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name, device_map="cuda", torch_dtype=torch.bfloat16
         )
+        ## To make it faster? Does not work in Python 3.12+
+        #self.model.forward = torch.compile(self.model.forward, fullgraph=True, mode="reduce-overhead")
+
         # Load Configuration
         # generation_config = GenerationConfig(torch_dtype = torch.bfloat16, temperature = 0.1, do_sample=True, top_k=50)
         # generation_config.save_pretrained('mistalai/Mistral-7B-Instruct-v0.1', push_to_hub=True)
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "mistralai/Mistral-7B-Instruct-v0.1"
+            self.model_name
         )
 
         # https://huggingface.co/docs/transformers/main/en/main_classes/pipelines
@@ -77,6 +82,7 @@ class LocalClient(LLMClient):
         length = 0
         for m in messages:
             length += len(m["content"])
+
         encodeds = self.tokenizer.apply_chat_template(messages, return_tensors="pt")
 
         model_inputs = encodeds.to("cuda")
