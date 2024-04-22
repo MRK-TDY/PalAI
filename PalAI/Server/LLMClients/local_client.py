@@ -28,7 +28,7 @@ class LocalClient(LLMClient):
         #self.model_name = kwargs.get("model_name", "mistralai/Mistral-7B-Instruct-v0.1")
         # Load Model
         self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_name, device_map="cuda", torch_dtype=torch.bfloat16
+            self.model_name, device_map=self.device, torch_dtype=torch.bfloat16
         )
         ## To make it faster? Does not work in Python 3.12+
         #self.model.forward = torch.compile(self.model.forward, fullgraph=True, mode="reduce-overhead")
@@ -85,8 +85,8 @@ class LocalClient(LLMClient):
 
         encodeds = self.tokenizer.apply_chat_template(messages, return_tensors="pt")
 
-        model_inputs = encodeds.to("cuda")
-        self.model.to("cuda")
+        model_inputs = encodeds.to(self.device)
+        self.model.to(self.device)
         generated_ids = self.model.generate(
             model_inputs,
             max_new_tokens=300,
@@ -102,20 +102,27 @@ class LocalClient(LLMClient):
         # if self.verbose:
         #    self.logger.info(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
 
-        response = self.extractResponse(response, messages, type, length)
+        response = self.extractResponse(response, messages, length)
         if self.verbose:
             self.logger.info(f"{Fore.CYAN} Filtered LLM RESPONSE: {Fore.RESET}\n" + str(response))
 
         return response
 
-    def extractResponse(self, response, messages, type="normal", length=0):
+    def extractResponse(self, response, messages, length=0):
 
         response = (
             response.replace("[/INST]", "")
             .replace("[INST]", "")
+            .replace("<|eot_id|>", "")
+            .replace("<|start_header_id|>", "")
+            .replace("<|eot_id|>", "")
+            .replace("<|end_header_id|>", "")
             .replace("</s>", "")
             .replace("<s>", "")
+            .replace("assistant", "")
+            .replace("user", "")
             .replace("  ", "")
+
         )
 
         #        if (type == "materials"):
