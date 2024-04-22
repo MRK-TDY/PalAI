@@ -28,9 +28,33 @@
             "user": "Create a zigzag pattern flat on the ground.",
             "assistant": "To create a zigzag pattern, we'll alternate placing cubes diagonally and horizontally.\n\nStarting from (0,0), place the first cube:\nB:CUBE|0,0\n\nThen move diagonally:\nB:CUBE|1,1\n\nNow, place two horizontally:\nB:CUBE|2,1\nB:CUBE|3,1\n\nRepeat the pattern:\nB:CUBE|4,2\nB:CUBE|5,2\nB:CUBE|6,2\nB:CUBE|7,3\n"
         },
-        "Example8": {
-            "user": "Create a spiral pattern starting from the center.",
-            "assistant": "Creating a spiral pattern requires progressively increasing the perimeter of squares.\n\nStart by placing the first cube at the center:\nB:CUBE|0,0\n\nExpand around it to make a 3x3 square:\nB:CUBE|-1,-1 to B:CUBE|1,-1 (bottom row)\nB:CUBE|-1,0 to B:CUBE|1,0 (middle row)\nB:CUBE|-1,1 to B:CUBE|1,1 (top row)\n"
+        "Example10": {
+            "user": "Create a cross-shaped house flat on the ground.",
+            "assistant": "To create a cross-shaped house, we will place a vertical row of 5 cubes and intersect it with a horizontal row of 5 cubes, both centered at the same point.\n\nFirst, the vertical row:\nB:CUBE|2,0\nB:CUBE|2,1\nB:CUBE|2,2\nB:CUBE|2,3\nB:CUBE|2,4\n\nThen, the horizontal row, centered on the third cube of the vertical row:\nB:CUBE|0,2\nB:CUBE|1,2\nB:CUBE|3,2\nB:CUBE|4,2\n"
+        },
+        "Example11": {
+            "user": "Create a pyramid flat on the ground.",
+            "assistant": "To create a pyramid, we'll start with a square base and reduce the size by one cube each level until we reach the top.\n\nFirst, the base layer (3x3):\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|0,1\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|0,2\nB:CUBE|1,2\nB:CUBE|2,2\n\nThen, the second layer (2x2), shifted right and up:\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|1,2\nB:CUBE|2,2\n\nFinally, the top layer (1x1):\nB:CUBE|2,2\n"
+        },
+        "Example12": {
+            "user": "Create a house in the shape of the letter 'E' flat on the ground.",
+            "assistant": "To create a house in the shape of the letter 'E', we will need three vertical cubes and five horizontal cubes to form the three arms of the 'E'.\n\nFirst, the vertical spine:\nB:CUBE|0,0\nB:CUBE|0,1\nB:CUBE|0,2\n\nThen the top arm:\nB:CUBE|1,2\nB:CUBE|2,2\n\nThe middle arm:\nB:CUBE|1,1\n\nAnd the bottom arm:\nB:CUBE|1,0\nB:CUBE|2,0\n"
+        },
+         "Example15": {
+            "user": "Create a rectangular 3x5 block house flat on the ground.",
+            "assistant": "To create a rectangular 3x5 block house, we'll place 15 cubes in a 3-row by 5-column grid pattern.\n\nFirst row:\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0\nB:CUBE|4,0\n\nSecond row:\nB:CUBE|0,1\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|3,1\nB:CUBE|4,1\n\nThird row:\nB:CUBE|0,2\nB:CUBE|1,2\nB:CUBE|2,2\nB:CUBE|3,2\nB:CUBE|4,2\n"
+        },
+        "Example16": {
+            "user": "Create an X-shaped house flat on the ground.",
+            "assistant": "To create an X-shaped house, we will place cubes in two diagonal lines that cross in the center.\n\nFirst diagonal:\nB:CUBE|0,0\nB:CUBE|1,1\nB:CUBE|2,2\nB:CUBE|3,3\nB:CUBE|4,4\n\nSecond diagonal:\nB:CUBE|4,0\nB:CUBE|3,1\nB:CUBE|2,2\nB:CUBE|1,3\nB:CUBE|0,4\n"
+        },
+        "Example17": {
+            "user": "Create a house in the shape of the letter 'U' flat on the ground.",
+            "assistant": "To create a house in the shape of the letter 'U', we will need to place cubes in a configuration that resembles the letter. This involves two vertical lines connected by a horizontal line at the bottom.\n\nLeft vertical line:\nB:CUBE|0,0\nB:CUBE|0,1\nB:CUBE|0,2\n\nRight vertical line:\nB:CUBE|2,0\nB:CUBE|2,1\nB:CUBE|2,2\n\nConnecting bottom line:\nB:CUBE|1,0\n"
+        },
+        "Example18": {
+            "user": "Create a diamond-shaped house flat on the ground.",
+            "assistant": "To create a diamond-shaped house, we will place cubes in a pattern that forms a diamond. This involves creating two triangles, one inverted, touching at their tips.\n\nTop triangle:\nB:CUBE|2,0\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|3,1\nB:CUBE|2,2\n\nBottom triangle (inverted):\nB:CUBE|2,3\nB:CUBE|1,2\nB:CUBE|3,2\nB:CUBE|2,1\nB:CUBE|2,4\n"
         }
     },
     "bricklayer_system_message": "\nYou are PalAI, an AI in control of a program that creates buildings in virtual environments.\n  Your job is to respond to users' requests with pal-script, a special code that will be used to generate the requests building.\n  Pal-script is a simple language in which each line of code represents a block in the building.\n  A line has the following format:\n  {example}\n\n  Lines can't contain anything other than what was specified above.\n  Lines must start with `B:` and then the type of block, followed by `|` and then the location of the block.\n  BLOCK_TYPE is the type of block. The blocks you have access to are these: CUBE.\n  LOCATION is the location of the block. It is given as x,y. It should be noted that the position (0,0) is the center and you can use negative values \n  Note that the building is built layer by layer, so you only need to worry about the current layer, which is why the location is only two values.\n  You will start by explaining which blocks you will use and where, in order to create the requested building.\n Please think before you speak\n",

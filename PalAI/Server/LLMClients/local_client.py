@@ -82,9 +82,9 @@ class LocalClient(LLMClient):
         length = 0
         for m in messages:
             length += len(m["content"])
+        length += len(messages)
 
         encodeds = self.tokenizer.apply_chat_template(messages, return_tensors="pt")
-
         model_inputs = encodeds.to(self.device)
         self.model.to(self.device)
         generated_ids = self.model.generate(
