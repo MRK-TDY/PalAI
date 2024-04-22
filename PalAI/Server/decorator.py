@@ -5,6 +5,8 @@ import random
 from functools import reduce
 import copy
 
+from numpy.core.multiarray import empty
+
 
 class Decorator:
     def __init__(self, style_sheet="decorations.json"):
@@ -14,7 +16,9 @@ class Decorator:
         :type style_sheet: (str) relative path to the style sheet
         """
         with open(os.path.join(os.path.dirname(__file__), style_sheet), "r") as fptr:
-            self.decorations = json.load(fptr)["decorations"]
+            loaded = json.load(fptr)
+            self.decorations = loaded["decorations"]
+            self.rooms = loaded["rooms"]
 
         rotated_decorations = []
         for d in self.decorations:
@@ -36,11 +40,25 @@ class Decorator:
                     rotated_decorations.append(aux)
                 adjacency = new_adjacency
 
-        self.directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
         self.decorations += rotated_decorations
-        self.decorations.append(
-            {"name": "EMPTY", "adjacency": ["", "", "", ""], "limit": 0, "rotation": 0}
-        )
+        empty_decoration = {
+            "name": "EMPTY",
+            "adjacency": ["", "", "", ""],
+            "limit": 0,
+            "rotation": 0,
+        }
+        self.decorations.append(empty_decoration)
+
+        self.decorations_by_room = {}
+        for r in self.rooms:
+            self.decorations_by_room[r["name"]] = [empty_decoration]
+        self.decorations_by_room["default"] = [empty_decoration]
+        for d in self.decorations:
+            room = d.get("room", "default")
+            self.decorations_by_room[room].append(d)
+
+
+        self.directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
     def import_building(self, api_building):
         """Imports the building from the API response and creates the necessary data structures
@@ -96,6 +114,29 @@ class Decorator:
 
         for i in to_remove:
             self.floor_list.remove(i)
+
+        # Apply rooms
+        for r in self.rooms:
+            seed = random.choice(self.floor_list)
+            open, closed = [], []
+            open.append(seed)
+            i = 0
+            while (
+                i < int(r["coverage"] * len(self.floor_list))
+                or len(open) == 0
+                or len(closed) == len(self.floor_list)
+            ):
+                i += 1
+                seed = open.pop()
+                seed["room"] = r["name"]
+                closed.append(seed)
+                pos = self.get_block_dict_position(seed)
+                for d in self.directions:
+                    new_pos = (pos[0], pos[1] + d[0], pos[2] + d[1])
+                    for b in self.floor_list:
+                        if list(self.get_block_dict_position(b)) == list(new_pos):
+                            if b not in open and b not in closed:
+                                open.append(b)
 
         # Recalculate size_y
         positions = [self.get_block_dict_position(b) for b in self.floor_list]
@@ -190,7 +231,10 @@ class Decorator:
                 b for b in self.floor_list if self.get_block_dict_position(b)[0] == y
             ]
             for b in current_floor:
-                b["options"] = self.decorations.copy()
+                if "room" in b:
+                    b["options"] = self.decorations_by_room[b["room"]].copy()
+                else:
+                    b["options"] = self.decorations_by_room["default"].copy()
                 to_remove = []
                 for o in b["options"]:
                     if not self._is_valid_option(o, b, current_floor):
@@ -201,12 +245,8 @@ class Decorator:
 
             while len(current_floor) > 0:
                 # Unlike regular WFC we don't choose the lowest entropy block
-                # This is because of the limits
+                # This is because of the limits, which means not all blocks will be collapsed
                 # Choosing the lowest entropy would cause the blocks with less options to fill first
-                # Collapse minimum entropy block
-                # min_entropy_block = sorted(
-                #     current_floor, key=lambda x: len(x["options"]) + random.random()
-                # )[0]
                 current_block = sorted(current_floor, key=lambda _: random.random())[0]
                 if len(current_block["options"]) == 0:
                     continue

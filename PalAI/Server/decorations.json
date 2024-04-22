@@ -38,19 +38,18 @@
             "name": "Chair",
             "limit": 10,
             "adjacency": ["EMPTY", "", "Table", ""],
-            "subdivision": 1,
-            "room": "Kitchen"
+            "subdivision": 1
         },
         {
             "name": "Fridge",
-            "limit": 1,
+            "limit": 3,
             "adjacency": ["WALL", "", "EMPTY", ""],
-            "subdivision": 1,
+            "subdivision": 10,
             "room": "Kitchen"
         },
         {
             "name": "Dishwasher",
-            "limit": 1,
+            "limit": 3,
             "adjacency": ["WALL", "", "EMPTY", ""],
             "subdivision": 1,
             "room": "Kitchen"
@@ -60,6 +59,12 @@
             "limit": 4,
             "adjacency": ["WALL", "", "EMPTY", ""],
             "subdivision": 1
+        }
+    ],
+    "rooms": [
+        {
+            "name": "Kitchen",
+            "coverage": 0.1
         }
     ]
 }
