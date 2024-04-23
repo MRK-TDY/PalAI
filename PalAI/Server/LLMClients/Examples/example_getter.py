@@ -4,7 +4,7 @@ import os
 
 def getArchitectExamples(prompt):
 
-    with open(os.path.join(os.path.dirname(__file__), 'mistralprompts.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'prompt_examples.json'), 'r', encoding='utf-8') as f:
         # returns JSON object as
         # a dictionary
         jsondata = json.load(f)
@@ -19,7 +19,7 @@ def getArchitectExamples(prompt):
 def getBrickExamples(prompt):
     # Opening JSON file
 
-    with open(os.path.join(os.path.dirname(__file__), 'mistralprompts.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'prompt_examples.json'), 'r', encoding='utf-8') as f:
         # returns JSON object as
         # a dictionary
         jsondata = json.load(f)
@@ -33,7 +33,7 @@ def getBrickExamples(prompt):
 
 
 def getMaterialExamples(prompt):
-    with open(os.path.join(os.path.dirname(__file__), 'mistralprompts.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'prompt_examples.json'), 'r', encoding='utf-8') as f:
         # returns JSON object as
         # a dictionary
         jsondata = json.load(f)
@@ -48,7 +48,7 @@ def getMaterialExamples(prompt):
 
 
 def getAddOnsExamples(prompt):
-    with open(os.path.join(os.path.dirname(__file__), 'mistralprompts.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'prompt_examples.json'), 'r', encoding='utf-8') as f:
         # returns JSON object as
         # a dictionary
         jsondata = json.load(f)

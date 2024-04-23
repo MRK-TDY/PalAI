@@ -10,7 +10,7 @@ import torch
 from colorama import Fore
 import os
 import yaml
-from PalAI.Server.LLMClients.Examples import mistral_examples
+from PalAI.Server.LLMClients.Examples import example_getter
 from huggingface_hub import login
 
 class LocalClient(LLMClient):
@@ -23,19 +23,19 @@ class LocalClient(LLMClient):
         self.verbose = kwargs.get("verbose", False)
         self.device = kwargs.get("device", "cuda")
         login(self.config.get("hugging_face", "login_key"))
-        self.model_name = self.config.get("local", "model_name")
+
         # Get Model Name
-        #self.model_name = kwargs.get("model_name", "mistralai/Mistral-7B-Instruct-v0.1")
+        self.model_name = self.config.get("local", "model_name")
+
         # Load Model
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name, device_map=self.device, torch_dtype=torch.bfloat16
         )
+
         ## To make it faster? Does not work in Python 3.12+
         #self.model.forward = torch.compile(self.model.forward, fullgraph=True, mode="reduce-overhead")
 
         # Load Configuration
-        # generation_config = GenerationConfig(torch_dtype = torch.bfloat16, temperature = 0.1, do_sample=True, top_k=50)
-        # generation_config.save_pretrained('mistalai/Mistral-7B-Instruct-v0.1', push_to_hub=True)
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_name
         )
@@ -144,18 +144,18 @@ class LocalClient(LLMClient):
 
         if type == "architect":
             # self.logger.info("Architect: \n" + prompt)
-            messages = mistral_examples.getArchitectExamples(prompt)
+            messages = example_getter.getArchitectExamples(prompt)
         elif type == "bricklayer":
             # self.logger.info("Bricklayer: \n" + prompt)
-            messages = mistral_examples.getBrickExamples(prompt)
+            messages = example_getter.getBrickExamples(prompt)
         elif type == "materials":
             # self.logger.info("Materials: \n" + prompt)
-            messages = mistral_examples.getMaterialExamples(prompt)
+            messages = example_getter.getMaterialExamples(prompt)
         elif type == "addons":
             # self.logger.info("Addons: \n" + prompt)
-            messages = mistral_examples.getAddOnsExamples(prompt)
+            messages = example_getter.getAddOnsExamples(prompt)
         else:
-            messages = mistral_examples.getArchitectExamples(prompt)
+            messages = example_getter.getArchitectExamples(prompt)
 
         return messages
 
