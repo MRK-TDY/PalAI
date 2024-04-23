@@ -118,6 +118,12 @@ class Decorator:
         # Apply rooms
         for r in self.rooms:
             seed = random.choice(self.floor_list)
+
+            for b in sorted(self.floor_list, key = lambda _: random.random()):
+                if len(self._get_pos_neighbors(self.get_block_dict_position(b))) < 4:
+                    seed = b
+                    break
+
             open, closed = [], []
             open.append(seed)
             i = 0
@@ -131,12 +137,9 @@ class Decorator:
                 seed["room"] = r["name"]
                 closed.append(seed)
                 pos = self.get_block_dict_position(seed)
-                for d in self.directions:
-                    new_pos = (pos[0], pos[1] + d[0], pos[2] + d[1])
-                    for b in self.floor_list:
-                        if list(self.get_block_dict_position(b)) == list(new_pos):
-                            if b not in open and b not in closed:
-                                open.append(b)
+                for b in self._get_pos_neighbors(self.get_block_dict_position(seed)):
+                    if b not in open and b not in closed:
+                        open.append(b)
 
         # Recalculate size_y
         positions = [self.get_block_dict_position(b) for b in self.floor_list]
@@ -159,12 +162,11 @@ class Decorator:
         :rtype: bool
         """
         pos = self.get_block_dict_position(block)
-        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
         for i, r in enumerate(decoration["adjacency"]):
             if r == "":
                 continue
 
-            new_pos = (pos[0], pos[1] + directions[i][0], pos[2] + directions[i][1])
+            new_pos = (pos[0], pos[1] + self.directions[i][0], pos[2] + self.directions[i][1])
 
             if (
                 new_pos[0] < 0
@@ -333,28 +335,13 @@ class Decorator:
                     ]
 
     def _validate_cell(self, pos, current_floor):
-        for d in self.directions:
-            new_pos = (pos[0], pos[1] + d[0], pos[2] + d[1])
-
-            # TODO: collapse other blocks based on option chosen
-            if (
-                new_pos[0] < 0
-                or new_pos[1] < 0
-                or new_pos[2] < 0
-                or new_pos[0] >= self.size_y
-                or new_pos[1] >= self.size_x
-                or new_pos[2] >= self.size_z
-            ):
-                continue
-
-            # Update options of all neighbors
-            for neighbor in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
-                if "options" in neighbor:
-                    neighbor["options"] = [
-                        o
-                        for o in neighbor["options"]
-                        if self._is_valid_option(o, neighbor, current_floor)
-                    ]
+        for neighbor in self._get_pos_neighbors(pos):
+            if "options" in neighbor:
+                neighbor["options"] = [
+                    o
+                    for o in neighbor["options"]
+                    if self._is_valid_option(o, neighbor, current_floor)
+                ]
 
     def _update_neighbors(
         self, chosen_decor, chosen_block, current_floor, placed_decors
@@ -406,3 +393,23 @@ class Decorator:
         if c["type"] != "EMPTY":
             placed_decors.append(c)
             self.grid[position[0]][position[1]][position[2]].append(c)
+
+
+    def _get_pos_neighbors(self, pos):
+        neighbors = []
+        for d in self.directions:
+            new_pos = (pos[0], pos[1] + d[0], pos[2] + d[1])
+
+            if (
+                new_pos[0] < 0
+                or new_pos[1] < 0
+                or new_pos[2] < 0
+                or new_pos[0] >= self.size_y
+                or new_pos[1] >= self.size_x
+                or new_pos[2] >= self.size_z
+            ):
+                continue
+            for b in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
+                neighbors.append(b)
+
+        return neighbors

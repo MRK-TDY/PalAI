@@ -64,7 +64,7 @@
     "rooms": [
         {
             "name": "Kitchen",
-            "coverage": 0.1
+            "coverage": 0.25
         }
     ]
 }
