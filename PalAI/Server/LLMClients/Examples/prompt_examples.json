@@ -158,9 +158,26 @@
             "user": "I need a cozy and small mountain retreat.",
             "assistant": "\nFLOOR:Concrete White\nINTERIOR:Concrete Grey\nEXTERIOR:Stone Light Grey\nSTYLE:normal"
         },
-        "Example1": {
-            "user": "Design a modern villa with a sleek look.",
-            "assistant": "\nFLOOR:Dark Marble\nINTERIOR:Plastic Red\nEXTERIOR:Metal Dark Blue\nSTYLE:modern"
+        "Example42": {
+            "user": "I want an orange house.",
+            "assistant": "\nFLOOR:Generic White\nINTERIOR:Plastic Orange\nEXTERIOR:Plastic Orange\nSTYLE:modern"
+        }        ,
+        "Example43": {
+            "user": "I want a blue house.",
+            "assistant": "\nFLOOR:Dark Marble\nINTERIOR:Metal Blue\nEXTERIOR:Metal Dark Blue\nSTYLE:modern"
+        },
+        "Example44": {
+            "user": "I want a red house.",
+            "assistant": "\nFLOOR:Concrete White\nINTERIOR:Plastic Red\nEXTERIOR:Dark Red\nSTYLE:modern"
+        },
+        "Example5": {
+            "user": "I want a bland house.",
+            "assistant": "\nFLOOR:Generic White\nINTERIOR:Honeycomb White\nEXTERIOR:Concrete White\nSTYLE:normal"
+        },
+        ,
+        "Example6": {
+            "user": "I want a yellow house.",
+            "assistant": "\nFLOOR:Marble\nINTERIOR:Honeycomb White\nEXTERIOR:Honeycomb Yellow\nSTYLE:normal"
         }
     },
     "addons_examples": {
@@ -174,7 +191,7 @@
         },
         "Example37": {
             "user": "Here is the building with no windows or doors B:CUBE|0,0|0 B:CUBE|1,0|0 B:CUBE|0,1|0 B:CUBE|1,1|0 B:CUBE|1,1|1 B:CUBE|1,0|1",
-            "assistant": "B:CUBE|0,0|0|DOOR|0,0 B:CUBE|1,1|1|WINDOW|0,0"
+            "assistant": "B:CUBE|0,0|0|DOOR|0,0\nB:CUBE|1,1|1|WINDOW|0,0"
         },
         "Example38": {
             "user": "Create a door in the middle of the house. B:CUBE|0,0 B:CUBE|1,0 B:CUBE|0,1 B:CUBE|1,1",
