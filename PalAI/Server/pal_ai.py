@@ -197,14 +197,14 @@ class PalAI:
                 type = i["type"]
                 position = i["position"].replace("(", "").replace(")", "").split(",")
 
-                pal_script += f"B:{type}|{position[2]},{position[0]}|{position[1]}"
-                pal_script += "\n"
+                pal_script += f"B:{type}|{position[2]},{position[0]}|{position[1]}\n"
             return pal_script
 
         """Adds doors and windows to the building"""
         plan = "\n".join(self.plan_list)
         building = json_to_pal_script(self.building)
         add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{building}."
+        self.logger.debug(f"ADDON PROMPT: {add_on_prompt}")
         add_ons = await self.llm_client.get_agent_response("add_ons", add_on_prompt)
         add_ons = self.extract_building_information(add_ons)
         self.building = self.overlap_blocks(self.building, add_ons)
