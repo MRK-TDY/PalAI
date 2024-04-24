@@ -134,13 +134,14 @@ class Decorator:
                 or len(closed) == len(self.floor_list)
             ):
                 i += 1
-                seed = open.pop(0)
-                seed["room"] = r["name"]
-                closed.append(seed)
-                pos = self.get_block_dict_position(seed)
-                for b in self._get_pos_neighbors(self.get_block_dict_position(seed)):
-                    if b not in open and b not in closed:
-                        open.append(b)
+                if(len(open) > 0):
+                    seed = open.pop(0)
+                    seed["room"] = r["name"]
+                    closed.append(seed)
+                    pos = self.get_block_dict_position(seed)
+                    for b in self._get_pos_neighbors(self.get_block_dict_position(seed)):
+                        if b not in open and b not in closed:
+                            open.append(b)
 
         # Recalculate size_y
         positions = [self.get_block_dict_position(b) for b in self.floor_list]
