@@ -113,7 +113,7 @@ class Decorator:
                     break  # If there is an empty space above a block there may be another floor above
 
         for i in to_remove:
-            if(i in self.floor_list):
+            if i in self.floor_list:
                 self.floor_list.remove(i)
 
         # Apply rooms

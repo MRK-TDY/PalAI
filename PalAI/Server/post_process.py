@@ -15,7 +15,7 @@ class PostProcess:
             self.styles = json.load(fptr)
 
     def import_building(self, building):
-        """ Imports a building from a list of blocks, required to be called before applying any style rules
+        """Imports a building from a list of blocks, required to be called before applying any style rules
 
         :param building: building to be imported
         :type building: list(dict) list of blocks
@@ -41,7 +41,7 @@ class PostProcess:
             self.pixel_grid[pos[1], pos[0], pos[2]] = 1
 
     def get_available_styles(self):
-        """ Returns a list of available styles
+        """Returns a list of available styles
 
         :return: Formatted paragraph of available styles and their descriptions
         :rtype: str
@@ -52,9 +52,10 @@ class PostProcess:
         return styles
 
     def fill_empty_spaces(self):
-        """ Fills in empty spaces in the building with cubes
+        """Fills in empty spaces in the building with cubes
         An empty space is a region of grid spaces that do not contain any blocks
-        And are surrounded by blocks on all sides and above (but not necessarily below)"""
+        And are surrounded by blocks on all sides and above (but not necessarily below)
+        """
         label = 0
         neighbors = [
             (0, 0, 1),
@@ -151,7 +152,7 @@ class PostProcess:
             self.pixel_grid[c[0][0], c[0][1], c[0][2]] = -1
 
     def grid_to_json(self):
-        """ Converts the grid to a list of blocks, the common format for buildings
+        """Converts the grid to a list of blocks, the common format for buildings
 
         :return: list of blocks
         :rtype: list(dict)
@@ -165,7 +166,7 @@ class PostProcess:
         return json
 
     def apply_kernel(self, filter_matrix):
-        """ Applies a filter to the building grid
+        """Applies a filter to the building grid
         A filter is a matrix of values 0, 1 or -1
         0: Any value
         1: Matches against a block
@@ -176,6 +177,7 @@ class PostProcess:
         :return: matches found in the building grid
         :rtype: tuple((y, x, z), rotation)
         """
+
         def rotate_filter(filter_matrix, rotation):
             # Rotate the filter matrix according to the rotation value (0, 90, 180, 270 degrees)
             new_filter = []
@@ -248,6 +250,87 @@ class PostProcess:
         return filtered_values
 
     def get_block_dict_position(self, block):
-        """Returns the position of a block in the grid, in the format (y, x, z)"""
+        """Returns the position of a block in the grid, in the format (x, y, z)"""
         position = block["position"].replace("(", "").replace(")", "").split(",")
         return [eval(x) for x in position]
+
+    def clean_add_ons(self):
+        def is_valid_add_on(x, y , z, add_on_pos):
+            ny, nx, nz = (
+                add_on_pos[1],
+                add_on_pos[0],
+                add_on_pos[2],
+            )
+            dx, dy, dz = nx - x, ny - y, nz - z
+
+            # Must be adjacent to attached block
+            distance = abs(dx) + abs(dy) + abs(dz)
+            if distance != 1:
+                return False
+
+            # Must be attached to a block
+            if self.grid[y][x][z] is None:
+                return False
+
+            # If is outside grid size it is on an empty space
+            if (
+                ny < 0
+                or ny >= self.size_y
+                or nx < 0
+                or nx >= self.size_x
+                or nz < 0
+                or nz >= self.size_z
+            ):
+                return True
+
+            # Must be placed on an empty space
+            if self.grid[ny][nx][nz] is not None:
+                return False
+            return True
+
+        for y in range(self.size_y):
+            for x in range(self.size_x):
+                for z in range(self.size_z):
+                    if self.grid[y][x][z] is not None:
+                        if "tags" in self.grid[y][x][z]:
+                            add_on_pos = self.get_block_dict_position(
+                                self.grid[y][x][z]["tags"]
+                            )
+
+                            if not is_valid_add_on(x, y, z, add_on_pos):
+                                # Place add on adjacent to the block
+                                tag = self.grid[y][x][z]["tags"]
+                                del self.grid[y][x][z]["tags"]
+                                ny, nx, nz = (
+                                    y,
+                                    add_on_pos[0],
+                                    add_on_pos[2],
+                                )
+
+                                dx, dz = nx - x, nz - z
+                                if abs(dx) > abs(dz):
+                                    dx = dx / abs(dx)  #normalize but keep direction
+                                    dz = 0
+                                else:
+                                    dz = dz / abs(dz)  #normalize but keep direction
+                                    dx = 0
+
+                                i = 1
+                                while True:
+                                    if self.grid[y][x][z] is None:
+                                        break
+                                    nx, nz = int(x + dx * i), int(z + dz * i)
+                                    if is_valid_add_on(x, y, z, (nx, ny, nz)):
+                                        if "tags" not in self.grid[y][x][z]:
+                                            tag["position"] = f"({nx},{ny},{nz})"
+                                            self.grid[y][x][z]["tags"] = tag
+                                            break
+                                        else:
+                                            break # There already is an addo-n
+                                    x, z = nx, nz
+
+
+                                # Verify if new position is valid
+                                # Adjust until it is valid or until it is deemed impossible
+
+        return
