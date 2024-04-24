@@ -5,6 +5,7 @@
             "limit": 5,
             "adjacency": ["", "", "", ""],
             "subdivision": 3,
+            "asset_name": ["Coffee table 1", "Coffee table 2", "Workshop Art Table 1"],
             "height": 0.4,
             "callback_chance": 0.5,
             "callback": [

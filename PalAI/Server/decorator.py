@@ -57,7 +57,6 @@ class Decorator:
             room = d.get("room", "default")
             self.decorations_by_room[room].append(d)
 
-
         self.directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
     def import_building(self, api_building):
@@ -120,7 +119,7 @@ class Decorator:
         for r in self.rooms:
             seed = random.choice(self.floor_list)
 
-            for b in sorted(self.floor_list, key = lambda _: random.random()):
+            for b in sorted(self.floor_list, key=lambda _: random.random()):
                 if len(self._get_pos_neighbors(self.get_block_dict_position(b))) < 4:
                     seed = b
                     break
@@ -168,7 +167,11 @@ class Decorator:
             if r == "":
                 continue
 
-            new_pos = (pos[0], pos[1] + self.directions[i][0], pos[2] + self.directions[i][1])
+            new_pos = (
+                pos[0],
+                pos[1] + self.directions[i][0],
+                pos[2] + self.directions[i][1],
+            )
 
             if (
                 new_pos[0] < 0
@@ -254,6 +257,12 @@ class Decorator:
                 current_block = sorted(current_floor, key=lambda _: random.random())[0]
                 if len(current_block["options"]) == 0:
                     continue
+
+                # Get a random decoration but prioritize least used types first
+                current_block["options"] = sorted(
+                    current_block["options"],
+                    key=lambda x: random.random() - used_decorations_count.get(x["name"], 0),
+                )
                 current_decor = random.choice(current_block["options"])
 
                 # Add the chosen decoration
@@ -385,9 +394,11 @@ class Decorator:
         if block in current_floor:
             current_floor.remove(block)
 
+        decor_type = random.choice(decor.get("asset_name", [decor["name"]]))
+
         position[0] = int(position[0])
         c = {
-            "type": decor["name"],
+            "type": decor_type,
             "rotation": decor["rotation"],
             "position": block["position"],
         }
@@ -395,7 +406,6 @@ class Decorator:
         if c["type"] != "EMPTY":
             placed_decors.append(c)
             self.grid[position[0]][position[1]][position[2]].append(c)
-
 
     def _get_pos_neighbors(self, pos):
         neighbors = []

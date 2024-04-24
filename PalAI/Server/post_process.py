@@ -51,6 +51,9 @@ class PostProcess:
             styles += f"{s}: {self.styles['styles'][s]['description']}\n"
         return styles
 
+    def get_styles_list(self):
+        return self.styles["styles"].keys()
+
     def fill_empty_spaces(self):
         """Fills in empty spaces in the building with cubes
         An empty space is a region of grid spaces that do not contain any blocks
