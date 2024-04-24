@@ -186,19 +186,19 @@
             "assistant": "B:CUBE|0,0|0"
         },
         "Example36": {
-            "user": "Create a cube at the point 2,3, on the 1st layer (meaning above the other layer). We then add a window to this block, facing the point 2,2. Here is the building with no windows or doors B:CUBE|0,0|0 B:CUBE|0,0|1 B:CUBE|0,0|2",
+            "user": "Here is a building:\nB:CUBE|0,0|0\nB:CUBE|0,0|1\nB:CUBE|0,0|2 Add a window to the block on layer 1:",
             "assistant": "B:CUBE|0,0|1|WINDOW|0,0"
         },
         "Example37": {
-            "user": "Here is the building with no windows or doors B:CUBE|0,0|0 B:CUBE|1,0|0 B:CUBE|0,1|0 B:CUBE|1,1|0 B:CUBE|1,1|1 B:CUBE|1,0|1",
+            "user": "Here is the building with no windows or doors B:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|0,1|0\nB:CUBE|1,1|0\nB:CUBE|1,1|1\nB:CUBE|1,0|1\nAdd a door and a window",
             "assistant": "B:CUBE|0,0|0|DOOR|0,0\nB:CUBE|1,1|1|WINDOW|0,0"
         },
         "Example38": {
-            "user": "Create a door in the middle of the house. B:CUBE|0,0 B:CUBE|1,0 B:CUBE|0,1 B:CUBE|1,1",
+            "user": "Here is a building. Add a door anywhere in the building. B:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|0,1\nB:CUBE|1,1",
             "assistant": "B:CUBE|0,0|0|DOOR|0,0"
         },
         "Example39": {
-            "user": "I've built a two-layer structure and thinking where a window could fit. Here are the blocks:\nB:CUBE|2,2|0\nB:CUBE|2,3|0\nB:CUBE|2,2|1\nB:CUBE|2,3|1",
+            "user": "I've built a two-layer structure and thinking where a window could fit. Here are the blocks:\nB:CUBE|2,2|0\nB:CUBE|2,3|0\nB:CUBE|2,2|1\nB:CUBE|2,3|1\nAdd 2 windows",
             "assistant": "B:CUBE|2,2|1|WINDOW|2,2\nB:CUBE|2,3|1|WINDOW|2,3"
         },
         "Example40": {
@@ -210,7 +210,7 @@
             "assistant": "B:CUBE|0,0|0|DOOR|0,0\nB:CUBE|0,0|3|WINDOW|0,0"
         },
         "Example42": {
-            "user": "I want to add a feature window to my two-story house, here's the frame:\nB:CUBE|1,1|0\nB:CUBE|1,2|0\nB:CUBE|1,1|1\nB:CUBE|1,2|1",
+            "user": "I want to add a feature window to my two-story house, here's the frame:\nB:CUBE|1,1|0\nB:CUBE|1,2|0\nB:CUBE|1,1|1\nB:CUBE|1,2|1\nAdd a couple of windows.",
             "assistant": "B:CUBE|1,1|1|WINDOW|1,1\nB:CUBE|1,2|1|WINDOW|1,2"
         },
         "Example43": {
