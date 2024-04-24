@@ -2,6 +2,7 @@ import json
 import os
 
 from colorama import Fore
+import Levenshtein
 import logging
 
 from PalAI.Server.LLMClients import (
@@ -228,20 +229,31 @@ class PalAI:
             l = [i.strip() for i in l.upper().split(":")]
             if len(l) == 2:
                 if "STYLE" in l[0]:
-                    self.style = l[1].lower().strip()
-                    material["STYLE"] = l[1].strip()
+                    self.style = self._get_similarity_response(l[1].strip(), self.post_process.get_styles_list())
+                    material["STYLE"] = self.style
                 elif "FLOOR" in l[0]:
-                    material["FLOOR"] = l[1].strip()
+                    material["FLOOR"] = self._get_similarity_response(l[1].strip(), self.material_types)
                 elif "INTERIOR" in l[0]:
-                    material["INTERIOR"] = l[1].strip()
+                    material["INTERIOR"] = self._get_similarity_response(l[1].strip(), self.material_types)
                 elif "EXTERIOR" in l[0]:
-                    material["EXTERIOR"] = l[1].strip()
+                    material["EXTERIOR"] = self._get_similarity_response(l[1].strip(), self.material_types)
 
         self.api_result["materials"] = material
         if self.ws is not None:
             message = {"value": material}
             message["event"] = "material"
             self.ws.send(json.dumps(message))
+
+    def _get_similarity_response(self, response, possibilities):
+        """Takes in a response and a list of possibilities and returns the most similar possibility
+
+        :param response: unsanitized text
+        :type response: str
+        :param possibilities: list of possibilities
+        :type possibilities: list(str)
+        """
+        aux = sorted(possibilities, key = lambda x: Levenshtein.distance(x, response))
+        return aux[0]
 
     async def apply_style(self):
         """Applies the style received from the artist"""
