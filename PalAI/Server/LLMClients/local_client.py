@@ -151,7 +151,7 @@ class LocalClient(LLMClient):
         elif type == "materials":
             # self.logger.info("Materials: \n" + prompt)
             messages = example_getter.getMaterialExamples(prompt)
-        elif type == "addons":
+        elif type == "add_ons":
             # self.logger.info("Addons: \n" + prompt)
             messages = example_getter.getAddOnsExamples(prompt)
         else:
