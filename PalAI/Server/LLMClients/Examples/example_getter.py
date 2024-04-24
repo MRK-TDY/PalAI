@@ -57,5 +57,6 @@ def getAddOnsExamples(prompt):
             messages.append({"role": "user", "content": jsondata["addons_examples"][data]["user"]})
             messages.append({"role": "assistant", "content": jsondata["addons_examples"][data]["assistant"]})
 
+        prompt = prompt.replace("B:", "\nB:")
         messages.append({"role": "user", "content": prompt})
         return messages

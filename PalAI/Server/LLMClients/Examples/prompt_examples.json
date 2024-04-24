@@ -174,7 +174,6 @@
             "user": "I want a bland house.",
             "assistant": "\nFLOOR:Generic White\nINTERIOR:Honeycomb White\nEXTERIOR:Concrete White\nSTYLE:normal"
         },
-        ,
         "Example6": {
             "user": "I want a yellow house.",
             "assistant": "\nFLOOR:Marble\nINTERIOR:Honeycomb White\nEXTERIOR:Honeycomb Yellow\nSTYLE:normal"
@@ -182,8 +181,8 @@
     },
     "addons_examples": {
         "Example35": {
-            "user": "Your job is to take the existing building and add doors and windows to it. Here is the syntax of the code that creates the buildings: B:BLOCK_TYPE|LOCATION|LAYER|ADD-ON. Create a block with no windows at point 0,0 B:CUBE|0,0|0",
-            "assistant": "B:CUBE|0,0|0"
+            "user": "Your job is to take the existing building and add doors and windows to it. Here is the syntax of the code that creates the buildings: B:BLOCK_TYPE|LOCATION|LAYER|ADD-ON. Create a block with one window at point 0,0 B:CUBE|0,0|0",
+            "assistant": "B:CUBE|0,0|0|WINDOW|0,0"
         },
         "Example36": {
             "user": "Here is a building:\nB:CUBE|0,0|0\nB:CUBE|0,0|1\nB:CUBE|0,0|2 Add a window to the block on layer 1:",
@@ -197,13 +196,21 @@
             "user": "Here is a building. Add a door anywhere in the building. B:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|0,1\nB:CUBE|1,1",
             "assistant": "B:CUBE|0,0|0|DOOR|0,0"
         },
+         "Example2": {
+            "user": "Here is a building. Add doors and windows anywhere in the building. B:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|0,1\nB:CUBE|1,1",
+            "assistant": "B:CUBE|0,0|0|DOOR|0,0\nB:CUBE|1,1|1|WINDOW|1,1\nB:CUBE|0,0|1|WINDOW|0,1"
+        },
+        "Example1": {
+            "user": "Here is a building, add doors and windows anywhere in the building. B:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|0,1\nB:CUBE|1,1",
+            "assistant": "B:CUBE|0,0|0|DOOR|0,0\nB:CUBE|1,0|0|WINDOW|0,0\nB:CUBE|1,1|0|WINDOW|1,0"
+        },
         "Example39": {
             "user": "I've built a two-layer structure and thinking where a window could fit. Here are the blocks:\nB:CUBE|2,2|0\nB:CUBE|2,3|0\nB:CUBE|2,2|1\nB:CUBE|2,3|1\nAdd 2 windows",
             "assistant": "B:CUBE|2,2|1|WINDOW|2,2\nB:CUBE|2,3|1|WINDOW|2,3"
         },
         "Example40": {
-            "user": "This is a layout for a garden shed, I'm not sure where the door should go:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|1,1|0",
-            "assistant": "B:CUBE|1,0|0|DOOR|1,0"
+            "user": "This is a layout for a garden shed:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|1,1|0",
+            "assistant": "B:CUBE|1,0|0|DOOR|1,0\nB:CUBE|1,0|0|WINDOW|0,0"
         },
         "Example41": {
             "user": "Designing a lookout tower and need a door at the base and a window at the top. Here's what I have:\nB:CUBE|0,0|0\nB:CUBE|0,0|1\nB:CUBE|0,0|2\nB:CUBE|0,0|3",
@@ -216,6 +223,10 @@
         "Example43": {
             "user": "Creating a workshop space, need a large entrance. Blocks are as follows:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|1,1|0",
             "assistant": "B:CUBE|1,0|0|DOOR|1,0\nB:CUBE|2,0|0|DOOR|2,0"
+        },
+         "Example3": {
+            "user": "Creating a normal house requires doors and windows around the building. Blocks are as follows:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|1,1|0",
+            "assistant": "B:CUBE|1,0|0|DOOR|1,0\nB:CUBE|2,0|0|DOOR|2,0\nB:CUBE|0,1|0|WINDOW|0,1\nB:CUBE|1,1|0|WINDOW|2,2"
         }
     }
 }

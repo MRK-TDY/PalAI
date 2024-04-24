@@ -125,13 +125,17 @@ class LocalClient(LLMClient):
 
         )
 
-        #        if (type == "materials"):
-        response = response[length + 1 :]
-        #            self.logger.info("Total:" + response + "\n Length:" + str(length))
-        #        else:
-        #            for m in messages:
-        #                response = response.replace(m["content"], "")
+        response = response[length + 5:]
+        messages_aux = messages
+        messages_aux.reverse()
+        prompt_aux = messages_aux[0]["content"]
+        print("PROMPT_AUX:" + str(prompt_aux))
+        response = response.replace(prompt_aux, "")
+
+
         response = response.replace("\n \n", "")
+        response = response.replace("\n\n\n", "")
+        print("FILTERED RESPONSE:" + str(response))
 
         return response
 
