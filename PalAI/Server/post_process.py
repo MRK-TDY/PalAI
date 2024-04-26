@@ -121,7 +121,10 @@ class PostProcess:
         :return: building after applying the style
         :rtype: list(dict)
         """
-        self.remove_floating_blocks()
+        # Only remove floating blocks if building is not a single block
+        if self.size_x != 1 or self.size_y != 1 or self.size_z != 1:
+            self.remove_floating_blocks()
+
         self.fill_empty_spaces()
         if style in self.styles["styles"]:
             for rule in self.styles["styles"][style]["rules"]:
