@@ -126,6 +126,7 @@ class PostProcess:
             self.remove_floating_blocks()
 
         self.fill_empty_spaces()
+        self.clean_add_ons()
         if style in self.styles["styles"]:
             for rule in self.styles["styles"][style]["rules"]:
                 matching_positions = self.apply_kernel(rule["filter"])
