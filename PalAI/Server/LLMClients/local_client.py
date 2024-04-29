@@ -129,7 +129,7 @@ class LocalClient(LLMClient):
         messages_aux = messages
         messages_aux.reverse()
         prompt_aux = messages_aux[0]["content"]
-        print("PROMPT_AUX:" + str(prompt_aux))
+        #print("PROMPT_AUX:" + str(prompt_aux))
         response = response.replace(prompt_aux, "")
 
 

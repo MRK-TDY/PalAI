@@ -93,7 +93,10 @@ class PalAI:
         self.ws = web_socket
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get("system_prompt", "")
-        self.prompt_template = self.prompts_file.get("prompt_template", "")
+        if type(llm) == local_client.LocalClient:
+            self.prompt_template = self.prompts_file.get("prompt_local_template", "")
+        else:
+            self.prompt_template = self.prompts_file.get("prompt_template", "")
 
         os.chdir(os.path.dirname(__file__))
 
@@ -156,11 +159,11 @@ class PalAI:
                 prompt=layer_prompt, layer=i
             )
 
-            # if len(self.history) > 0:
-            #    complete_history = ('\n\n').join(self.history)
-            #    formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
-            # else:
-            formatted_prompt = current_layer_prompt
+            if len(self.history) > 0:
+                complete_history = ('\n').join(self.history)
+                formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
+            else:
+                formatted_prompt = current_layer_prompt
 
             # if i == 0:
             #     example = self.prompts_file["basic_example"]

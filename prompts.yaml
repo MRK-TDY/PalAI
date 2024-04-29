@@ -79,8 +79,12 @@ door_example: |
   Note that buildings should always have at least one door and it must be placed on a block that is connected to the outside of the building.
 
 prompt_template: |
-   USER: Complete this request: {prompt}. You are currently on layer {layer}
+   User Request: USER: {prompt}. Keep in mind, You are currently on layer {layer}
    ASSISTANT:
+
+prompt_local_template: |
+  I want you to build the following request: {prompt}. 
+  Keep in mind, You are currently on layer {layer}
 
 architect: |
   You are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.
