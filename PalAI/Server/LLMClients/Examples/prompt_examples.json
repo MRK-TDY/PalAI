@@ -14,7 +14,7 @@
         },
         "Example4": {
             "user": "Create a 4 block wide square house.",
-            "assistant": "To create a square house flat on the ground 4 rows of 4 cubes \n\n  Let's start with the first:\nB:CUBE|0,0\n B:CUBE|1,0\n \nB:CUBE|2,0\n B:CUBE|3,0\n the second \nB:CUBE|0,1\n B:CUBE|1,1\n \nB:CUBE|2,1\n B:CUBE|3,1\n the third \nB:CUBE|0,2\n B:CUBE|1,2\n \nB:CUBE|2,2\n B:CUBE|3,2\n and the third \nB:CUBE|0,3\n B:CUBE|1,3\n \nB:CUBE|2,3\n B:CUBE|3,3\n"
+            "assistant": "To create a square house flat on the ground 4 rows of 4 cubes \n\n  Let's start with the first:\nB:CUBE|0,0\n B:CUBE|1,0\n \nB:CUBE|2,0\n B:CUBE|3,0\n the second \nB:CUBE|0,1\n B:CUBE|1,1\n \nB:CUBE|2,1\n B:CUBE|3,1\n the third \nB:CUBE|0,2\n B:CUBE|1,2\n \nB:CUBE|2,2\n B:CUBE|3,2\n and the fourth \nB:CUBE|0,3\n B:CUBE|1,3\n \nB:CUBE|2,3\n B:CUBE|3,3\n"
         },
         "Example5": {
             "user": "Create a T-shaped house flat on the ground.",
@@ -28,34 +28,63 @@
             "user": "Create a zigzag pattern flat on the ground.",
             "assistant": "To create a zigzag pattern, we'll alternate placing cubes diagonally and horizontally.\n\nStarting from (0,0), place the first cube:\nB:CUBE|0,0\n\nThen move diagonally:\nB:CUBE|1,1\n\nNow, place two horizontally:\nB:CUBE|2,1\nB:CUBE|3,1\n\nRepeat the pattern:\nB:CUBE|4,2\nB:CUBE|5,2\nB:CUBE|6,2\nB:CUBE|7,3\n"
         },
-        "Example10": {
+        "Example8": {
             "user": "Create a cross-shaped house flat on the ground.",
             "assistant": "To create a cross-shaped house, we will place a vertical row of 5 cubes and intersect it with a horizontal row of 5 cubes, both centered at the same point.\n\nFirst, the vertical row:\nB:CUBE|2,0\nB:CUBE|2,1\nB:CUBE|2,2\nB:CUBE|2,3\nB:CUBE|2,4\n\nThen, the horizontal row, centered on the third cube of the vertical row:\nB:CUBE|0,2\nB:CUBE|1,2\nB:CUBE|3,2\nB:CUBE|4,2\n"
         },
-        "Example11": {
+        "Example9": {
             "user": "Create a pyramid flat on the ground.",
             "assistant": "To create a pyramid, we'll start with a square base and reduce the size by one cube each level until we reach the top.\n\nFirst, the base layer (3x3):\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|0,1\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|0,2\nB:CUBE|1,2\nB:CUBE|2,2\n\nThen, the second layer (2x2), shifted right and up:\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|1,2\nB:CUBE|2,2\n\nFinally, the top layer (1x1):\nB:CUBE|2,2\n"
         },
-        "Example12": {
+        "Example10": {
             "user": "Create a house in the shape of the letter 'E' flat on the ground.",
             "assistant": "To create a house in the shape of the letter 'E', we will need three vertical cubes and five horizontal cubes to form the three arms of the 'E'.\n\nFirst, the vertical spine:\nB:CUBE|0,0\nB:CUBE|0,1\nB:CUBE|0,2\n\nThen the top arm:\nB:CUBE|1,2\nB:CUBE|2,2\n\nThe middle arm:\nB:CUBE|1,1\n\nAnd the bottom arm:\nB:CUBE|1,0\nB:CUBE|2,0\n"
         },
-         "Example15": {
+         "Example11": {
             "user": "Create a rectangular 3x5 block house flat on the ground.",
             "assistant": "To create a rectangular 3x5 block house, we'll place 15 cubes in a 3-row by 5-column grid pattern.\n\nFirst row:\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0\nB:CUBE|4,0\n\nSecond row:\nB:CUBE|0,1\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|3,1\nB:CUBE|4,1\n\nThird row:\nB:CUBE|0,2\nB:CUBE|1,2\nB:CUBE|2,2\nB:CUBE|3,2\nB:CUBE|4,2\n"
         },
-        "Example16": {
+        "Example12": {
             "user": "Create an X-shaped house flat on the ground.",
             "assistant": "To create an X-shaped house, we will place cubes in two diagonal lines that cross in the center.\n\nFirst diagonal:\nB:CUBE|0,0\nB:CUBE|1,1\nB:CUBE|2,2\nB:CUBE|3,3\nB:CUBE|4,4\n\nSecond diagonal:\nB:CUBE|4,0\nB:CUBE|3,1\nB:CUBE|2,2\nB:CUBE|1,3\nB:CUBE|0,4\n"
         },
-        "Example17": {
+        "Example13": {
             "user": "Create a house in the shape of the letter 'U' flat on the ground.",
             "assistant": "To create a house in the shape of the letter 'U', we will need to place cubes in a configuration that resembles the letter. This involves two vertical lines connected by a horizontal line at the bottom.\n\nLeft vertical line:\nB:CUBE|0,0\nB:CUBE|0,1\nB:CUBE|0,2\n\nRight vertical line:\nB:CUBE|2,0\nB:CUBE|2,1\nB:CUBE|2,2\n\nConnecting bottom line:\nB:CUBE|1,0\n"
         },
-        "Example18": {
+        "Example14": {
             "user": "Create a diamond-shaped house flat on the ground.",
             "assistant": "To create a diamond-shaped house, we will place cubes in a pattern that forms a diamond. This involves creating two triangles, one inverted, touching at their tips.\n\nTop triangle:\nB:CUBE|2,0\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|3,1\nB:CUBE|2,2\n\nBottom triangle (inverted):\nB:CUBE|2,3\nB:CUBE|1,2\nB:CUBE|3,2\nB:CUBE|2,1\nB:CUBE|2,4\n"
+        },
+        "2Floor_Example15": {
+            "user": "Repeat the same dimensions directly above Layer 0 to create the second floor. You are in Layer 1 \n Here's the layout:\n\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0\nB:CUBE|4,0\nB:CUBE|5,0\n\nB:CUBE|0,1\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|3,1\nB:CUBE|4,1\nB:CUBE|5,1\n\nB:CUBE|0,2\nB:CUBE|1,2\nB:CUBE|2,2\nB:CUBE|3,2\nB:CUBE|4,2\nB:CUBE|5,2\n\nB:CUBE|0,3\nB:CUBE|1,3\nB:CUBE|2,3\nB:CUBE|3,3\nB:CUBE|4,3\nB:CUBE|5,3\n\nB:CUBE|0,4\nB:CUBE|1,4\nB:CUBE|2,4\nB:CUBE|3,4\nB:CUBE|4,4\nB:CUBE|5,4",
+            "assistant": "If we want the same dimensions and shape above Layer 0 and we are in Layer 1 then let's just repeat the blocks \n B:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0\nB:CUBE|4,0\nB:CUBE|5,0\n\nB:CUBE|0,1\nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|3,1\nB:CUBE|4,1\nB:CUBE|5,1\n\nB:CUBE|0,2\nB:CUBE|1,2\nB:CUBE|2,2\nB:CUBE|3,2\nB:CUBE|4,2\nB:CUBE|5,2\n\nB:CUBE|0,3\nB:CUBE|1,3\nB:CUBE|2,3\nB:CUBE|3,3\nB:CUBE|4,3\nB:CUBE|5,3\n\nB:CUBE|0,4\nB:CUBE|1,4\nB:CUBE|2,4\nB:CUBE|3,4\nB:CUBE|4,4\nB:CUBE|5,4"
+        },
+        "2Floor_Example16": {
+            "user": "Repeat the same dimensions directly above Layer 0 to create the second floor. Here's the layout:\n\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|0,1\nB:CUBE|1,1",
+            "assistant": "If we want the same dimensions and shape above Layer 0 and we are in Layer 1 then let's just repeat the blocks \n B:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|0,1\nB:CUBE|1,1"
+        },
+        "2Floor_Example17": {
+            "user": "Layer 1: Repeat the same dimensions directly above Layer 0 to create the second floor. Here's the layout:\n\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0",
+            "assistant": "Let's just repeat the layer then \nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0"
+        },
+         "2Floor_Example18": {
+            "user": "Layer 1: Repeat the same dimensions directly above Layer 0 to create the second floor but add a balcony. Here's the layout:\n\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0",
+            "assistant": "We can just repeat the layer then \nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0\nB:CUBE|4,0"
+        },
+        "3Floor_Example19": {
+            "user": "Layer 2: Repeat the same dimensions directly above Layer 1 to create the third floor. Here's the Layer 1 layout:\n\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0",
+            "assistant": "Let's just repeat the layer then \nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0"
+        },
+        "4Floor_Example19": {
+            "user": "Layer 3: Repeat the same dimensions directly above Layer 2 to create the fourth floor. Here's the Layer 2 layout:\n\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0",
+            "assistant": "Let's just repeat the layer then \nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0"
+        },
+         "Pyramid_Example1": {
+            "user": "Layer 1: A smaller square shape, 2 blocks wide, centered on top of the previous layer. Here's the Layer 0:\n\nB:CUBE|0,0\nB:CUBE|1,0\nB:CUBE|2,0\nB:CUBE|3,0\nB:CUBE|0,0\n B:CUBE|1,0\n \nB:CUBE|2,0\n B:CUBE|3,0\n B:CUBE|0,1\n B:CUBE|1,1\n B:CUBE|2,1\n B:CUBE|3,1\n the third \nB:CUBE|0,2\n B:CUBE|1,2\nB:CUBE|2,2\n B:CUBE|3,2\n and the third \nB:CUBE|0,3\n B:CUBE|1,3\nB:CUBE|2,3\n B:CUBE|3,3\n",
+            "assistant": "A smaller square shape, 2 blocks wide, centered on top of the previous layer: \nB:CUBE|1,1\nB:CUBE|2,1\nB:CUBE|2,2\nB:CUBE|1,2"
         }
+
     },
     "bricklayer_system_message": "\nYou are PalAI, an AI in control of a program that creates buildings in virtual environments.\n  Your job is to respond to users' requests with pal-script, a special code that will be used to generate the requests building.\n  Pal-script is a simple language in which each line of code represents a block in the building.\n  A line has the following format:\n  {example}\n\n  Lines can't contain anything other than what was specified above.\n  Lines must start with `B:` and then the type of block, followed by `|` and then the location of the block.\n  BLOCK_TYPE is the type of block. The blocks you have access to are these: CUBE.\n  LOCATION is the location of the block. It is given as x,y. It should be noted that the position (0,0) is the center and you can use negative values \n  Note that the building is built layer by layer, so you only need to worry about the current layer, which is why the location is only two values.\n  You will start by explaining which blocks you will use and where, in order to create the requested building.\n Please think before you speak\n",
     "architect_examples": {
@@ -262,35 +291,107 @@
         },
           "Example21": {
             "user": "Here is a building, add doors and windows anywhere in the building:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|3,0|0\nB:CUBE|0,0|1\nB:CUBE|1,0|1\nB:CUBE|2,0|1\nB:CUBE|3,0|1:",
-            "assistant": "B:CUBE|0,0|0|WINDOW|-1,0\nB:CUBE|1,0|0|DOOR|0,-1\nB:CUBE|3,0|0|WINDOW|0,-1\nB:CUBE|0,0|1|WINDOW|-1,0\nB:WINDOW|1,0|1|DOOR|0,-1\nB:CUBE|3,0|1|WINDOW|0,-1"
+            "assistant": "B:CUBE|0,0|0|WINDOW|-1,0\nB:CUBE|1,0|0|DOOR|0,-1\nB:CUBE|3,0|0|WINDOW|0,-1\nB:CUBE|0,0|1|WINDOW|-1,0\nB:CUBE|1,0|1|WINDOW|0,-1\nB:CUBE|3,0|1|WINDOW|0,-1"
 
         },
           "Example22": {
             "user": "Here is a building, add doors and windows anywhere in the building:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|3,0|0\nB:CUBE|0,0|1\nB:CUBE|1,0|1\nB:CUBE|2,0|1\nB:CUBE|3,0|1:",
-            "assistant": "B:CUBE|1,0|0|WINDOW|0,1\nB:CUBE|2,0|0|DOOR|0,1\nB:CUBE|3,0|0|WINDOW|0,1\nB:CUBE|0,0|1|WINDOW|1,0\nB:WINDOW|1,0|1|DOOR|0,1\nB:CUBE|3,0|1|WINDOW|0,1"
+            "assistant": "B:CUBE|1,0|0|WINDOW|0,1\nB:CUBE|2,0|0|DOOR|0,1\nB:CUBE|3,0|0|WINDOW|0,1\nB:CUBE|0,0|1|WINDOW|1,0\nB:CUBE|1,0|1|WINDOW|0,-1\nB:CUBE|3,0|1|WINDOW|0,1"
 
         },
           "Example23": {
             "user": "Here is a building, add doors and windows anywhere in the building:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|0,1|0\nB:CUBE|0,2|0\nB:CUBE|1,1|0\nB:CUBE|2,2|0:",
-            "assistant": "B:CUBE|2,0|0|WINDOW|3,0\nB:CUBE|0,0|0|DOOR|-1,0\nB:CUBE|0,2|0|WINDOW|0,3\nB:CUBE|0,1|0|WINDOW|-1,0\nB:WINDOW|0,2|0|DOOR|-1,2"
+            "assistant": "B:CUBE|2,0|0|WINDOW|3,0\nB:CUBE|0,0|0|DOOR|-1,0\nB:CUBE|0,2|0|WINDOW|0,3\nB:CUBE|0,1|0|WINDOW|-1,0\nB:CUBE|0,2|0|DOOR|-1,2"
 
         },
           "Example24": {
             "user": "Here is a building, add doors and windows anywhere in the building:\nB:CUBE|0,0|0\nB:CUBE|1,0|0\nB:CUBE|2,0|0\nB:CUBE|0,1|0\nB:CUBE|0,2|0\nB:CUBE|1,1|0\nB:CUBE|2,2|0:",
-            "assistant": "B:CUBE|2,0|0|WINDOW|3,0\nB:CUBE|0,0|0|DOOR|-1,0\nB:CUBE|0,2|0|WINDOW|0,3\nB:CUBE|0,1|0|WINDOW|-1,0\nB:WINDOW|0,2|0|DOOR|-1,2"
+            "assistant": "B:CUBE|2,0|0|WINDOW|3,0\nB:CUBE|0,0|0|DOOR|-1,0\nB:CUBE|0,2|0|WINDOW|0,3\nB:CUBE|0,1|0|WINDOW|-1,0\nB:CUBE|0,2|0|DOOR|-1,2"
 
         },
           "Example25": {
-            "user": "Here is a building:\nB:CUBE|0,0\n B:CUBE|1,0\n and the second B:CUBE|0,1 \nB:CUBE|1,1, Addd doors and windows all over the building",
-            "assistant": "B:CUBE|0,0|0|WINDOW|-1,0\nB:CUBE|0,0|0|WINDOW|0,-1\nB:CUBE|1,0|0|DOOR|2,0\nB:CUBE|1,0|0|DOOR|1,-1\nB:CUBE|0,1|0|DOOR|0,2\nB:CUBE|0,1|0|WINDOW|-1,2\nB:CUBE|1,1|0|WINDOW|2,1\nB:WINDOW|1,1|0|DOOR|1,2"
+            "user": "Here is a building:\nB:CUBE|0,0\n B:CUBE|1,0\n and the second B:CUBE|0,1 \nB:CUBE|1,1, Place doors and windows all over the building",
+            "assistant": "B:CUBE|0,0|0|WINDOW|-1,0\nB:CUBE|0,0|0|WINDOW|0,-1\nB:CUBE|1,0|0|DOOR|2,0\nB:CUBE|1,0|0|DOOR|1,-1\nB:CUBE|0,1|0|DOOR|0,2\nB:CUBE|0,1|0|WINDOW|-1,2\nB:CUBE|1,1|0|WINDOW|2,1\nB:CUBE|1,1|0|DOOR|1,2"
         },
           "Example26": {
-            "user": "Here is a building:\nB:CUBE|2,2\n B:CUBE|3,2\n and the second B:CUBE|2,3 \nB:CUBE|3,3, Addd doors and windows all over the building",
-            "assistant": "B:CUBE|2,2|0|WINDOW|1,0\nB:CUBE|2,2|0|WINDOW|2,1\nB:CUBE|3,2|0|DOOR|3,2\nB:CUBE|3,2|0|DOOR|3,1\nB:CUBE|2,3|0|DOOR|2,4\nB:CUBE|2,3|0|WINDOW|1,3\nB:CUBE|3,3|0|WINDOW|4,3\nB:WINDOW|3,3|0|DOOR|3,4"
+            "user": "Here is a building:\nB:CUBE|2,2\n B:CUBE|3,2\n and the second B:CUBE|2,3 \nB:CUBE|3,3, Add doors and windows all over the building",
+            "assistant": "B:CUBE|2,2|0|WINDOW|1,0\nB:CUBE|2,2|0|WINDOW|2,1\nB:CUBE|3,2|0|DOOR|3,2\nB:CUBE|3,2|0|DOOR|3,1\nB:CUBE|2,3|0|DOOR|2,4\nB:CUBE|2,3|0|WINDOW|1,3\nB:CUBE|3,3|0|WINDOW|4,3\nB:CUBE|3,3|0|DOOR|3,4"
         },
         "Example27": {
             "user": "We currently have the following building:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2 Add a window to the block on layer 1:",
-            "assistant": "B:CUBE|2,2|1|WINDOW|3,2"
+            "assistant": "B:CUBE|2,2|0|DOOR|3,2\nB:CUBE|2,2|1|WINDOW|3,2"
+        },
+        "Example28": {
+            "user": "We currently have the following building:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2 \n Please add windows and doors where you see fit",
+            "assistant": "B:CUBE|2,2|0|DOOR|3,2\nB:CUBE|2,2|1|WINDOW|3,2"
+        },
+        "Example29": {
+            "user": "Here is a building:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2 Add a door to it:",
+            "assistant": "B:CUBE|2,2|0|DOOR|3,2"
+        },
+        "Example30": {
+            "user": "Here is a building:\nB:CUBE|3,3|0\nB:CUBE|3,3|1\nB:CUBE|3,3|2 Add any missing doors",
+            "assistant": "B:CUBE|3,3|0|DOOR|4,3"
+        },
+        "Example31": {
+            "user": "Here is a building:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2 Are there any missing doors",
+            "assistant": "B:CUBE|2,2|0|DOOR|2,3"
+        },
+         "Example32": {
+            "user": "Here is a building:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2 Add a door",
+            "assistant": "B:CUBE|2,2|0|DOOR|3,2"
+        },
+         "Example33": {
+            "user": "Here is a building:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2 Add doors",
+            "assistant": "B:CUBE|2,2|0|DOOR|1,2\nB:CUBE|2,2|0|DOOR|2,1"
+        },
+        "Example34": {
+            "user": "We currently have the following building:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2 \n Please add windows and doors where you see fit",
+            "assistant": "B:CUBE|2,2|0|DOOR|3,2\n"
+        },
+        "Example35": {
+            "user": "We currently have the following building:\nB:CUBE|2,2|0\nB:CUBE|3,2|0\n\nB:CUBE|4,2|0\nB:CUBE|2,2|1\nB:CUBE|3,2|1\nB:CUBE|4,2|1\nB:CUBE|2,2|2\nB:CUBE|3,2|2\nB:CUBE|4,2|2\n Please add windows and doors where you see fit",
+            "assistant": "B:CUBE|2,2|0|DOOR|2,1\nB:CUBE|2,2|1|WINDOW|3,2"
+        },
+        "Example36": {
+            "user": "We have this structure:\nB:CUBE|3,3|0\nB:CUBE|3,3|1\nB:CUBE|3,3|2\n Can you add a window to layer 2?",
+            "assistant": "B:CUBE|3,3|2|WINDOW|4,3"
+        },
+        "Example37": {
+            "user": "Current building configuration:\nB:CUBE|3,3|0\nB:CUBE|3,3|1\nB:CUBE|3,3|2\n Add a window to each layer",
+            "assistant": "B:CUBE|3,3|0|WINDOW|4,3\nB:CUBE|3,3|1|WINDOW|4,3\nB:CUBE|3,3|2|WINDOW|4,3"
+        },
+        "Example38": {
+            "user": "This is the building plan:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2\n Add windows to the top two layers:",
+            "assistant": "B:CUBE|2,2|1|WINDOW|3,2\nB:CUBE|2,2|2|WINDOW|3,2"
+        },
+        "Example39": {
+            "user": "Here is a building:\nB:CUBE|3,3|0\nB:CUBE|3,3|1\nB:CUBE|3,3|2 Can you add a door to the first layer?",
+            "assistant": "B:CUBE|3,3|0|DOOR|4,3"
+        },
+        "Example40": {
+            "user": "Building details:\nB:CUBE|3,3|0\nB:CUBE|3,3|1\nB:CUBE|3,3|2 Are there any missing windows or doors?",
+            "assistant": "B:CUBE|3,3|0|DOOR|4,3\nB:CUBE|3,3|1|WINDOW|4,3"
+        },
+        "Example41": {
+            "user": "Review this building:\nB:CUBE|2,3|0\nB:CUBE|2,3|1\nB:CUBE|2,3|2 Add necessary openings",
+            "assistant": "B:CUBE|2,3|0|DOOR|3,2\nB:CUBE|2,3|1|WINDOW|3,2"
+        },
+        "Example42": {
+            "user": "Evaluate this structure:\nB:CUBE|4,4|0\nB:CUBE|4,4|1\nB:CUBE|4,4|2\nB:CUBE|4,4|3 Add a door to the ground floor:",
+            "assistant": "B:CUBE|4,4|0|DOOR|5,4"
+        },
+        "Example43": {
+            "user": "Construction plan:\nB:CUBE|2,2|0\nB:CUBE|2,2|1\nB:CUBE|2,2|2\nB:CUBE|2,2|3 Modify the third layer to add a window:",
+            "assistant": "B:CUBE|2,2|2|WINDOW|3,2"
+        },
+        "Example44": {
+            "user": "Here is a building:\nB:CUBE|2,4|0\nB:CUBE|2,4|1\nB:CUBE|2,4|2\n Please optimize the entrance and light sources",
+            "assistant": "B:CUBE|2,4|0|DOOR|3,2\nB:CUBE|2,4|1|WINDOW|3,4\nB:CUBE|2,4|2|WINDOW|3,4"
+        },
+        "Example45": {
+            "user": "Structure overview:\nB:CUBE|3,3|0\nB:CUBE|3,3|1\nB:CUBE|3,3|2\nB:CUBE|3,3|3 Add a window to layers 1 and 3:",
+            "assistant": "B:CUBE|3,3|1|WINDOW|4,3\nB:CUBE|3,3|3|WINDOW|4,3"
         }
     }
 }

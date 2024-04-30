@@ -60,6 +60,14 @@ class LocalClient(LLMClient):
                 materials = kwargs.get("materials", "")
                 styles = kwargs.get("styles", "")
                 system_message.format(materials=materials, styles=styles)
+
+                prompt += "Please pick from the following materials:\n"
+                for m in materials:
+                    prompt += m + "\n"
+
+                prompt += "And from the following styles:\n"
+                prompt += styles + "\n"
+
             case "add_ons":
                 system_message = self.prompts_file["add_ons"]
             case _:
