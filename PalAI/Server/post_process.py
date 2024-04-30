@@ -315,11 +315,13 @@ class PostProcess:
                                 )
 
                                 dx, dz = nx - x, nz - z
-                                if abs(dx) > abs(dz):
-                                    dx = dx / abs(dx)  #normalize but keep direction
+                                if dx == 0 and dz == 0:
+                                    dx = 1
+                                elif abs(dx) > abs(dz):
+                                    dx = dx / abs(dx)  # normalize but keep direction
                                     dz = 0
                                 else:
-                                    dz = dz / abs(dz)  #normalize but keep direction
+                                    dz = dz / abs(dz)  # normalize but keep direction
                                     dx = 0
 
                                 i = 1
