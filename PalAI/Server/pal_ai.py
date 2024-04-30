@@ -14,6 +14,7 @@ from PalAI.Server.LLMClients import (
 )
 from PalAI.Server.post_process import PostProcess
 from PalAI.Server.decorator import Decorator
+from PalAI.Server.placeable import Placeable
 
 
 class PalAI:
@@ -84,7 +85,7 @@ class PalAI:
         elif llm is not None:
             self.llm_client = llm
 
-        self.building = []
+        self.building: list[Placeable] = []
         self.history = []
         self.api_result = {}
 
@@ -130,13 +131,16 @@ class PalAI:
         await self.get_artist_response()
         self.logger.info(f"{Fore.BLUE}Received artist response{Fore.RESET}")
 
+        # XXX: Still needs checking
         await self.apply_style()
         self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
 
+        # XXX: Still needs checking
         await self.decorate()
         self.logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
 
-        self.api_result["result"] = self.building
+        # XXX: Still needs checking
+        self.api_result["result"] = [i.to_json() for i in self.building]
         self.logger.info(f"{Fore.GREEN}Finished Request{Fore.RESET}")
         return self.api_result
 
@@ -190,29 +194,20 @@ class PalAI:
             self.logger.info(f"{Fore.BLUE}Received layer {i} of structure{Fore.RESET}")
 
     async def apply_add_ons(self):
-        def json_to_pal_script(building):
-            """
-            Converts a building from JSON to be used to communicate with the LLM
-            :param building: json formatted building
-            :returns : (str) same building in the format that LLM's consume
-            """
-            pal_script = ""
-            for i in building:
-                type = i["type"]
-                position = i["position"].replace("(", "").replace(")", "").split(",")
-
-                pal_script += f"B:{type}|{position[2]},{position[0]}|{position[1]}\n"
-            return pal_script
-
         """Adds doors and windows to the building"""
+
+        pal_script = ""
+        for i in self.building:
+            type = i.block_type
+            pal_script += f"B:{type}|{i.x},{i.z}|{i.y}\n"
+
         plan = "\n".join(self.plan_list)
-        building = json_to_pal_script(self.building)
-        add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{building}. Please add windows and doors where you see fit \n"
+        add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{self.building}. Please add windows and doors where you see fit \n"
         self.logger.debug(f"ADDON PROMPT: {add_on_prompt}")
         add_ons = await self.llm_client.get_agent_response("add_ons", add_on_prompt)
         add_ons = self.extract_building_information(add_ons)
         self.building = self.overlap_blocks(self.building, add_ons)
-        self.api_result["add_on_agent"] = self.building
+        self.api_result["add_on_agent"] = [i.to_json() for i in self.building]
 
         if self.ws is not None:
             message = {"value": self.building}
@@ -281,7 +276,7 @@ class PalAI:
             self.ws.send(json.dumps(message))
 
 
-    def overlap_blocks(self, base_structure, extra_blocks):
+    def overlap_blocks(self, base_structure: list[Placeable], extra_blocks: list[Placeable]):
         """Overlaps a base structure with a set of extra blocks
         If there are multiple blocks in the same position, the one in the base structure is kept
 
@@ -293,7 +288,7 @@ class PalAI:
         :rtype: list(dict)
         """
         for b in extra_blocks:
-            if any([x for x in base_structure if x["position"] == b["position"]]):
+            if any([i for i in base_structure if (i.x == b.x and i.y == b.y and i.z == b.z)]):
                 base_structure.append(b)
         return base_structure
 
@@ -325,7 +320,7 @@ class PalAI:
         :rtype: list(dict)
         """
         lines = text.split("\n")
-        building_info = []
+        building_info: list[str]= []
 
         # match lines that have two `|` characters
         for line in lines:
@@ -334,28 +329,25 @@ class PalAI:
                     if level is not None:
                         line += f"|{level}"  # if a level is given then it is not present in the script at this point
                     building_info.append(line[2:])
-                except:
+                except Exception as e:
                     self.logger.warning(
                         f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}"
                     )
 
-        blocks = []
+        blocks: list[Placeable] = []
         for block in building_info:
             try:
                 block = block.split("|")
                 position = block[1].split(",")
-                aux = {
-                    "type": block[0],
-                    "position": f"({position[1]},{block[2]},{position[0]})",
-                }
+                b_type = Placeable.BlockType.from_str(block[0])
+                aux = Placeable(b_type, int(position[1]), int(block[2]), int(position[0]))
                 if len(block) == 5:
                     position = block[4].split(",")
-                    aux["tags"] = {
-                        "type": block[3].upper(),
-                        "position": f"({position[1]},{block[2]},{position[0]})",
-                    }
+                    tag = Placeable(block[3].upper(), int(position[1]), int(block[2]), int(position[0]))
+                    aux.tag = tag
                 blocks.append(aux)
-            except:
+            except Exception as e:
+                print(e)
                 self.logger.warning(
                     f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}"
                 )

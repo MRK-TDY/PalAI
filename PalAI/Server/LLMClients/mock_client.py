@@ -12,13 +12,13 @@ class MockClient(LLMClient):
     async def get_agent_response(self, agent, prompt, **kwargs):
         match agent:
             case "architect":
-                return "Layer 0: Single block"
+                return "Layer 0: 2x2 square\nLayer 1: 2x2 square"
             case "bricklayer":
-                return "B:CUBE|0,0"
+                return "B:CUBE|0,0\nB:CUBE|0,1\nB:CUBE|1,0\nB:CUBE|1,1\n"
             case "materials":
                 return "FLOOR:Sand\nINTERIOR:Sand\nEXTERIOR:Sand\nSTYLE:blocky"
             case "add_ons":
-                return "B:CUBE|0,0|0|WINDOW|1,0"
+                return "B:CUBE|1,0|0|WINDOW|1,-1\nB:CUBE|0,0|1|WINDOW|-1,0\nB:CUBE|0,1|0|DOOR|-1,1\n"
             case _:
                 return "Layer 0: Single block"
 

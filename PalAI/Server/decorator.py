@@ -6,6 +6,7 @@ from functools import reduce
 import copy
 
 from numpy.core.multiarray import empty
+from PalAI.Server.placeable import Placeable
 
 
 class Decorator:
@@ -65,23 +66,20 @@ class Decorator:
         :param api_building: building (or list of blocks) to be imported
         :type api_building: list(dict)
         """
-        self.floor_list = copy.deepcopy(api_building)
+        self.floor_list: list[Placeable] = copy.deepcopy(api_building)
         to_remove = []
         for b in self.floor_list:
-            if b["type"] != "CUBE":
+            if b.block_type != Placeable.BlockType.CUBE:
                 to_remove.append(b)
             else:
-                b["type"] = "FLOOR"
                 b["options"] = self.decorations
 
         for i in to_remove:
             self.floor_list.remove(i)
 
-        positions = [self.get_block_dict_position(b) for b in self.floor_list]
-
-        self.size_y = max(positions, key=lambda x: x[0])[0] + 1
-        self.size_x = max(positions, key=lambda x: x[1])[1] + 1
-        self.size_z = max(positions, key=lambda x: x[2])[2] + 1
+        self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
+        self.size_x = max(self.floor_list, key=lambda b: b.x).x + 1
+        self.size_z = max(self.floor_list, key=lambda b: b.z).z + 1
 
         # Grid is indexed (y, x, z) because most transformations happen on a slice of the y axis
         self.grid = [
@@ -93,19 +91,17 @@ class Decorator:
         )
 
         for b in self.floor_list:
-            pos = self.get_block_dict_position(b)
-            self.grid[pos[0]][pos[1]][pos[2]].append(b)
-            self.pixel_grid[pos[0], pos[1], pos[2]] = 1
+            self.grid[b.y][b.x][b.z].append(b)
+            self.pixel_grid[b.y, b.x, b.z] = 1
 
         # Remove blocks on top of existing blocks, we are only interested in floors
         to_remove = []
         for b in self.floor_list:
-            pos = self.get_block_dict_position(b)
-            for y in range(pos[0] + 1, self.size_y):
-                if len(self.grid[y][pos[1]][pos[2]]) > 0:
-                    extra = self.grid[y][pos[1]][pos[2]]
-                    self.grid[y][pos[1]][pos[2]] = []
-                    self.pixel_grid[y][pos[1]][pos[2]] = -1
+            for y in range(b.y + 1, self.size_y):
+                if len(self.grid[y][b.x][b.z]) > 0:
+                    extra = self.grid[y][b.x][b.z]
+                    self.grid[y][b.x][b.z] = []
+                    self.pixel_grid[y][b.x][b.z] = -1
                     if b not in to_remove:
                         to_remove.append(extra)
                 else:
@@ -120,7 +116,7 @@ class Decorator:
             seed = random.choice(self.floor_list)
 
             for b in sorted(self.floor_list, key=lambda _: random.random()):
-                if len(self._get_pos_neighbors(self.get_block_dict_position(b))) < 4:
+                if len(self._get_pos_neighbors((b.y, b.x, b.z))) < 4:
                     seed = b
                     break
 
@@ -128,29 +124,20 @@ class Decorator:
             open.append(seed)
             i = 0
             while (
-                i < int(r["coverage"] * len(self.floor_list))
-                or len(open) == 0
-                or len(closed) == len(self.floor_list)
+                i < int(float(r["coverage"]) * len(self.floor_list))
+                and len(open) > 0
+                and len(closed) < len(self.floor_list)
             ):
                 i += 1
-                if(len(open) > 0):
-                    seed = open.pop(0)
-                    seed["room"] = r["name"]
-                    closed.append(seed)
-                    pos = self.get_block_dict_position(seed)
-                    for b in self._get_pos_neighbors(self.get_block_dict_position(seed)):
-                        if b not in open and b not in closed:
-                            open.append(b)
+                seed = open.pop(0)
+                seed["room"] = r["name"]
+                closed.append(seed)
+                for b in self._get_pos_neighbors((b.y, b.x, b.z)):
+                    if b not in open and b not in closed:
+                        open.append(b)
 
         # Recalculate size_y
-        positions = [self.get_block_dict_position(b) for b in self.floor_list]
-        self.size_y = max(positions, key=lambda x: x[0])[0] + 1
-
-    def get_block_dict_position(self, block):
-        """Returns the position of a block in the grid, in the format (y, x, z)"""
-        position = block["position"].replace("(", "").replace(")", "").split(",")
-        position[0], position[1] = position[1], position[0]
-        return [eval(x) for x in position]
+        self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
 
     def _is_valid_option(self, decoration, block, current_floor_list):
         """Evaluates if a decoration can be placed on a block
@@ -162,24 +149,21 @@ class Decorator:
         :return: can the decoration be placed on the block
         :rtype: bool
         """
-        pos = self.get_block_dict_position(block)
         for i, r in enumerate(decoration["adjacency"]):
             if r == "":
                 continue
 
-            new_pos = (
-                pos[0],
-                pos[1] + self.directions[i][0],
-                pos[2] + self.directions[i][1],
-            )
+            ny = block.y
+            nx = block.x + self.directions[i][0]
+            nz = block.z + self.directions[i][1]
 
             if (
-                new_pos[0] < 0
-                or new_pos[1] < 0
-                or new_pos[2] < 0
-                or new_pos[0] >= self.size_y
-                or new_pos[1] >= self.size_x
-                or new_pos[2] >= self.size_z
+                ny < 0
+                or nx < 0
+                or nz < 0
+                or ny >= self.size_y
+                or nx >= self.size_x
+                or nz >= self.size_z
             ):
                 if r == "WALL":
                     continue
@@ -190,28 +174,28 @@ class Decorator:
                 # There is a wall if there is no block on the position
                 # (walls are boundaries of the building)
                 valid = True
-                for neighbor in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
-                    if "type" in neighbor:
+                for neighbor in self.grid[ny][nx][nz]:
+                    if neighbor.block_type == Placeable.BlockType.CUBE:
                         valid = False
                 return valid
 
             elif r == "EMPTY":
                 # There is an empty space if there is a block
                 if (
-                    len(self.grid[new_pos[0]][new_pos[1]][new_pos[2]]) < 1
-                    or "type" not in self.grid[new_pos[0]][new_pos[1]][new_pos[2]][0]
+                    len(self.grid[ny][nx][nz]) < 1
+                    or self.grid[ny][nx][nz][0].block_type != Placeable.BlockType.CUBE
                 ):
                     return False
             else:  # Adjacency to another decoration
                 valid = False
                 for floor in current_floor_list:
-                    if list(self.get_block_dict_position(floor)) == list(new_pos):
-                        if "name" in floor and floor["name"] == r:
+                    if block.y == ny and block.x == nx and block.z == nz:
+                        if "name" in floor._additional_keys and floor._additional_keys["name"] == r:
                             valid = True
                             break
-                        if "options" in floor:
-                            for o in floor["options"]:
-                                if o["name"] == r:
+                        if "options"._additional_keys in floor:
+                            for o in floor["options"]._additional_keys:
+                                if o["name"]._additional_keys == r:
                                     valid = True
                                     break
                 return valid
@@ -234,11 +218,9 @@ class Decorator:
         # foreach floor level
         for y in range(self.size_y):
             # Initialize options for each block
-            current_floor = [
-                b for b in self.floor_list if self.get_block_dict_position(b)[0] == y
-            ]
+            current_floor = [b for b in self.floor_list if b.y == y]
             for b in current_floor:
-                if "room" in b:
+                if "room" in b._additional_keys:
                     b["options"] = self.decorations_by_room[b["room"]].copy()
                 else:
                     b["options"] = self.decorations_by_room["default"].copy()
@@ -256,12 +238,14 @@ class Decorator:
                 # Choosing the lowest entropy would cause the blocks with less options to fill first
                 current_block = sorted(current_floor, key=lambda _: random.random())[0]
                 if len(current_block["options"]) == 0:
+                    current_floor.remove(current_block)
                     continue
 
                 # Get a random decoration but prioritize least used types first
                 current_block["options"] = sorted(
                     current_block["options"],
-                    key=lambda x: random.random() - used_decorations_count.get(x["name"], 0),
+                    key=lambda x: random.random()
+                    - used_decorations_count.get(x["name"], 0),
                 )
                 current_decor = random.choice(current_block["options"])
 
@@ -288,8 +272,7 @@ class Decorator:
                 )
 
                 # Update the neighbor options based on their own adjacency rules
-                pos = self.get_block_dict_position(current_block)
-                self._validate_cell(pos, current_floor)
+                self._validate_cell((current_block.y, current_block.x, current_block.z), current_floor)
 
             return placed_decors
 
@@ -302,15 +285,9 @@ class Decorator:
         current_floor,
     ):
         callbacker = current_decoration
-        base_position = current_block["position"]
         while callbacker.get("callback", None) is not None:
             if random.random() > callbacker.get("callback_chance", 1):
                 break
-            base_position = base_position.replace("(", "").replace(")", "").split(",")
-            base_position[1] = eval(base_position[1]) + callbacker.get("height", 0)
-            base_position = (
-                f"({base_position[0]},{base_position[1]},{base_position[2]})"
-            )
             total_weight = reduce(
                 lambda x, y: x + y.get("weight", 1), callbacker["callback"], 0
             )
@@ -359,16 +336,12 @@ class Decorator:
     ):
         for i, r in enumerate(chosen_decor["adjacency"]):
             new_pos = (
-                self.get_block_dict_position(chosen_block)[0],
-                self.get_block_dict_position(chosen_block)[1] + self.directions[i][0],
-                self.get_block_dict_position(chosen_block)[2] + self.directions[i][1],
+                chosen_block.y,
+                chosen_block.x + self.directions[i][0],
+                chosen_block.z + self.directions[i][1],
             )
             if r == "EMPTY":
                 pass
-                # for neighbor in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
-                #     neighbor["options"] = [
-                #         o for o in neighbor["options"] if o["name"] == "EMPTY"
-                #     ]
             elif r == "WALL":
                 pass
             elif r == "":
@@ -376,7 +349,7 @@ class Decorator:
             else:
                 placed = False
                 for floor in current_floor:
-                    if list(self.get_block_dict_position(floor)) == list(new_pos):
+                    if floor.x == chosen_block.x and floor.y == chosen_block.y and floor.z == chosen_block.z:
                         if "options" in floor:
                             for d in floor["options"]:
                                 if d["name"] == r:
@@ -389,23 +362,21 @@ class Decorator:
                             break
 
     def _add_decoration(self, decor, block, placed_decors, current_floor):
-        position = self.get_block_dict_position(block)
-
         if block in current_floor:
             current_floor.remove(block)
 
         decor_type = random.choice(decor.get("asset_name", [decor["name"]]))
 
-        position[0] = int(position[0])
+        y = int(block.y)
         c = {
             "type": decor_type,
             "rotation": decor["rotation"],
-            "position": block["position"],
+            "position": block.position,
         }
 
         if c["type"] != "EMPTY":
             placed_decors.append(c)
-            self.grid[position[0]][position[1]][position[2]].append(c)
+            self.grid[y][block.x][block.z].append(c)
 
     def _get_pos_neighbors(self, pos):
         neighbors = []
@@ -421,6 +392,7 @@ class Decorator:
                 or new_pos[2] >= self.size_z
             ):
                 continue
+
             for b in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
                 neighbors.append(b)
 

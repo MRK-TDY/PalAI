@@ -1,11 +1,10 @@
-from dataclasses import dataclass
 import json
 from typing import Self
-from enum import Enum
+from enum import StrEnum
 
 
 class Placeable:
-    class BlockType(Enum):
+    class BlockType(StrEnum):
         CUBE = "CUBE"
         WINDOW = "WINDOW"
         DOOR = "DOOR"
@@ -18,6 +17,8 @@ class Placeable:
             raise ValueError(f"Invalid block type: {value}")
 
     def __init__(self, block_type: BlockType, x: int, y: int, z: int) -> Self:
+        if type(block_type) is str:
+            block_type = Placeable.BlockType.from_str(block_type)
         self.block_type = block_type
         self.x = x
         self.y = y
@@ -26,14 +27,14 @@ class Placeable:
         self._additional_keys = {}
 
     def to_json(self):
-        return {"type": self.block_type, "position": self.position}
+        return {"type": self.block_type.value, "position": self.position}
 
     @property
     def tag(self) -> Self:
         return self._add_ons
 
     @tag.setter
-    def set_tag(self, value: Self):
+    def tag(self, value: Self):
         self._add_ons = value
 
     # Backwards compatibility
@@ -60,6 +61,9 @@ class Placeable:
             self._add_ons = value
         else:
             self._additional_keys[key] = value
+
+    def __contains__(self, key: str) -> bool:
+        return key in ["type", "position", "tags"] or key in self._additional_keys
 
     def __getitem__(self, key: str):
         if key == "type":
