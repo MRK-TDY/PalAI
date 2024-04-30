@@ -3,6 +3,7 @@ import numpy as np
 import json
 from collections import deque
 
+from PalAI.Server.placeable import Placeable
 
 class PostProcess:
     def __init__(self, style_sheet="styles.json"):
@@ -20,11 +21,10 @@ class PostProcess:
         :param building: building to be imported
         :type building: list(dict) list of blocks
         """
-        positions = [self.get_block_dict_position(b) for b in building]
 
-        self.size_x = max(positions, key=lambda x: x[0])[0] + 1
-        self.size_y = max(positions, key=lambda x: x[1])[1] + 1
-        self.size_z = max(positions, key=lambda x: x[2])[2] + 1
+        self.size_x = max(building, key=lambda b: b.x).x + 1
+        self.size_y = max(building, key=lambda b: b.y).y + 1
+        self.size_z = max(building, key=lambda b: b.z).z + 1
 
         # Grid is indexed (y, x, z) because most transformations happen on a slice of the y axis
         self.grid = [
@@ -36,9 +36,8 @@ class PostProcess:
         )
 
         for b in building:
-            pos = self.get_block_dict_position(b)
-            self.grid[pos[1]][pos[0]][pos[2]] = b
-            self.pixel_grid[pos[1], pos[0], pos[2]] = 1
+            self.grid[b.y][b.x][b.z] = b
+            self.pixel_grid[b.y, b.x, b.z] = 1
 
     def get_available_styles(self):
         """Returns a list of available styles
@@ -97,10 +96,8 @@ class PostProcess:
                                     labelArray[y, x, z] = label
                                     if label > 1:
                                         # found empty space, fill it in
-                                        self.grid[k][i - 1][j - 1] = {
-                                            "type": "CUBE",
-                                            "position": f"({i - 1}, {k}, {j - 1})",
-                                        }
+                                        p = Placeable("CUBE", i - 1, k, j - 1)
+                                        self.grid[k][i - 1][j - 1] = p
                                         self.pixel_grid[k, i - 1, j - 1] = 1
                                     for dy, dx, dz in neighbors:
                                         ny, nx, nz = y + dy, x + dx, z + dz
@@ -137,9 +134,9 @@ class PostProcess:
                         block[effect["key"]] = effect["value"].format_map(placeholders)
                         if block[effect["key"]].isdigit():
                             block[effect["key"]] = int(block[effect["key"]])
-            return self.grid_to_json()
+            return self.export_building()
         else:
-            return self.grid_to_json()
+            return self.export_building()
 
     def remove_floating_blocks(self):
         """Removes floating blocks from the building
@@ -158,7 +155,7 @@ class PostProcess:
             self.grid[c[0][0]][c[0][1]][c[0][2]] = None
             self.pixel_grid[c[0][0], c[0][1], c[0][2]] = -1
 
-    def grid_to_json(self):
+    def export_building(self):
         """Converts the grid to a list of blocks, the common format for buildings
 
         :return: list of blocks
@@ -256,11 +253,6 @@ class PostProcess:
 
         return filtered_values
 
-    def get_block_dict_position(self, block):
-        """Returns the position of a block in the grid, in the format (x, y, z)"""
-        position = block["position"].replace("(", "").replace(")", "").split(",")
-        return [eval(x) for x in position]
-
     def clean_add_ons(self):
         def is_valid_add_on(x, y , z, add_on_pos):
             ny, nx, nz = (
@@ -299,19 +291,15 @@ class PostProcess:
             for x in range(self.size_x):
                 for z in range(self.size_z):
                     if self.grid[y][x][z] is not None:
-                        if "tags" in self.grid[y][x][z]:
-                            add_on_pos = self.get_block_dict_position(
-                                self.grid[y][x][z]["tags"]
-                            )
-
-                            if not is_valid_add_on(x, y, z, add_on_pos):
+                        if self.grid[y][x][z]._add_ons is not None:
+                            tag = self.grid[y][x][z].tag
+                            if not is_valid_add_on(x, y, z, (tag.x, tag.y, tag.z)):
                                 # Place add on adjacent to the block
-                                tag = self.grid[y][x][z]["tags"]
-                                del self.grid[y][x][z]["tags"]
+                                self.grid[y][x][z].tag = None
                                 ny, nx, nz = (
                                     y,
-                                    add_on_pos[0],
-                                    add_on_pos[2],
+                                    tag.x,
+                                    tag.z
                                 )
 
                                 dx, dz = nx - x, nz - z
@@ -330,12 +318,14 @@ class PostProcess:
                                         break
                                     nx, nz = int(x + dx * i), int(z + dz * i)
                                     if is_valid_add_on(x, y, z, (nx, ny, nz)):
-                                        if "tags" not in self.grid[y][x][z]:
-                                            tag["position"] = f"({nx},{ny},{nz})"
-                                            self.grid[y][x][z]["tags"] = tag
+                                        if self.grid[y][x][z].tag is not None:
+                                            tag.x = nx
+                                            tag.y = ny
+                                            tag.z = nz
+                                            self.grid[y][x][z].tag = tag
                                             break
                                         else:
-                                            break # There already is an addo-n
+                                            break # There already is an add-on
                                     x, z = nx, nz
 
 
