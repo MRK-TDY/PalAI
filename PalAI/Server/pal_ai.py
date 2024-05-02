@@ -184,8 +184,13 @@ class PalAI:
             self.building.extend(new_layer)
 
             if self.ws is not None:
-                message = {"value": new_layer}
+                json_new_layer = []
+                for l in new_layer:
+                    json_new_layer.append(l.to_json())
+
+                message = {"value": json_new_layer}
                 message["event"] = "layer"
+
                 self.ws.send(json.dumps(message))
             self.api_result[f"bricklayer_{i}"] = [
                 l for l in response.split("\n") if l != ""
