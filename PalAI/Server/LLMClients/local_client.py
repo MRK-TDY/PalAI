@@ -64,6 +64,9 @@ class LocalClient(LLMClient):
         self.prompt_total += system_message
         self.prompt_total += prompt
         messages = kwargs.get("messages", [])
+        message_length = len(messages)
+
+        messages[message_length - 1]['content'] = system_message + "\n USER:" + messages[message_length - 1]['content']
 
         length = 0
         for m in messages:
