@@ -36,11 +36,11 @@ def getMaterialExamples(prompt):
     with open(os.path.join(os.path.dirname(__file__), 'prompt_examples.json'), 'r', encoding='utf-8') as f:
         # returns JSON object as
         # a dictionary
-        jsondata = json.load(f)
+        #jsondata = json.load(f)
         messages = []
-        for data in jsondata["house_design_examples"]:
-            messages.append({"role": "user", "content": jsondata["house_design_examples"][data]["user"]})
-            messages.append({"role": "assistant", "content": jsondata["house_design_examples"][data]["assistant"]})
+        #for data in jsondata["house_design_examples"]:
+        #    messages.append({"role": "user", "content": jsondata["house_design_examples"][data]["user"]})
+        #    messages.append({"role": "assistant", "content": jsondata["house_design_examples"][data]["assistant"]})
 
         messages.append({"role": "user", "content": prompt})
         return messages
