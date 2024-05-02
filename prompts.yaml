@@ -83,7 +83,7 @@ prompt_template: |
    ASSISTANT:
 
 prompt_local_template: |
-  I want you to build the following request: {prompt}. 
+  I want you to build the following request: {prompt}.
   Keep in mind, You are currently on layer {layer}
 
 architect: |
@@ -179,4 +179,4 @@ materials: |
   Exterior: <COLOR 3>
   Style: <style>
 
-  You may repeat colors, but do it only if requested.
+  You may repeat materials, but do it only if requested.

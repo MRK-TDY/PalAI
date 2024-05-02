@@ -141,7 +141,6 @@ class PostProcess:
     def remove_floating_blocks(self):
         """Removes floating blocks from the building
         A floating block is a block that is not supported by any other block"""
-        # TODO: edge case where building is a single block deletes building
         # TODO: there may be multiple floating blocks together, which are not being removed
 
         # Remove blocks that are not supported by any other block
@@ -151,7 +150,12 @@ class PostProcess:
             [[0, 0, 0], [0, -1, 0], [0, 0, 0]],
         ]
         matching_positions = self.apply_kernel(floating_block_kernel)
+        block_count = len(self.export_building())
+
         for c in matching_positions:
+            if block_count <= 1:
+                break
+            block_count -= 1
             self.grid[c[0][0]][c[0][1]][c[0][2]] = None
             self.pixel_grid[c[0][0], c[0][1], c[0][2]] = -1
 

@@ -6,6 +6,9 @@ from enum import StrEnum
 class Placeable:
     class BlockType(StrEnum):
         CUBE = "CUBE"
+        CYLINDER = "CYLINDER"
+        DIAGONAL = "DIAGONAL"
+        ROUNDED_CORNER = "ROUNDED CORNER"
         WINDOW = "WINDOW"
         DOOR = "DOOR"
 

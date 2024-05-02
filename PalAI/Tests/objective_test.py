@@ -18,12 +18,12 @@ class TestClient(unittest.TestCase):
         ) as file:
             prompts_file = yaml.safe_load(file)
 
-        # logger = logging.getLogger()
-        # logger.level = logging.DEBUG
-        # stream_handler = logging.StreamHandler(sys.stdout)
-        # logger.addHandler(stream_handler)
-        # pal_ai = PalAI(prompts_file, llm_client, logger)
         pal_ai = PalAI(prompts_file, llm_client)
+        logger = logging.getLogger()
+        logger.level = logging.DEBUG
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
+        pal_ai = PalAI(prompts_file, llm_client, logger)
 
         return pal_ai
 
@@ -81,7 +81,7 @@ class TestClient(unittest.TestCase):
 
     def test_artist(self):
         pal_ai = self._create_pal_ai()
-        pal_ai.prompt = "I want a very rounded house with no sharp angles, use a bland white for the floor, for the interior use a honeycomb of the same color, and for the exterior use a material that is found on the beach."
+        pal_ai.prompt = "I want a very rounded house with no sharp angles, use a very generic type of bland white for the floor, for the interior use a honeycomb of the same color, and for the exterior use a material that is found naturally on the beach."
         pal_ai.original_prompt = pal_ai.prompt
         asyncio.run(pal_ai.get_artist_response())
 
@@ -101,7 +101,7 @@ class TestClient(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    llm_client = "gpt"
+    llm_client = "local"
     os.chdir(os.path.dirname(__file__))
 
     unittest.main()
