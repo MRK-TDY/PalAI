@@ -49,29 +49,7 @@ class LocalClient(LLMClient):
         self.price_rate = 0
 
     async def get_agent_response(self, agent, prompt, **kwargs):
-        system_message = ""
-        match agent:
-            case "architect":
-                system_message = self.prompts_file["architect"]
-            case "bricklayer":
-                system_message = self.prompts_file["bricklayer"]
-            case "materials":
-                system_message = self.prompts_file["materials"]
-                materials = kwargs.get("materials", "")
-                styles = kwargs.get("styles", "")
-                system_message.format(materials=materials, styles=styles)
-
-                prompt += "Please pick from the following materials:\n"
-                for m in materials:
-                    prompt += m + "\n"
-
-                prompt += "And from the following styles:\n"
-                prompt += styles + "\n"
-
-            case "add_ons":
-                system_message = self.prompts_file["add_ons"]
-            case _:
-                system_message = self.prompts_file["architect"]
+        system_message = self._get_agent_system_message(agent, **kwargs)
 
         messages = self.preparePrompt(prompt, agent)
         kwargs["messages"] = messages

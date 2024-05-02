@@ -28,7 +28,7 @@ class LLMClient:
         pass
 
 
-    async def get_agent_response(self, agent, prompt, **kwargs):
+    def _get_agent_system_message(self, agent, **kwargs):
         system_message = ""
         match agent:
             case "architect":
@@ -44,7 +44,10 @@ class LLMClient:
                 system_message = self.prompts_file["add_ons"]
             case _:
                 system_message = self.prompts_file["architect"]
+        return system_message
 
+    async def get_agent_response(self, agent, prompt, **kwargs):
+        system_message = self._get_agent_system_message(agent, **kwargs)
 
         return await self.get_llm_response(system_message, prompt, **kwargs)
 
