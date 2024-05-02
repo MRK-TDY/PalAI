@@ -1,24 +1,31 @@
-
-import csv
-import json
+import logging
 import os
+import sys
 import yaml
-from configparser import RawConfigParser
-from PalAI.Server.LLMClients import together_client
 from PalAI.Server.pal_ai import PalAI
 import asyncio
 import unittest
 
+
 class TestClient(unittest.TestCase):
+    """This class tests the entire PalAI flow using objective prompts.
+    The goal is to ensure that the LLM is capable of generating the requested structure."""
+
     def _create_pal_ai(self):
-        global endpoint
-        with open(os.path.join(os.path.dirname(__file__), '../../prompts.yaml'), 'r') as file:
+        global llm_client
+        with open(
+            os.path.join(os.path.dirname(__file__), "../../prompts.yaml"), "r"
+        ) as file:
             prompts_file = yaml.safe_load(file)
 
-        pal_ai = PalAI(prompts_file, endpoint)
-        pal_ai.verbose = False
-        return pal_ai
+        # logger = logging.getLogger()
+        # logger.level = logging.DEBUG
+        # stream_handler = logging.StreamHandler(sys.stdout)
+        # logger.addHandler(stream_handler)
+        # pal_ai = PalAI(prompts_file, llm_client, logger)
+        pal_ai = PalAI(prompts_file, llm_client)
 
+        return pal_ai
 
     def _build_structure(self, prompt):
         pal_ai = self._create_pal_ai()
@@ -30,18 +37,32 @@ class TestClient(unittest.TestCase):
         return pal_ai, pal_ai.building
 
     def test_small_house(self):
-        _, building = self._build_structure("I want a house that is just a 2x2 square flat on the ground with a single floor")
+        _, building = self._build_structure(
+            "I want a house that is just a 2x2 square flat on the ground with a single floor"
+        )
 
         self.assertEqual(len(building), 4, "building should only have 4 blocks")
 
         positions = []
         for b in building:
-            positions.append([eval(x) for x in b["position"].replace("(", "").replace(")", "").split(",")])
+            positions.append(
+                [
+                    eval(x)
+                    for x in b["position"].replace("(", "").replace(")", "").split(",")
+                ]
+            )
 
         hashable_positions = [tuple(p) for p in positions]
-        self.assertEqual(len(hashable_positions), len(set(hashable_positions)), "there shouldn't be repeated positions")
-        self.assertEqual(len(list(filter(lambda x: x[1] == 0,positions))), 4,
-                         "all blocks should touch the ground")
+        self.assertEqual(
+            len(hashable_positions),
+            len(set(hashable_positions)),
+            "there shouldn't be repeated positions",
+        )
+        self.assertEqual(
+            len(list(filter(lambda x: x[1] == 0, positions))),
+            4,
+            "all blocks should touch the ground",
+        )
 
         min_x, min_z = positions[0][0], positions[0][2]
         max_x, max_z = positions[0][0], positions[0][2]
@@ -55,33 +76,32 @@ class TestClient(unittest.TestCase):
             if p[2] > max_z:
                 max_z = p[2]
 
-        self.assertEqual(max_x - min_x, 1, "shape created should be a square")
-        self.assertEqual(max_z - min_z, 1, "shape created should be a square")
+        self.assertEqual(max_x - min_x, 1, "shape created should be a 2x2 square")
+        self.assertEqual(max_z - min_z, 1, "shape created should be a 2x2 square")
 
     def test_artist(self):
         pal_ai = self._create_pal_ai()
-        pal_ai.prompt = "I want a house full of curves, use a bland white for the floor, for the interior use ahoneycomb of the same color, and for the exterior use a material that is found on the beach."
+        pal_ai.prompt = "I want a very rounded house with no sharp angles, use a bland white for the floor, for the interior use a honeycomb of the same color, and for the exterior use a material that is found on the beach."
         pal_ai.original_prompt = pal_ai.prompt
         asyncio.run(pal_ai.get_artist_response())
 
         artist_response = pal_ai.api_result["materials"]
-        self.assertEqual(artist_response["STYLE"], "ROUNDED", "style should be curves")
-        self.assertEqual(artist_response["FLOOR"], "GENERIC WHITE", "floor material doesn't match")
-        self.assertEqual(artist_response["INTERIOR"], "HONEYCOMB WHITE", "interior material doesn't match")
-        self.assertEqual(artist_response["EXTERIOR"], "SAND", "exterior material doesn't match")
+        self.assertEqual(artist_response["STYLE"].upper(), "ROUNDED", "style should be curves")
+        self.assertEqual(
+            artist_response["FLOOR"], "GENERIC WHITE", "floor material doesn't match"
+        )
+        self.assertEqual(
+            artist_response["INTERIOR"].upper(),
+            "HONEYCOMB WHITE",
+            "interior material doesn't match",
+        )
+        self.assertEqual(
+            artist_response["EXTERIOR"].upper(), "SAND", "exterior material doesn't match"
+        )
 
 
-
-
-
-if __name__ == '__main__':
-    endpoint = 'gpt'
+if __name__ == "__main__":
+    llm_client = "gpt"
     os.chdir(os.path.dirname(__file__))
-
-# This limits the number of buildings generated
-    limit = 1
-
-    with open(os.path.join(os.path.dirname(__file__), "Resources/baselines.json"), 'r') as fptr:
-        baselines_json = json.load(fptr)
 
     unittest.main()
