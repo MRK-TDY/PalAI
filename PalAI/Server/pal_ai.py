@@ -215,7 +215,10 @@ class PalAI:
         self.api_result["add_on_agent"] = [i.to_json() for i in self.building]
 
         if self.ws is not None:
-            message = {"value": self.building}
+            json_new_layer = []
+            for l in self.building:
+                json_new_layer.append(l.to_json())
+            message = {"value": json_new_layer}
             message["event"] = "add_ons"
             self.ws.send(json.dumps(message))
 
