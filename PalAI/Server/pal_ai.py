@@ -31,34 +31,34 @@ class PalAI:
         """
 
         self.material_types = [
-            "Generic White",
-            "Plastic Orange",
-            "Concrete White",
-            "Metal Blue",
-            "Metal Dark Blue",
-            "Honeycomb White",
-            "Grey Light Wood",
-            "Concrete Grey",
-            "Concrete Dark Stripes Blue",
-            "Marble",
-            "Dark Marble",
-            "Sand",
-            "Dark Red",
-            "Molten Marble",
-            "Plastic Red",
-            "Stone Light Grey",
-            "Dark Concrete",
+            "GENERIC WHITE",
+            "PLASTIC ORANGE",
+            "CONCRETE WHITE",
+            "METAL BLUE",
+            "METAL DARK BLUE",
+            "HONEYCOMB WHITE",
+            "GREY LIGHT WOOD",
+            "CONCRETE GREY",
+            "CONCRETE DARK STRIPES BLUE",
+            "MARBLE",
+            "DARK MARBLE",
+            "SAND",
+            "DARK RED",
+            "MOLTEN MARBLE",
+            "PLASTIC RED",
+            "STONE LIGHT GREY",
+            "DARK CONCRETE",
         ]
 
         if logger is not None:
             self.logger = logger
         else:
             self.logger = logging.getLogger(__name__)
-            console_handler = logging.StreamHandler()
-            console_handler.setLevel(logging.INFO)
+            self.console_handler = logging.StreamHandler()
+            self.console_handler.setLevel(logging.DEBUG)
             console_formatter = logging.Formatter('%(levelname)s - %(message)s')
-            console_handler.setFormatter(console_formatter)
-            self.logger.addHandler(console_handler)
+            self.console_handler.setFormatter(console_formatter)
+            self.logger.addHandler(self.console_handler)
 
         if llm is not None and isinstance(llm, str):
             match llm:
@@ -227,6 +227,7 @@ class PalAI:
             styles=self.post_process.get_available_styles(),
         )
 
+        self.logger.debug(f"ARTIST RESPONSE: {materials_response}")
         material = {}
         for l in materials_response.split("\n"):
             l = [i.strip() for i in l.upper().split(":")]

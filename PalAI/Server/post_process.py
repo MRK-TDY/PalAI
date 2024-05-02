@@ -51,7 +51,7 @@ class PostProcess:
         return styles
 
     def get_styles_list(self):
-        return self.styles["styles"].keys()
+        return [i.upper() for i in self.styles["styles"].keys()]
 
     def fill_empty_spaces(self):
         """Fills in empty spaces in the building with cubes

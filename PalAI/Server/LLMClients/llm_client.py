@@ -39,7 +39,7 @@ class LLMClient:
                 system_message = self.prompts_file["materials"]
                 materials = kwargs.get("materials", "")
                 styles = kwargs.get("styles", "")
-                system_message.format(materials=materials, styles = styles)
+                system_message = system_message.format(materials=materials, styles = styles)
             case "add_ons":
                 system_message = self.prompts_file["add_ons"]
             case _:
