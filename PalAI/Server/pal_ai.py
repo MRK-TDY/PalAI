@@ -207,7 +207,7 @@ class PalAI:
             pal_script += f"B:{type}|{i.x},{i.z}|{i.y}\n"
 
         plan = "\n".join(self.plan_list)
-        add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{self.building}. Please add windows and doors where you see fit \n"
+        add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{pal_script}. Please add windows and doors where you see fit \n"
         self.logger.debug(f"ADDON PROMPT: {add_on_prompt}")
         add_ons = await self.llm_client.get_agent_response("add_ons", add_on_prompt)
         add_ons = self.extract_building_information(add_ons)
