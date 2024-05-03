@@ -207,7 +207,8 @@ class PalAI:
             pal_script += f"B:{type}|{i.x},{i.z}|{i.y}\n"
 
         plan = "\n".join(self.plan_list)
-        add_on_prompt = f"Here is the requested building:\n{plan}\nAnd here is the building code without doors or windows:\n{pal_script}. Please add windows and doors where you see fit \n"
+        add_on_prompt = f"Here is the plan for the requests building:\n{plan}\n Here is the building code without doors or windows:\n{pal_script}"
+        #print("ADD ON PROMPT: \n" + str(add_on_prompt))
         self.logger.debug(f"ADDON PROMPT: {add_on_prompt}")
         add_ons = await self.llm_client.get_agent_response("add_ons", add_on_prompt)
         add_ons = self.extract_building_information(add_ons)
@@ -216,10 +217,7 @@ class PalAI:
         self.api_result["add_on_agent"] = [i.to_json() for i in self.building if i._add_ons is not None]
 
         if self.ws is not None:
-            json_new_layer = []
-            for l in self.building:
-                json_new_layer.append(l.to_json())
-            message = {"value": json_new_layer}
+            message = {"value": self.api_result["add_on_agent"]}
             message["event"] = "add_ons"
             self.ws.send(json.dumps(message))
 
@@ -347,15 +345,17 @@ class PalAI:
         blocks: list[Placeable] = []
         for block in building_info:
             try:
+
                 block = block.split("|")
-                position = block[1].split(",")
-                b_type = Placeable.BlockType.from_str(block[0])
-                aux = Placeable(b_type, int(position[1]), int(block[2]), int(position[0]))
-                if len(block) == 5:
-                    position = block[4].split(",")
-                    tag = Placeable(block[3].upper(), int(position[1]), int(block[2]), int(position[0]))
-                    aux.tag = tag
-                blocks.append(aux)
+                if len(block) > 2:
+                    position = block[1].split(",")
+                    b_type = Placeable.BlockType.from_str(block[0])
+                    aux = Placeable(b_type, int(position[1]), int(block[2]), int(position[0]))
+                    if len(block) == 5:
+                        position = block[4].split(",")
+                        tag = Placeable(block[3].upper(), int(position[1]), int(block[2]), int(position[0]))
+                        aux.tag = tag
+                    blocks.append(aux)
             except Exception as e:
                 print(e)
                 self.logger.warning(
