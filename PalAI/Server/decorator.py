@@ -188,19 +188,30 @@ class Decorator:
                     return False
             else:  # Adjacency to another decoration
                 valid = False
-                for floor in current_floor_list:
-                    if block.y == ny and block.x == nx and block.z == nz:
-                        if "name" in floor._additional_keys and floor._additional_keys["name"] == r:
-                            valid = True
-                            break
-                        if "options"._additional_keys in floor:
-                            for o in floor["options"]._additional_keys:
-                                if o["name"]._additional_keys == r:
+                for floor in self.grid[ny][nx][nz]:
+                    if isinstance(floor, Placeable):
+                        if "options" in floor._additional_keys:
+                            for o in floor._additional_keys["options"]:
+                                if self.asset_name_to_decoration_name(o["name"]) == r:
                                     valid = True
-                                    break
-                return valid
+                                break
+                        name = self.asset_name_to_decoration_name(floor._additional_keys.get("name", "EMPTY"))
+                    else:
+                        name = self.asset_name_to_decoration_name(floor["type"])
+                    if name == r:
+                        valid = True
+                        break
+
+                if not valid:
+                    return False
 
         return True
+
+    def asset_name_to_decoration_name(self, asset_name):
+        for d in self.decorations:
+            if asset_name in d.get("asset_name", []) + [d["name"]]:
+                return d["name"]
+        raise ValueError(f"{asset_name} not found in decorations")
 
     def decorate(self):
         """Creates the list of decorations based on the imported building
