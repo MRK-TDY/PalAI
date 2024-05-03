@@ -212,7 +212,8 @@ class PalAI:
         add_ons = await self.llm_client.get_agent_response("add_ons", add_on_prompt)
         add_ons = self.extract_building_information(add_ons)
         self.building = self.overlap_blocks(self.building, add_ons)
-        self.api_result["add_on_agent"] = [i.to_json() for i in self.building]
+        ## Only sending the blocks with add_ons
+        self.api_result["add_on_agent"] = [i.to_json() for i in self.building if i._add_ons is not None]
 
         if self.ws is not None:
             json_new_layer = []
