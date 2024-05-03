@@ -151,6 +151,74 @@
         "Example15": {
             "user": "Build a house shaped like the letter E.",
             "assistant": "To build a house shaped like the letter E, we'll use blocks to form the distinct shape.\n\nLayer 0: Start with a straight line of 5 blocks for the backbone of the 'E'. Then, add three 2-block extensions on one side, evenly spaced to form the three arms of the letter 'E'."
+        },
+        "Example16": {
+            "user": "Build a skyscraper.",
+            "assistant": "To create a skyscraper, we'll design a tall, multi-layered building with a solid structure.\nLayer 0: Start with a square base, 5 blocks wide on each side.\nLayer 1-4: Repeat the square shape, gradually reducing the width by 1 block on each side for each layer above, creating a tapering effect.\nLayer 5: Finish with a single block at the top to complete the skyscraper's pinnacle.\n"
+        },
+        "Example17": {
+            "user": "Design a castle tower with battlements.",
+            "assistant": "For a castle tower with battlements, we'll incorporate defensive features into the design.\nLayer 0: Begin with a square base, 5 blocks wide on each side.\nLayer 1-3: Repeat the square shape for the tower's main structure.\nLayer 4: Add protruding blocks along the edges of the top layer to create the battlements, alternating short and tall blocks to allow for defensive positions.\n"
+        },
+        "Example18": {
+            "user": "Build a modern glass house with a flat roof.",
+            "assistant": "To construct a modern glass house with a flat roof, we'll focus on sleek lines and transparency.\n\nLayer 0: Create a 5x5 square base with glass blocks. Extend 3 blocks upwards on each side to form the walls. Finish with a layer of glass blocks for the roof, creating a flat surface."
+        },
+        "Example19": {
+            "user": "I want a traditional Tudor-style house.",
+            "assistant": "To design a traditional Tudor-style house, we'll incorporate distinctive features such as exposed beams and steeply pitched roofs.\n\nLayer 0: Begin with a rectangular base, 5 blocks wide and 4 blocks deep. Add diagonal beams on the sides to mimic Tudor-style framing. Create a steeply pitched roof by extending the top layer with stairs or slabs."
+        },
+        "Example20": {
+            "user": "Create a Victorian-era mansion with a wrap-around porch.",
+            "assistant": "To build a Victorian-era mansion with a wrap-around porch, we'll emphasize elegance and grandeur.\n\nLayer 0: Construct a large rectangular base, 5 blocks wide and 6 blocks deep. Extend the front side with additional blocks to form the porch. Add columns and railings around the porch for decoration and support."
+        },
+        "Example21": {
+            "user": "Build a cozy log cabin with a stone chimney.",
+            "assistant": "To construct a cozy log cabin with a stone chimney, we'll focus on rustic charm and warmth.\n\nLayer 0: Create a square base, 5 blocks wide on each side, using log blocks. Extend the walls upward by 3 blocks, leaving space for windows and a door. Add a stone chimney on one side, extending above the roof."
+        },
+        "Example22": {
+            "user": "Design a futuristic dome house with a central courtyard.",
+            "assistant": "To design a futuristic dome house with a central courtyard, we'll combine innovative architecture with open space.\n\nLayer 0: Start with a circular base, 5 blocks in diameter, using glass blocks for transparency. Extend the walls upward in a dome shape, leaving an open space in the center for a courtyard."
+        },
+        "Example23": {
+        "user": "Design a split-level house with a garage underneath.",
+        "assistant": "To design a split-level house with a garage underneath, we'll create a multi-level structure.\n\nLayer 0: Construct a rectangle 8 blocks wide and 6 blocks deep for the main house. Leave one side open to symbolize the garage entrance.\nLayer 1: Above the garage area, create a raised section with stairs leading up, representing the split-level design."
+        },
+        "Example24": {
+            "user": "Build a house with a wrap-around veranda.",
+            "assistant": "To build a house with a wrap-around veranda, we'll add a spacious outdoor area around the perimeter.\n\nLayer 0: Begin with a rectangle 7 blocks wide and 5 blocks deep for the main house structure.\nLayer 1: Extend the outer edge of Layer 0 with additional blocks to create a veranda that wraps around the entire house."
+        },
+        "Example25": {
+            "user": "Create a beachfront villa with a rooftop terrace.",
+            "assistant": "To create a beachfront villa with a rooftop terrace, we'll focus on luxury and outdoor living spaces.\n\nLayer 0: Construct a rectangle 6 blocks wide and 8 blocks deep for the villa's main structure.\nLayer 1: Add an additional layer of blocks around the perimeter to create a railing for the rooftop terrace."
+        },
+        "Example26": {
+            "user": "I want a house with a courtyard in the center.",
+            "assistant": "To build a house with a courtyard in the center, we'll design an open-air space surrounded by the house.\n\nLayer 0: Start with a rectangle 7 blocks wide and 7 blocks deep for the outer walls of the house.\nLayer 1: Leave an open space in the center of Layer 0 to represent the courtyard."
+        },
+        "Example27": {
+            "user": "Build a rustic cabin with a stone fireplace.",
+            "assistant": "To construct a rustic cabin with a stone fireplace, we'll focus on natural materials and cozy features.\n\nLayer 0: Create a square base, 5 blocks wide on each side, using log blocks for the cabin's walls. Add a stone chimney on one side to represent the fireplace."
+        },
+        "Example28": {
+            "user": "Design a Mediterranean-style villa with a courtyard.",
+            "assistant": "To design a Mediterranean-style villa with a courtyard, we'll incorporate elements of classic Mediterranean architecture.\n\nLayer 0: Begin with a square base, 7 blocks wide on each side, representing the villa's footprint.\nLayer 1: Add an open-air courtyard in the center, surrounded by arched walkways or columns to mimic Mediterranean design."
+        },
+        "Example29": {
+            "user": "Build a Cape Cod-style cottage with a pitched roof and dormer windows.",
+            "assistant": "To build a Cape Cod-style cottage, we'll emphasize traditional features such as a pitched roof and dormer windows.\n\nLayer 0: Create a rectangular base, 6 blocks wide and 5 blocks deep, representing the cottage's footprint.\nLayer 1: Add a steeply pitched roof with stairs or slabs, and incorporate dormer windows on the upper level for added charm."
+        },
+        "Example30": {
+            "user": "I want a Tudor-style mansion with half-timbered walls.",
+            "assistant": "To construct a Tudor-style mansion with half-timbered walls, we'll focus on Tudor architecture's characteristic timber framing.\n\nLayer 0: Begin with a rectangular base, 8 blocks wide and 6 blocks deep, representing the mansion's footprint.\nLayer 1: Add diagonal beams and crossbars using different block types to create the appearance of half-timbered walls."
+        },
+        "Example31": {
+            "user": "Create a Japanese-style tea house with a sliding door and tatami mats.",
+            "assistant": "To create a Japanese-style tea house, we'll incorporate elements of traditional Japanese architecture and design.\n\nLayer 0: Construct a square base, 5 blocks wide on each side, representing the tea house's footprint.\nLayer 1: Add a sliding door made of trapdoors or fence gates, and cover the interior floor with tatami mats using carpet blocks."
+        },
+        "Example32": {
+            "user": "Build a Victorian-style townhouse with a bay window.",
+            "assistant": "To build a Victorian-style townhouse, we'll focus on ornate detailing and architectural features.\n\nLayer 0: Begin with a rectangular base, 7 blocks wide and 4 blocks deep, representing the townhouse's footprint.\nLayer 1: Extend the front facade with additional blocks to create a bay window, adding decorative trim and accents for a Victorian aesthetic."
         }
     },
     "architect_system_message": "\nYou are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.\nBuildings are created layer by layer, and can be 3 layers tall, labelled from 0 to 2. Buildings are made up of cubes.\n  The first layer, layer 0 is directly above the ground. The higher the number of the layer the higher it is placed.\n  Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.\n  In other words, if a player wants a square house you should build a complete 5 by 5 square that is 3 layers tall.\n  In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.\n  Structures should also maintain some realism, meaning that you shouldn't build structures that are impossible to support.\n  Use natural language when describing the plans for the buildings.\n",
