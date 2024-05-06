@@ -2,6 +2,7 @@ import os
 from configparser import RawConfigParser
 import logging
 
+
 class LLMClient:
 
     def __init__(self, prompts_file, logger):
@@ -27,19 +28,23 @@ class LLMClient:
     async def get_llm_response(self, system_message, prompt, image_path="", **kwargs):
         pass
 
-
     def _get_agent_system_message(self, agent, **kwargs):
         system_message = ""
         match agent:
             case "architect":
                 system_message = self.prompts_file["architect"]
+                system_message = system_message.format(
+                    presets=kwargs.get("presets", "")
+                )
             case "bricklayer":
                 system_message = self.prompts_file["bricklayer"]
             case "materials":
                 system_message = self.prompts_file["materials"]
                 materials = kwargs.get("materials", "")
                 styles = kwargs.get("styles", "")
-                system_message = system_message.format(materials=materials, styles = styles)
+                system_message = system_message.format(
+                    materials=materials, styles=styles
+                )
             case "add_ons":
                 system_message = self.prompts_file["add_ons"]
             case _:
@@ -97,4 +102,3 @@ class LLMClient:
             self.price_rate = 0.00000025
         else:
             self.price_rate = 0.00000015
-
