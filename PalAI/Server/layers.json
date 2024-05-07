@@ -271,6 +271,62 @@
                     "z": 1
                 }
             ]
+        },
+              {
+            "name": "vertical line",
+            "description": "A straight vertical line of cubes, 5 blocks high",
+            "blocks": [
+                {"x": 0, "z": 0},
+                {"x": 0, "z": 1},
+                {"x": 0, "z": 2},
+                {"x": 0, "z": 3},
+                {"x": 0, "z": 4}
+            ]
+        },
+        {
+            "name": "horizontal line",
+            "description": "A straight horizontal line of cubes, 5 blocks wide",
+            "blocks": [
+                {"x": 0, "z": 0},
+                {"x": 1, "z": 0},
+                {"x": 2, "z": 0},
+                {"x": 3, "z": 0},
+                {"x": 4, "z": 0}
+            ]
+        },
+        {
+            "name": "diagonal line",
+            "description": "A diagonal line of cubes from top left to bottom right, 5 blocks long",
+            "blocks": [
+                {"x": 0, "z": 0},
+                {"x": 1, "z": 1},
+                {"x": 2, "z": 2},
+                {"x": 3, "z": 3},
+                {"x": 4, "z": 4}
+            ]
+        },
+        {
+            "name": "triangle",
+            "description": "A right-angled triangle of cubes",
+            "blocks": [
+                {"x": 0, "z": 0},
+                {"x": 1, "z": 0},
+                {"x": 2, "z": 0},
+                {"x": 0, "z": 1},
+                {"x": 1, "z": 1},
+                {"x": 0, "z": 2}
+            ]
+        },
+        {
+            "name": "diamond",
+            "description": "A diamond shape of cubes centered at the origin",
+            "blocks": [
+                {"x": 0, "z": 0},
+                {"x": 1, "z": 1},
+                {"x": -1, "z": 1},
+                {"x": 1, "z": -1},
+                {"x": -1, "z": -1}
+            ]
         }
     ]
 }
