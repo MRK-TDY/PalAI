@@ -274,7 +274,7 @@
         },
               {
             "name": "vertical line",
-            "description": "A straight vertical line of cubes, 5 blocks high",
+            "description": "A straight 5 block long line of cubes",
             "blocks": [
                 {"x": 0, "z": 0},
                 {"x": 0, "z": 1},
@@ -307,25 +307,116 @@
         },
         {
             "name": "triangle",
-            "description": "A right-angled triangle of cubes",
+            "description": "What looks like a flat pyramid from a top down view, with 5 blocks at the base, 3 afterwards and 1 at the end",
             "blocks": [
-                {"x": 0, "z": 0},
-                {"x": 1, "z": 0},
                 {"x": 2, "z": 0},
-                {"x": 0, "z": 1},
+                {"x": 1, "z": 0},
+                {"x": 0, "z": 0},
+                {"x": -1, "z": 0},
+                {"x": -2, "z": 0},
                 {"x": 1, "z": 1},
+                {"x": 0, "z": 1},
+                {"x": -1, "z": 1},
                 {"x": 0, "z": 2}
             ]
         },
         {
             "name": "diamond",
-            "description": "A diamond shape of cubes centered at the origin",
+            "description": "A diamond shape of cubes centered at the origin 2.5 blocks as radius, 5 blocks of diameter",
+            "blocks": [
+                {"x": 2, "z": 0},
+                {"x": 1, "z": 0},
+                {"x": 0, "z": 0},
+                {"x": -1, "z": 0},
+                {"x": -2, "z": 0},
+                {"x": 1, "z": 1},
+                {"x": 0, "z": 1},
+                {"x": -1, "z": 1},
+                {"x": 0, "z": 2},
+                {"x": 1, "z": -1},
+                {"x": 0, "z": -1},
+                {"x": -1, "z": -1},
+                {"x": 0, "z": -2}
+            ]
+        },
+        {
+            "name": "t-shaped",
+            "description": "A T-shaped formation of cubes, where the base is the line of the T",
+            "blocks": [
+                {"x": -1, "z": 0},
+                {"x": 0, "z": 0},
+                {"x": 1, "z": 0},
+                {"x": 0, "z": 1},
+                {"x": 0, "z": 2}
+            ]
+        },
+        {
+            "name": "large plus",
+            "description": "A large plus-shaped arrangement of cubes, spanning 5 blocks in each direction",
+            "blocks": [
+                {"x": -2, "z": 0},
+                {"x": -1, "z": 0},
+                {"x": 0, "z": 0},
+                {"x": 1, "z": 0},
+                {"x": 2, "z": 0},
+                {"x": 0, "z": -2},
+                {"x": 0, "z": -1},
+                {"x": 0, "z": 1},
+                {"x": 0, "z": 2}
+            ]
+        },
+        {
+            "name": "medium triangle",
+            "description": "An equilateral triangle made up of cubes, 3 blocks on each side",
             "blocks": [
                 {"x": 0, "z": 0},
+                {"x": 1, "z": 0},
+                {"x": 2, "z": 0},
                 {"x": 1, "z": 1},
+                {"x": 2, "z": 1},
+                {"x": 2, "z": 2}
+            ]
+        },
+        {
+            "name": "small plus",
+            "description": "A small plus sign made up of cubes, with a single block in the center and one on each side",
+            "blocks": [
+                {"x": -1, "z": 0},
+                {"x": 1, "z": 0},
+                {"x": 0, "z": 0},
+                {"x": 0, "z": 1},
+                {"x": 0, "z": -1}
+            ]
+        },
+        {
+            "name": "open rectangle",
+            "description": "An open rectangular frame made up of cubes, 5x3 size",
+            "blocks": [
+                {"x": -2, "z": -1},
+                {"x": -2, "z": 1},
+                {"x": -1, "z": -1},
                 {"x": -1, "z": 1},
+                {"x": 0, "z": -1},
+                {"x": 0, "z": 1},
                 {"x": 1, "z": -1},
-                {"x": -1, "z": -1}
+                {"x": 1, "z": 1},
+                {"x": 2, "z": -1},
+                {"x": 2, "z": 1}
+            ]
+        },
+        {
+            "name": "spiral",
+            "description": "A simple 3x3 spiral of cubes starting from the center",
+            "blocks": [
+                {"x": 0, "z": 0},
+                {"x": 1, "z": 0},
+                {"x": 1, "z": 1},
+                {"x": 0, "z": 1},
+                {"x": -1, "z": 1},
+                {"x": -1, "z": 0},
+                {"x": -1, "z": -1},
+                {"x": 0, "z": -1},
+                {"x": 1, "z": -1}
             ]
         }
     ]
