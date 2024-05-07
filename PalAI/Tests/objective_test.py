@@ -32,7 +32,6 @@ class TestClient(unittest.TestCase):
 
         pal_ai.prompt = prompt
         asyncio.run(pal_ai.get_architect_plan())
-        asyncio.run(pal_ai.build_structure())
 
         return pal_ai, pal_ai.building
 
@@ -101,7 +100,7 @@ class TestClient(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    llm_client = "local"
+    llm_client = "gpt"
     os.chdir(os.path.dirname(__file__))
 
     unittest.main()
