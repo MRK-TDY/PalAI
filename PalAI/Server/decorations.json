@@ -1,11 +1,40 @@
 {
     "decorations": [
         {
+            "name": "Coffee Table",
+            "limit": 2,
+            "adjacency": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "height": 0.2,
+            "callback_chance": 0.5,
+            "callback": [
+                {
+                    "name": "Vase",
+                    "weight": 0.5
+                }
+            ],
+            "asset_name": [
+                "Coffee table 1",
+                "Coffee table 2"
+            ]
+        },
+        {
             "name": "Table",
             "limit": 5,
-            "adjacency": ["", "", "", ""],
-            "subdivision": 3,
-            "asset_name": ["Coffee table 1", "Coffee table 2", "Workshop Art Table 1"],
+            "adjacency": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "asset_name": [
+                "Workshop Art Table 1",
+                "Desk 2"
+            ],
             "height": 0.4,
             "callback_chance": 0.5,
             "callback": [
@@ -18,8 +47,12 @@
         {
             "name": "Rug",
             "limit": 3,
-            "adjacency": ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
-            "subdivision": 2,
+            "adjacency": [
+                "EMPTY",
+                "EMPTY",
+                "EMPTY",
+                "EMPTY"
+            ],
             "height": 0.1,
             "callback_chance": 0.5,
             "callback": [
@@ -32,40 +65,117 @@
         {
             "name": "Vase",
             "limit": 3,
-            "adjacency": ["", "", "", ""],
-            "subdivision": 2
+            "adjacency": [
+                "",
+                "",
+                "",
+                ""
+            ]
         },
         {
             "name": "Chair",
             "limit": 10,
-            "adjacency": ["EMPTY", "", "Table", ""],
-            "subdivision": 1
+            "adjacency": [
+                "EMPTY",
+                "",
+                "Table",
+                ""
+            ]
         },
         {
             "name": "Fridge",
             "limit": 3,
-            "adjacency": ["WALL", "", "EMPTY", ""],
-            "subdivision": 10,
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
             "room": "Kitchen"
+        },
+        {
+            "name": "Kitchen Counters - quarter circle",
+            "limit": 1,
+            "adjacency": [
+                "WALL",
+                "WALL",
+                "EMPTY",
+                ""
+            ],
+            "room": "Kitchen"
+        },
+        {
+            "name": "Kitchen Counter - square",
+            "limit": 1,
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
+            "room": "Kitchen"
+        },
+        {
+            "name": "Bed side table",
+            "limit": 2,
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
+            "room": "Bedroom",
+            "asset_name": [
+                "Bed side table 1",
+                "Bed side table 2"
+            ]
+        },
+        {
+            "name": "Bed",
+            "limit": 1,
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
+            "room": "Bedroom",
+            "asset_name": [
+                "Bed 1",
+                "Bed 2",
+                "Bed 3"
+            ]
         },
         {
             "name": "Dishwasher",
             "limit": 3,
-            "adjacency": ["WALL", "", "EMPTY", ""],
-            "subdivision": 1,
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
             "room": "Kitchen"
         },
         {
             "name": "Bookshelf",
             "limit": 4,
-            "adjacency": ["WALL", "", "EMPTY", ""],
-            "subdivision": 1
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ]
         }
     ],
     "rooms": [
         {
             "name": "Kitchen",
-            "coverage": 0.25
+            "coverage": 0.2
+        },
+        {
+            "name": "Bedroom",
+            "coverage": 0.2
         }
     ]
 }
