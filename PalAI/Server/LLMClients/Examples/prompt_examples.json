@@ -111,7 +111,6 @@
         "Example5": {
             "user": "I want a squared 3-floor house",
             "assistant": "A squared house with 3 floors: \nLayer 0: 3x3 Square\nLayer 1: 3x3 Square\nLayer 2: 3x3 Square"
-
         },
         "Example6": {
             "user": "I want a simple bungalow house.",
@@ -129,7 +128,6 @@
             "user": "Create a house with a central courtyard.",
             "assistant": "To build a house with a central courtyard let's use the open rectangle shape:\nLayer 0: Open 5x3 rectangle"
         },
-
         "Example10": {
           "user": "Create a large house with a central courtyard.",
             "assistant": "To build a house with a central courtyard let's use the open rectangle shape and use 3 floors:\nLayer 0: Open 5x3 rectangle\nLayer 1: Open 5x3 rectangle\nLayer 2: Open 5x3 rectangle"
@@ -137,6 +135,34 @@
         "Example11": {
             "user": "Build a skyscraper.",
             "assistant": "To create a skyscraper, we'll design a tall, multi-layered building with a solid large base with a tip at the end\nLayer 0: 5x5 Square.\nLayer 1: 3x3 Square.\nLayer 2: 3x3 Square.\nLayer 3: 3x3 Square.\nLayer 4: 3x3 Square.\nLayer 5: 3x3 Square.\nLayer 6: 1x1 Square\nLayer 7: 1x1 Square\n"
+        },
+        "Example12": {
+        "user": "I want a house with an attic.",
+        "assistant": "To build a house with an attic, we can design a simple structure with a smaller top floor. \nLayer 0: 3x3 Square\nLayer 1: 3x3 Square\nLayer 2: 2x2 Square"
+        },
+        "Example13": {
+            "user": "Create a house with multiple wings.",
+            "assistant": "To create a house with multiple wings, we can utilize an H-shaped base for varied spaces. \nLayer 0: H shape\nLayer 1: H shape"
+        },
+        "Example14": {
+            "user": "I want a mansion with expansive grounds.",
+            "assistant": "To design a mansion with expansive grounds, start with a large rectangular base and add layers. \nLayer 0: 5x5 Rectangle\nLayer 1: 5x5 Rectangle"
+        },
+        "Example15": {
+            "user": "I want a compact city home.",
+            "assistant": "To build a compact city home, we'll use a small square shape to maximize space efficiency. \nLayer 0: 2x2 Square\nLayer 1: 2x2 Square\nLayer 2: 2x2 Square"
+        },
+        "Example16": {
+            "user": "Create a villa with an open terrace.",
+            "assistant": "To build a villa with an open terrace, incorporate a large base layer with an open square on the upper floor for the terrace. \nLayer 0: 4x4 Square\nLayer 1: Open 3x3 Square"
+        },
+        "Example18": {
+            "user": "Build a log cabin.",
+            "assistant": "To build a log cabin, we'll use a simple rectangular base with triangle in the second layer \nLayer 0: 3x3 Rectangle\nLayer 1: Triangle"
+        },
+        "Example19": {
+            "user": "I want a house with a wraparound porch.",
+            "assistant": "To design a house with a wraparound porch, create a central square for the house and surround it with a rectangular porch. \nLayer 0: Open 5x5 Rectangle\nLayer 1:3x3 Square"
         }
     },
     "architect_system_message": "\nYou are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.\nBuildings are created layer by layer, and can be 3 layers tall, labelled from 0 to 2. Buildings are made up of cubes.\n  The first layer, layer 0 is directly above the ground. The higher the number of the layer the higher it is placed.\n  Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.\n  In other words, if a player wants a square house you should build a complete 5 by 5 square that is 3 layers tall.\n  In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.\n  Structures should also maintain some realism, meaning that you shouldn't build structures that are impossible to support.\n  Use natural language when describing the plans for the buildings.\n",

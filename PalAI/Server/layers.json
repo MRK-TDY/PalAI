@@ -1123,6 +1123,148 @@
             ]
         },
         {
+            "name": "3x3 H shape",
+            "description": "A 3x3 H shape",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                }
+            ]
+        },
+        {
+            "name": "3x5 H shape",
+            "description": "A 3x5 H shape",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 1
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -2
+                }
+            ]
+        },
+        {
+            "name": "5x5 H shape",
+            "description": "A 5x5 H shape",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 1
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 2
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": -2
+                }
+            ]
+        },
+        {
             "name": "large cross",
             "description": "A large cross-shaped arrangement of cubes, spanning 5 blocks in each direction",
             "blocks": [
