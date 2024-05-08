@@ -2,6 +2,7 @@ import unittest
 from PalAI.Server.placeable import Placeable
 from PalAI.Server.post_process import PostProcess
 
+
 class PostProcessTest(unittest.TestCase):
 
     def _get_square_building(self, size):
@@ -14,7 +15,15 @@ class PostProcessTest(unittest.TestCase):
         return building
 
     def test_removes_floating_block(self):
-        building = [Placeable("CUBE", 0, 0, 0,), Placeable("CUBE", 0, 2, 2)]
+        building = [
+            Placeable(
+                "CUBE",
+                0,
+                0,
+                0,
+            ),
+            Placeable("CUBE", 0, 2, 2),
+        ]
 
         pp = PostProcess()
         pp.import_building(building)
@@ -24,7 +33,14 @@ class PostProcessTest(unittest.TestCase):
         self.assertEqual(len(building), 1)
 
     def test_does_not_remove_entire_building(self):
-        building = [Placeable("CUBE", 0, 0, 0,)]
+        building = [
+            Placeable(
+                "CUBE",
+                0,
+                0,
+                0,
+            )
+        ]
 
         pp = PostProcess()
         pp.import_building(building)
@@ -48,6 +64,54 @@ class PostProcessTest(unittest.TestCase):
             else:
                 self.assertEqual(p.block_type, "CUBE")
 
+    def test_overrides_block_type(self):
+        building = [
+            Placeable(
+                "DIAGONAL",
+                0,
+                0,
+                0,
+            ),
+            Placeable(
+                "DIAGONAL",
+                1,
+                0,
+                0,
+            ),
+            Placeable(
+                "DIAGONAL",
+                0,
+                0,
+                1,
+            ),
+            Placeable(
+                "DIAGONAL",
+                1,
+                0,
+                1,
+            ),
+        ]
+
+        pp = PostProcess()
+        pp.import_building(building)
+
+        pp.style("blocky")
+        building = pp.export_building()
+        for p in building:
+            self.assertEqual(
+                p.block_type, "DIAGONAL", "blocky style shoould not change block type"
+            )
+
+        pp.style("rounded")
+        building = pp.export_building()
+        rotations = set()
+        for p in building:
+            self.assertNotIn(p.rotation, rotations)
+            rotations.add(p.rotation)
+            self.assertEqual(
+                p.block_type, "ROUNDED CORNER", "rounded style should update block type"
+            )
+
     def test_applies_modern_style(self):
         building = self._get_square_building(3)
 
@@ -63,24 +127,38 @@ class PostProcessTest(unittest.TestCase):
             else:
                 self.assertEqual(p.block_type, "CUBE")
 
+    def test_fill_empty_spaces(self):
+        building = self._get_square_building(3)
+        del building[4]
 
-    # building = get_square_building(5)
-    #
-    # print(f"{Fore.CYAN}Original Building:{Style.RESET_ALL}")
-    # # This one is correct, should point up at the top left corner
-    # building[0]["tags"] = {"type": "DOOR", "position": "(-1,0,0)"}
-    # # This one is incorrect, points down at the top right corner, should be changed to point up
-    # building[6]["tags"] = {"type": "DOOR", "position": "(2,0,1)"}
-    # # This one is incorrect, points down at the center, should keep pointing down but be moved down
-    # building[4]["tags"] = {"type": "DOOR", "position": "(1,0,0)"}
-    # building[8]["tags"] = {"type": "DOOR", "position": "(2,0,3)"}
-    # pretty_print_addons(building)
-    # print(f"{Fore.CYAN}Post Processed Building:{Style.RESET_ALL}")
-    # pp = PostProcess()
-    # pp.import_building(building)
-    # pp.clean_add_ons()
-    # building = pp.grid_to_json()
-    # pretty_print_addons(building)
+        pp = PostProcess()
+        pp.import_building(building)
 
-if __name__ == '__main__':
+        pp.style("blocky")
+        building = pp.export_building()
+        self.assertEqual(len(building), 8, "building is open to the sky, it shouldn't be filled in")
+
+        top_floor = self._get_square_building(3)
+        for p in top_floor:
+            p.y = 1
+        building.extend(top_floor)
+
+        pp.import_building(building)
+        pp.style("blocky")
+        building = pp.export_building()
+        self.assertEqual(len(building), 18)
+
+    def test_removes_excess_blocks(self):
+        building = self._get_square_building(3)
+        building.append(Placeable("CUBE", 0, 0, 0))
+
+        pp = PostProcess()
+        pp.import_building(building)
+
+        pp.style("blocky")
+        building = pp.export_building()
+        self.assertEqual(len(building), 9)
+
+
+if __name__ == "__main__":
     unittest.main()
