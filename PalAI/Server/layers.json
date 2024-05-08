@@ -464,7 +464,161 @@
                 }
             ]
         },
+              {
+                "name": "2:3 rectangle",
+                "description": "A rectangle formation of cubes, 2:3",
+                "blocks": [
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": -1, "z": 0
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": -1, "z": 1
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 0, "z": 0
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 0, "z": 1
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 1, "z": 0
+                    },
+                     {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 1, "z": 1
+                    }
+                ]
+            },
+            {
+                "name": "3:2 rectangle",
+                "description": "A rectangle formation of cubes, 3:2",
+                "blocks": [
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": -1, "z": 0
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 0, "z": 0
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 1, "z": 0
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": -1, "z": 1
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 0, "z": 1
+                    },
+                     {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 1, "z": 1
+                    }
+                ]
+            },
+            {
+                "name": "2:1 rectangle",
+                "description": "A rectangle formation composed of 2 cubes, essentially a single line of 2 blocks in the x axis",
+                "blocks": [
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 0, "z": 0
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 1, "z": 0
+                    }
+                ]
+            },
+             {
+                "name": "1:2 rectangle",
+                 "description": "A rectangle formation composed of 2 cubes, essentially a single line of 2 blocks in the z axis",
+                "blocks": [
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 0, "z": 0
+                    },
+                    {
+                        "type": "CUBE", "rotation": 0,
+                        "x": 0, "z": 1
+                    }
+                ]
+                },
+         {
+            "name": "4:3 rectangle",
+            "description": "A rectangle formation of cubes, 4:3",
+            "blocks": [
+                {"type": "CUBE", "rotation": 0, "x": -2, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": -2, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": -2, "z": 2},
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 2},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 2},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 2}
+            ]
+        },
         {
+            "name": "3:4 rectangle",
+            "description": "A rectangle formation of cubes, 3:4",
+            "blocks": [
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 2},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 2},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 2},
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 3},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 3},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 3}
+            ]
+        },
+        {
+            "name": "5:2 rectangle",
+            "description": "A long, thin rectangle formation of cubes, 5:2",
+            "blocks": [
+                {"type": "CUBE", "rotation": 0, "x": -2, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 2, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": -2, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": -1, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 2, "z": 1}
+            ]
+        },
+        {
+            "name": "2:4 rectangle",
+            "description": "A rectangle formation of cubes, 2:4",
+            "blocks": [
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 2},
+                {"type": "CUBE", "rotation": 0, "x": 0, "z": 3},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 0},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 1},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 2},
+                {"type": "CUBE", "rotation": 0, "x": 1, "z": 3}
+            ]
+        },
+            {
             "name": "large plus",
             "description": "A large plus-shaped arrangement of cubes, spanning 5 blocks in each direction",
             "blocks": [
