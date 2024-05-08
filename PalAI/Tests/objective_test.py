@@ -12,18 +12,20 @@ class TestClient(unittest.TestCase):
     The goal is to ensure that the LLM is capable of generating the requested structure."""
 
     def _create_pal_ai(self):
-        global llm_client
+        os.chdir(os.path.dirname(__file__))
+
+        llm_client = "gpt"
         with open(
             os.path.join(os.path.dirname(__file__), "../../prompts.yaml"), "r"
         ) as file:
             prompts_file = yaml.safe_load(file)
 
         pal_ai = PalAI(prompts_file, llm_client)
-        logger = logging.getLogger()
-        logger.level = logging.DEBUG
-        stream_handler = logging.StreamHandler(sys.stdout)
-        logger.addHandler(stream_handler)
-        pal_ai = PalAI(prompts_file, llm_client, logger)
+        # logger = logging.getLogger()
+        # logger.level = logging.DEBUG
+        # stream_handler = logging.StreamHandler(sys.stdout)
+        # logger.addHandler(stream_handler)
+        # pal_ai = PalAI(prompts_file, llm_client, logger)
 
         return pal_ai
 
@@ -100,7 +102,4 @@ class TestClient(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    llm_client = "gpt"
-    os.chdir(os.path.dirname(__file__))
-
     unittest.main()
