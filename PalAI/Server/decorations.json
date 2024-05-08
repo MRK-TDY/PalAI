@@ -18,9 +18,9 @@
                 }
             ],
             "asset_name": [
-                "Coffee table 1",
-                "Coffee table 2"
-            ]
+                "CoffeeTable01"
+            ],
+            "room": "LivingRoom"
         },
         {
             "name": "Table",
@@ -32,8 +32,9 @@
                 ""
             ],
             "asset_name": [
-                "Workshop Art Table 1",
-                "Desk 2"
+                "WorkbenchArtTable",
+                "Desk02",
+                "Table01"
             ],
             "height": 0.4,
             "callback_chance": 0.5,
@@ -43,6 +44,24 @@
                     "weight": 0.5
                 }
             ]
+        },
+        {
+            "name": "Sofa",
+            "limit": 1,
+             "adjacency": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "height": 0.3,
+            "callback_chance": 0.5,
+              "asset_name": [
+                "Sofa",
+                   "Sofa02"
+            ],
+            "room": "LivingRoom"
+
         },
         {
             "name": "Rug",
@@ -60,6 +79,11 @@
                     "name": "Table",
                     "weight": 0.5
                 }
+            ],
+              "asset_name": [
+                "Rug1",
+                   "Rug2",
+                   "Rug3"
             ]
         },
         {
@@ -70,6 +94,10 @@
                 "",
                 "",
                 ""
+            ],
+              "asset_name": [
+                  "Bush_04_1",
+                  "Bush_04_2"
             ]
         },
         {
@@ -80,6 +108,10 @@
                 "",
                 "Table",
                 ""
+            ],
+             "asset_name": [
+                "Chair01",
+                 "Chair02"
             ]
         },
         {
@@ -91,10 +123,13 @@
                 "EMPTY",
                 ""
             ],
-            "room": "Kitchen"
+            "room": "Kitchen",
+            "asset_name": [
+                "Fridge01"
+            ]
         },
         {
-            "name": "Kitchen Counters - quarter circle",
+            "name": "CounterCorner",
             "limit": 1,
             "adjacency": [
                 "WALL",
@@ -102,10 +137,13 @@
                 "EMPTY",
                 ""
             ],
+            "asset_name": [
+                "Couter_01_Corner"
+            ],
             "room": "Kitchen"
         },
         {
-            "name": "Kitchen Counter - square",
+            "name": "Kitchen Counter",
             "limit": 1,
             "adjacency": [
                 "WALL",
@@ -113,10 +151,13 @@
                 "EMPTY",
                 ""
             ],
+            "asset_name": [
+                "Counter_01"
+            ],
             "room": "Kitchen"
         },
         {
-            "name": "Bed side table",
+            "name": "BedsideTable",
             "limit": 2,
             "adjacency": [
                 "WALL",
@@ -126,8 +167,8 @@
             ],
             "room": "Bedroom",
             "asset_name": [
-                "Bed side table 1",
-                "Bed side table 2"
+                "BedsideTable01",
+                "BedsideTable02"
             ]
         },
         {
@@ -141,9 +182,9 @@
             ],
             "room": "Bedroom",
             "asset_name": [
-                "Bed 1",
-                "Bed 2",
-                "Bed 3"
+                "Bed01",
+                "Bed02",
+                "Bed03"
             ]
         },
         {
@@ -155,7 +196,10 @@
                 "EMPTY",
                 ""
             ],
-            "room": "Kitchen"
+            "room": "Kitchen",
+            "asset_name": [
+                "Dishwasher01"
+            ]
         },
         {
             "name": "Bookshelf",
@@ -165,6 +209,11 @@
                 "",
                 "EMPTY",
                 ""
+            ],
+            "asset_name": [
+                "Bookshelf_01",
+                "Bookshelf_02",
+                "Bookshelf_03"
             ]
         }
     ],
@@ -176,6 +225,10 @@
         {
             "name": "Bedroom",
             "coverage": 0.2
+        },
+          {
+            "name": "LivingRoom",
+            "coverage": 0.4
         }
     ]
 }
