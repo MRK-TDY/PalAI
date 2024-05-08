@@ -135,7 +135,7 @@ class PostProcess:
                         placeholders = {"rotation": int(c[1])}
                         block = self.grid[c[0][0]][c[0][1]][c[0][2]]
                         block[effect["key"]] = effect["value"].format_map(placeholders)
-                        if block[effect["key"]].isdigit():
+                        if not isinstance(block[effect["key"]], int) and block[effect["key"]].isdigit():
                             block[effect["key"]] = int(block[effect["key"]])
             return self.export_building()
         else:

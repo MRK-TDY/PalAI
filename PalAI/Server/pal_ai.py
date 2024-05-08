@@ -123,7 +123,8 @@ class PalAI:
         await self.get_architect_plan()
         self.logger.info(f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}")
 
-        await self.build_structure()
+        self.build_structure()
+
         self.logger.info(f"{Fore.BLUE}Received basic structure{Fore.RESET}")
 
         await self.apply_add_ons()
@@ -158,12 +159,17 @@ class PalAI:
             if i.lstrip().lower().startswith(f"layer")
         ]
 
+        return
+
+    def build_structure(self):
         for y, l in enumerate(self.plan_list):
             l = l.split(":")
             chosen_layer = self._get_similarity_response(l[1], [i["name"] for i in self.layers])
             blocks = [i for i in self.layers if i["name"] == chosen_layer][0]["blocks"]
             for b in blocks:
-                self.building.append(Placeable("CUBE", b["x"], y, b["z"]))
+                p = Placeable(b.get("type", "CUBE"), b["x"], y, b["z"])
+                p.rotation = b.get("rotation", 0)
+                self.building.append(p)
 
         if self.ws is not None:
             json_building = []
@@ -177,48 +183,6 @@ class PalAI:
         self.logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
 
 
-    async def build_structure(self):
-        return
-        # """Adds the blocks of the structure, layer by layer and using only cubes for now"""
-        # for i, layer_prompt in enumerate(self.plan_list):
-        #     current_layer_prompt = self.prompt_template.format(
-        #         prompt=layer_prompt, layer=i
-        #     )
-        #
-        #     if len(self.history) > 0:
-        #         complete_history = ('\n').join(self.history)
-        #         formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
-        #     else:
-        #         formatted_prompt = current_layer_prompt
-        #
-        #     # if i == 0:
-        #     #     example = self.prompts_file["basic_example"]
-        #     # else:
-        #     #     example = self.prompts_file["basic_example"]
-        #
-        #     response = await self.llm_client.get_agent_response(
-        #         "bricklayer", formatted_prompt
-        #     )
-        #     self.history.append(f"Layer {i}:")
-        #     self.history.append(current_layer_prompt)
-        #     self.history.append(self.extract_history(formatted_prompt, response))
-        #     new_layer = self.extract_building_information(response, i)
-        #     self.building.extend(new_layer)
-        #
-        #     if self.ws is not None:
-        #         json_new_layer = [
-        #         for l in new_layer:
-        #             json_new_layer.append(l.to_json())
-        #
-        #         message = {"value": json_new_layer}
-        #         message["event"] = "layer"
-        #
-        #         self.ws.send(json.dumps(message))
-        #     self.api_result[f"bricklayer_{i}"] = [
-        #         l for l in response.split("\n") if l != ""
-        #     ]
-        #
-        #     self.logger.info(f"{Fore.BLUE}Received layer {i} of structure{Fore.RESET}")
 
     async def apply_add_ons(self):
         """Adds doors and windows to the building"""
