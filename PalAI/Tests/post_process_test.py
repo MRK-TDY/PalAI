@@ -1,3 +1,4 @@
+import random
 import unittest
 from PalAI.Server.placeable import Placeable
 from PalAI.Server.post_process import PostProcess
@@ -28,7 +29,7 @@ class PostProcessTest(unittest.TestCase):
         pp = PostProcess()
         pp.import_building(building)
 
-        pp.style(list(pp.styles.keys())[0])
+        pp.style(random.choice(pp.get_styles_list()))
         building = pp.export_building()
         self.assertEqual(len(building), 1)
 
@@ -45,7 +46,7 @@ class PostProcessTest(unittest.TestCase):
         pp = PostProcess()
         pp.import_building(building)
 
-        pp.style(list(pp.styles.keys())[0])
+        pp.style(random.choice(pp.get_styles_list()))
         building = pp.export_building()
         self.assertEqual(len(building), 1)
 
@@ -159,6 +160,63 @@ class PostProcessTest(unittest.TestCase):
         building = pp.export_building()
         self.assertEqual(len(building), 9)
 
+    def test_rounded_style(self):
+        pp = PostProcess()
+        seen_block_types = set()
+
+        # when a block is rotated, there aren't any blocks on the direction of the rotation
+        # this is also true for the next index over, as the blocks are corners
+        rotation_index = ((1, 0), (0, 1), (-1, 0), (0, -1))
+
+        for _ in range(20):
+            building = []
+
+            for x in range(10):
+                for y in range(5):
+                    for z in range(10):
+                        if random.random() < 0.5:
+                            building.append(Placeable("CUBE", x, y, z))
+
+            pp.import_building(building)
+            pp.style("rounded")
+            building = pp.export_building()
+            for p in building:
+                seen_block_types.add(p.block_type)
+                self.assertIn(p.rotation, [0, 1, 2, 3])
+
+                if p.block_type == "ROUNDED CORNER":
+                    free_positions = [(p.x + rotation_index[p.rotation][0], p.z + rotation_index[p.rotation][1]),]
+                                      # (p.x + rotation_index[(p.rotation + 1) % 4][0], p.z + rotation_index[(p.rotation + 1) % 4][1])]
+                    for p2 in building:
+                        if (p2.x, p2.z) in free_positions and p2.y == p.y:
+                            self.fail("There are blocks in the direction of the rotation")
+
+
+        self.assertEqual(seen_block_types, {"CUBE", "ROUNDED CORNER", "CYLINDER"})
+
+
+
+    def test_property_rotation(self):
+        seen_rotations = set()
+        pp = PostProcess()
+        for style in list(pp.get_styles_list()):
+            for _ in range(20):
+                building = []
+                for x in range(10):
+                    for y in range(5):
+                        for z in range(10):
+                            if random.random() < 0.5:
+                                building.append(Placeable("CUBE", x, y, z))
+
+                pp.import_building(building)
+                pp.style(style)
+                building = pp.export_building()
+                for p in building:
+                    seen_rotations.add(p.rotation)
+                    self.assertIn(p.rotation, [0, 1, 2, 3])
+
+        if len(seen_rotations) != 4:
+            self.fail("Not all rotations were used")
 
 if __name__ == "__main__":
     unittest.main()

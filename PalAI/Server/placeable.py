@@ -31,12 +31,13 @@ class Placeable:
         self._additional_keys = {}
 
     def to_json(self):
-        adds = []
+        aux = {"type": self.block_type.value, "position": self.position}
+
+        if self.rotation != 0:
+            aux["rotation"] = self.rotation
         if self._add_ons is not None:
-            ret = {"type": self.block_type.value, "position": self.position, "rotation": self.rotation, "tags": self._add_ons.to_json()}
-            return ret
-        else:
-            return {"type": self.block_type.value, "position": self.position, "rotation": self.rotation}
+            aux["tags"] = self._add_ons.to_json()
+        return aux
 
     @property
     def tag(self) -> Self:
@@ -63,7 +64,7 @@ class Placeable:
 
     def __setitem__(self, key: str, value):
         if key == "type":
-            self.block_type = value
+            self.block_type = Placeable.BlockType.from_str(value)
         elif key == "position":
             self.position = value
         elif key == "tags":

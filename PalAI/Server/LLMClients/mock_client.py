@@ -12,7 +12,7 @@ class MockClient(LLMClient):
     async def get_agent_response(self, agent, prompt, **kwargs):
         match agent:
             case "architect":
-                return "We will create a building made up of 3 layers.\nLayer 0: medium square\nLayer 1: small cross\nLayer 2: single cube\n"
+                return "We will create a building made up of 3 layers.\nLayer 0: 3x3 square\nLayer 1: small cross\nLayer 2: single cube\n"
             case "bricklayer":
                 return "B:CUBE|0,0\nB:CUBE|0,1\nB:CUBE|1,0\nB:CUBE|1,1\n"
             case "materials":

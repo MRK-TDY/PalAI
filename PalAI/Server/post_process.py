@@ -127,19 +127,20 @@ class PostProcess:
 
         self.fill_empty_spaces()
         self.clean_add_ons()
-        if style in self.styles["styles"]:
-            for rule in self.styles["styles"][style]["rules"]:
-                matching_positions = self.apply_kernel(rule["filter"])
-                for effect in rule["effects"]:
-                    for c in matching_positions:
-                        placeholders = {"rotation": int(c[1])}
-                        block = self.grid[c[0][0]][c[0][1]][c[0][2]]
-                        block[effect["key"]] = effect["value"].format_map(placeholders)
-                        if not isinstance(block[effect["key"]], int) and block[effect["key"]].isdigit():
-                            block[effect["key"]] = int(block[effect["key"]])
-            return self.export_building()
+        for s in self.styles["styles"]:
+            if s.upper() == style.upper():
+                for rule in self.styles["styles"][s]["rules"]:
+                    matching_positions = self.apply_kernel(rule["filter"])
+                    for effect in rule["effects"]:
+                        for c in matching_positions:
+                            placeholders = {"rotation": int(c[1])}
+                            block = self.grid[c[0][0]][c[0][1]][c[0][2]]
+                            block[effect["key"]] = effect["value"].format_map(placeholders)
+                            if not isinstance(block[effect["key"]], int) and block[effect["key"]].isdigit():
+                                block[effect["key"]] = int(block[effect["key"]])
+                return self.export_building()
         else:
-            return self.export_building()
+            raise ValueError(f"Style {style} not found")
 
     def remove_floating_blocks(self):
         """Removes floating blocks from the building
@@ -166,7 +167,7 @@ class PostProcess:
         """Converts the grid to a list of blocks, the common format for buildings
 
         :return: list of blocks
-        :rtype: list(dict)
+        :rtype: list(Placeable)
         """
         json = []
         for yz in self.grid:
@@ -320,12 +321,16 @@ class PostProcess:
                                     dx = 0
 
                                 i = 1
+                                outside_bounds_count = 0
                                 while True:
-                                    if self.grid[y][x][z] is None:
-                                        break
+                                    if self.grid[y][x][z] is None or nx > self.size_x or nz > self.size_z:
+                                        outside_bounds_count += 1
+                                        # verify both sides of the building
+                                        if outside_bounds_count == 2:
+                                            break
                                     nx, nz = int(x + dx * i), int(z + dz * i)
                                     if is_valid_add_on(x, y, z, (nx, ny, nz)):
-                                        if self.grid[y][x][z].tag is not None:
+                                        if self.grid[y][x][z].tag is None:
                                             tag.x = nx
                                             tag.y = ny
                                             tag.z = nz
@@ -333,10 +338,9 @@ class PostProcess:
                                             break
                                         else:
                                             break # There already is an add-on
-                                    x, z = nx, nz
 
-
-                                # Verify if new position is valid
-                                # Adjust until it is valid or until it is deemed impossible
-
+                                    if i > 0:
+                                        i = -i
+                                    else:
+                                        i = -i + 1
         return
