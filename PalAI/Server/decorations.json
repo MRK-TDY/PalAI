@@ -33,7 +33,7 @@
             "asset_name": [
                 "WorkbenchArtTable",
                 "Desk02",
-                "Table01"
+                "Table_01"
             ],
             "height": 0.4,
             "callback_chance": 0.5,
@@ -108,8 +108,8 @@
                 ""
             ],
              "asset_name": [
-                "Chair01",
-                 "Chair02"
+                "Chair_01",
+                 "Chair_04"
             ]
         },
         {

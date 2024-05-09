@@ -164,9 +164,9 @@ class PalAI:
     def build_structure(self):
         for y, l in enumerate(self.plan_list):
             l = l.split(":")
-            if(l < 2):
+            if(len(l) < 2):
                 self.ws.send(
-                    json.dumps({"message": "Error processing request", "error": str(e)})
+                    json.dumps({"message": "Error processing request", "error": " Unable to read " + str(l)})
                 )
                 return
             chosen_layer = self._get_similarity_response(l[1], [i["name"] for i in self.layers])
