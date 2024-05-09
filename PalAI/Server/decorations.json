@@ -47,7 +47,7 @@
         {
             "name": "Sofa",
             "limit": 1,
-             "adjacency": [
+            "adjacency": [
                 "",
                 "",
                 "",
@@ -55,9 +55,9 @@
             ],
             "height": 0.3,
             "callback_chance": 0.5,
-              "asset_name": [
+            "asset_name": [
                 "Sofa",
-                   "Sofa02"
+                "Sofa02"
             ]
         },
         {
@@ -77,10 +77,10 @@
                     "weight": 0.5
                 }
             ],
-              "asset_name": [
+            "asset_name": [
                 "Rug1",
-                   "Rug2",
-                   "Rug3"
+                "Rug2",
+                "Rug3"
             ]
         },
         {
