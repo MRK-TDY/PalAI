@@ -161,7 +161,7 @@
             "limit": 2,
             "adjacency": [
                 "WALL",
-                "",
+                "Bed",
                 "EMPTY",
                 ""
             ],

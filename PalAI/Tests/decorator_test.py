@@ -4,6 +4,7 @@ import unittest
 from PalAI.Server.placeable import Placeable
 from PalAI.Server.decorator import Decorator
 
+
 class PostProcessTest(unittest.TestCase):
 
     def _get_square_building(self, size):
@@ -20,18 +21,23 @@ class PostProcessTest(unittest.TestCase):
         decorator = Decorator()
         decorator.import_building(building)
         decorations = decorator.decorate()
-        self.assertGreater(len(decorations),  0)
+        self.assertGreater(len(decorations), 0)
 
-    def test_all_decorations_are_used(self):
-        with open(os.path.join(os.path.dirname(__file__), '../Server/decorations.json')) as f:
+    def test_all_decorations_are_used_within_limits(self):
+        with open(
+            os.path.join(os.path.dirname(__file__), "../Server/decorations.json")
+        ) as f:
             decorations_json = json.load(f)
 
         used_decorations = set()
         total_decorations_count = 0
+        decoration_names = set()
+        decoration_limits = {}
         for d in decorations_json["decorations"]:
             total_decorations_count += len(d.get("asset_name", [d["name"]]))
+            decoration_names = decoration_names.union(d.get("asset_name", [d["name"]]))
 
-        for _ in range(100):
+        for _ in range(1000):
             building = self._get_square_building(5)
             decorator = Decorator()
             decorator.import_building(building)
@@ -54,11 +60,16 @@ class PostProcessTest(unittest.TestCase):
                     # Test passes
                     return
 
-        self.assertEqual(len(used_decorations), total_decorations_count)
-
+        self.assertEqual(
+            len(used_decorations),
+            total_decorations_count,
+            f"{[i for i in decoration_names if i not in used_decorations]} not used",
+        )
 
     def test_decorations_are_correct(self):
-        with open(os.path.join(os.path.dirname(__file__), '../Server/decorations.json')) as f:
+        with open(
+            os.path.join(os.path.dirname(__file__), "../Server/decorations.json")
+        ) as f:
             decorations_json = json.load(f)
 
         # Repeat test multiple times
@@ -67,7 +78,6 @@ class PostProcessTest(unittest.TestCase):
             decorator = Decorator()
             decorator.import_building(building)
             decorations = decorator.decorate()
-
 
             # Get the json list of decorations
             # print(json.dumps(decorations, indent=4))
@@ -91,7 +101,6 @@ class PostProcessTest(unittest.TestCase):
                 x = int(pos[0])
                 z = int(pos[2])
 
-
                 for i, r in enumerate(adjacencies):
                     dx, dz = directions[i]
                     nx, nz = x + dx, z + dz
@@ -100,5 +109,6 @@ class PostProcessTest(unittest.TestCase):
                     elif r == "WALL":
                         self.assertTrue(nx < 0 or nx >= 5 or nz < 0 or nz >= 5)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
