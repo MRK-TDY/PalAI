@@ -1,0 +1,72 @@
+{
+    "materials": {
+        "FLOOR": "HONEYCOMB WHITE",
+        "INTERIOR": "PLASTIC ORANGE",
+        "EXTERIOR": "None",
+        "STYLE": "None"
+    },
+    "decorations": [
+        {
+            "type": "Fridge",
+            "rotation": "0",
+            "position": "(1.3,0,0.25)"
+        },
+        {
+            "type": "PatioTable_01",
+            "rotation": "0",
+            "position": "(-1.0,0,0.25)"
+        },
+        {
+            "type": "DinnerChair02",
+            "rotation": "0",
+            "position": "(-0.9,0,0.25)"
+        },
+        {
+            "type": "DinnerChair02",
+            "rotation": "0",
+            "position": "(-0.2,0,0.25)"
+        },
+        {
+            "type": "DesignFloorRug02",
+            "rotation": "0",
+            "position": "(1.0,0,0.25)"
+        },
+        {
+            "type": "Bed02",
+            "rotation": "0",
+            "position": "(-0.5,0,0.25)"
+        }
+    ],
+    "result": [
+        {
+            "type": "CUBE",
+            "position": "(-1,0,1)"
+        },
+        {
+            "type": "CUBE",
+            "position": "(1,0,1)"
+        },
+        {
+            "type": "CUBE",
+            "position": "(1,0,1)"
+        },
+        {
+            "type": "CUBE",
+            "position": "(-1,0,1)"
+        },
+        {
+            "type": "CUBE",
+            "position": "(1,0,3)"
+        },
+        {
+            "type": "CUBE",
+            "position": "(3,0,1)"
+        },
+        {
+            "type": "CUBE",
+            "position": "(3,0,1)"
+        }
+    ],
+    "event": "result",
+    "message": "Data processed"
+}

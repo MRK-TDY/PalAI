@@ -46,7 +46,7 @@ console_handler.setFormatter(console_formatter)
 logger.addHandler(console_handler)
 
 config = RawConfigParser()
-config.read("config.ini")
+config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
 
 PORT = config.getint("server", "port")
 
