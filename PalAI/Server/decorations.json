@@ -19,8 +19,7 @@
             ],
             "asset_name": [
                 "CoffeeTable01"
-            ],
-            "room": "LivingRoom"
+            ]
         },
         {
             "name": "Table",
@@ -59,9 +58,7 @@
               "asset_name": [
                 "Sofa",
                    "Sofa02"
-            ],
-            "room": "LivingRoom"
-
+            ]
         },
         {
             "name": "Rug",
@@ -96,9 +93,10 @@
                 ""
             ],
               "asset_name": [
-                  "Bush_04_1",
-                  "Bush_04_2"
-            ]
+                  "Flowers_04",
+                  "Flowers_05",
+                  "Flowers_03"
+              ]
         },
         {
             "name": "Chair",
@@ -138,7 +136,7 @@
                 ""
             ],
             "asset_name": [
-                "Couter_01_Corner"
+                "Counter_01_Corner"
             ],
             "room": "Kitchen"
         },
@@ -183,8 +181,7 @@
             "room": "Bedroom",
             "asset_name": [
                 "Bed01",
-                "Bed02",
-                "Bed03"
+                "Bed02"
             ]
         },
         {
@@ -225,10 +222,6 @@
         {
             "name": "Bedroom",
             "coverage": 0.2
-        },
-          {
-            "name": "LivingRoom",
-            "coverage": 0.4
         }
     ]
 }

@@ -36,7 +36,7 @@ class Placeable:
             ret = {"type": self.block_type.value, "position": self.position, "rotation": self.rotation, "tags": self._add_ons.to_json()}
             return ret
         else:
-            return {"type": self.block_type.value, "position": self.position}
+            return {"type": self.block_type.value, "position": self.position, "rotation": self.rotation}
 
     @property
     def tag(self) -> Self:

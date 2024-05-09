@@ -114,7 +114,7 @@ class LocalClient(LLMClient):
 
         )
 
-        response = response[length + 5:]
+        response = response[length + 15:]
         messages_aux = messages
         messages_aux.reverse()
         prompt_aux = messages_aux[0]["content"]

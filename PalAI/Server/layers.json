@@ -1,7 +1,7 @@
 {
     "layers": [
         {
-            "name": "Single Square",
+            "name": "1X1 Square",
             "description": "A single cube 1x1",
             "blocks": [
                 {
@@ -13,7 +13,7 @@
             ]
         },
         {
-            "name": "Single Cylinder",
+            "name": "1X1 Cylinder",
             "description": "A single cylinder 1x1",
             "blocks": [
                 {
@@ -307,6 +307,36 @@
             ]
         },
         {
+            "name": "2x2 circle",
+            "description": "A small 2x2 circle with curves",
+            "blocks": [
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                }
+            ]
+        },
+        {
             "name": "3x3 circle",
             "description": "A 3x3 circle with curves",
             "blocks": [
@@ -469,7 +499,7 @@
             ]
         },
         {
-            "name": "4x4 quatrefoil",
+            "name": "4x4 Quatrefoil",
             "description": "4x4 quatrefoil lots of curves",
             "blocks": [
                 {
@@ -521,25 +551,25 @@
                     "z": 1
                 }, {
                     "type": "ROUNDED CORNER",
-                    "rotation": 1,
+                    "rotation": 2,
                     "x": -1,
                     "z": 0
                 },
                 {
                     "type": "ROUNDED CORNER",
-                    "rotation": 0,
+                    "rotation": 1,
                     "x": -1,
                     "z": 1
                 },
                 {
                     "type": "ROUNDED CORNER",
-                    "rotation": 2,
+                    "rotation": 1,
                     "x": 0,
                     "z": 2
                 },
                 {
                     "type": "ROUNDED CORNER",
-                    "rotation": 1,
+                    "rotation": 0,
                     "x": 1,
                     "z": 2
                 }
