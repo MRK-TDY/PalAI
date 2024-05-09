@@ -91,18 +91,22 @@
         "Example0": {
             "user": "I want a modern house",
             "assistant": "Modern houses are usually made up of rectangular shapes with 2 floors: \nLayer 0: 5x3 Rectangle \n Layer 1: 5x3 Rectangle"
+
         },
         "Example1": {
             "user": "Create an L-shaped house",
             "assistant": "In order to build an L shaped house with 2 different floors: \n Layer 0: L shape \n Layer 1: L shape"
+
         },
         "Example2": {
             "user": "I want to build a house that widens at the top.",
             "assistant": "To build a house that widens at the top, let's use a squared shape at the base and as we go up in floors their size increases:\nLayer 0: 1x1 Square\nLayer 1: 2x2 Square\nLayer 2: 3x3 Square"
+
         },
         "Example3": {
             "user": "I want to build a pyramid.",
             "assistant": "To build a pyramid let's use a squared shape at the base and as we go up in floors their size decreases:\nLayer 0: 3x3 Square\nLayer 1: 2x2 Square\nLayer 2: 1x1 Square\n"
+
         },
         "Example4": {
             "user": "I want a tower with a balcony.",
@@ -115,54 +119,100 @@
         "Example6": {
             "user": "I want a simple bungalow house.",
             "assistant": "To build a simple bungalow house, we'll create a compact and flat design.\n\nLayer 0: A square shape, 5 blocks on each side, serves as the entire house structure, representing the bungalow's footprint."
+
         },
         "Example7": {
             "user": "Build a two-story rectangular house.",
             "assistant": "To construct a two-story rectangular house, we'll stack two layers to form the house's floors.\nLayer 0: 4x3 Rectangle\nLayer 1: 4x3 Rectangle"
+
         },
         "Example8": {
             "user": "I want a long single-floor house.",
             "assistant": "To create a long single-floor house, we emphasize length in the design.\nLayer 0: 5x3 Rectangle"
+
         },
         "Example9": {
             "user": "Create a house with a central courtyard.",
             "assistant": "To build a house with a central courtyard let's use the open rectangle shape:\nLayer 0: Open 5x3 rectangle"
+
         },
         "Example10": {
-          "user": "Create a large house with a central courtyard.",
+            "user": "Create a large house with a central courtyard.",
             "assistant": "To build a house with a central courtyard let's use the open rectangle shape and use 3 floors:\nLayer 0: Open 5x3 rectangle\nLayer 1: Open 5x3 rectangle\nLayer 2: Open 5x3 rectangle"
+
         },
         "Example11": {
             "user": "Build a skyscraper.",
             "assistant": "To create a skyscraper, we'll design a tall, multi-layered building with a solid large base with a tip at the end\nLayer 0: 5x5 Square.\nLayer 1: 3x3 Square.\nLayer 2: 3x3 Square.\nLayer 3: 3x3 Square.\nLayer 4: 3x3 Square.\nLayer 5: 3x3 Square.\nLayer 6: 1x1 Square\nLayer 7: 1x1 Square\n"
+
         },
         "Example12": {
-        "user": "I want a house with an attic.",
-        "assistant": "To build a house with an attic, we can design a simple structure with a smaller top floor. \nLayer 0: 3x3 Square\nLayer 1: 3x3 Square\nLayer 2: 2x2 Square"
+            "user": "Build a rounded skyscraper.",
+            "assistant": "To create a skyscraper, we'll design a tall, multi-layered building with a solid large base with a tip at the end\nLayer 0: 5x5 Rounded Rectangle.\nLayer 1: 3x3 Circle.\nLayer 2: 3x3 Circle.\nLayer 3: 3x3 Circle.\nLayer 4: 3x3 Circle.\nLayer 5: 3x3 Circle.\nLayer 6: 1x1 Square\nLayer 7: 1x1 Square\n"
+
         },
         "Example13": {
-            "user": "Create a house with multiple wings.",
-            "assistant": "To create a house with multiple wings, we can utilize an H-shaped base for varied spaces. \nLayer 0: H shape\nLayer 1: H shape"
+            "user": "I want a house with an attic.",
+            "assistant": "To build a house with an attic, we can design a simple structure with a smaller top floor. \nLayer 0: 3x3 Square\nLayer 1: 3x3 Square\nLayer 2: 2x2 Square"
+
         },
         "Example14": {
-            "user": "I want a mansion with expansive grounds.",
-            "assistant": "To design a mansion with expansive grounds, start with a large rectangular base and add layers. \nLayer 0: 5x5 Rectangle\nLayer 1: 5x5 Rectangle"
+            "user": "Create a house with multiple wings.",
+            "assistant": "To create a house with multiple wings, we can utilize an H-shaped base for varied spaces. \nLayer 0: H shape\nLayer 1: H shape"
+
         },
         "Example15": {
+            "user": "I want a mansion with expansive grounds.",
+            "assistant": "To design a mansion with expansive grounds, start with a large rectangular base and add layers. \nLayer 0: 5x5 Rectangle\nLayer 1: 5x5 Rectangle"
+
+        },
+        "Example16": {
             "user": "I want a compact city home.",
             "assistant": "To build a compact city home, we'll use a small square shape to maximize space efficiency. \nLayer 0: 2x2 Square\nLayer 1: 2x2 Square\nLayer 2: 2x2 Square"
         },
-        "Example16": {
+        "Example17": {
             "user": "Create a villa with an open terrace.",
             "assistant": "To build a villa with an open terrace, incorporate a large base layer with an open square on the upper floor for the terrace. \nLayer 0: 4x4 Square\nLayer 1: Open 3x3 Square"
+
         },
         "Example18": {
             "user": "Build a log cabin.",
             "assistant": "To build a log cabin, we'll use a simple rectangular base with triangle in the second layer \nLayer 0: 3x3 Rectangle\nLayer 1: Triangle"
+
         },
         "Example19": {
             "user": "I want a house with a wraparound porch.",
             "assistant": "To design a house with a wraparound porch, create a central square for the house and surround it with a rectangular porch. \nLayer 0: Open 5x5 Rectangle\nLayer 1:3x3 Square"
+
+        },
+        "Example20": {
+            "user": "I want a circular house.",
+            "assistant": "To create a circular house we will use circles and rounded rectangles with 3 floors \nLayer 0: 5x5 Rounded Rectangle.\nLayer 1: 3x3 Circle.\nLayer 2: 3x3 Circle."
+
+        },
+        "Example21": {
+            "user": "I want a circular house that looks like a pyramid.",
+            "assistant": "To create a circular house that looks like a pyramid let's start with a large base and decrease it by layer \nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 4x4 quatrefoil\nLayer 2: 3x3 Circle.\nLayer 3: Single Cylinder"
+        },
+        "Example22": {
+            "user": "I want a quatrefoil house",
+            "assistant": "To create a quatrefoil house we can use that shape lets use 3 floors \nLayer 0: 4x4 Quatrefoil.\nLayer 1: 3x3 circle\nLayer 2: 4x4 Quatrefoil"
+        },
+        "Example23": {
+            "user": "I want a wavy looking house",
+            "assistant": "To create a wavy looking house we can use rounded shapes, let's use 5 floors:\nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 4x4 Quatrefoil.\nLayer 2: Cylinder\nLayer 3: 3x3 Circle\nLayer 4:Single Cylinder"
+        },
+        "Example24": {
+            "user": "I want a small circular house",
+            "assistant": "To create a  small circular house can use rounded shapes, with 2 floors:\nLayer 0: 4x4 Rounded Rectangle\nLayer 1: 4x4 Quatrefoil"
+        },
+        "Example25": {
+            "user": "I want a tall wavy looking building",
+            "assistant": "To create a tall wavy looking building we can use rounded shapes with lots of layers, let's start with a strong foundation \nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 3x3 Circle.\nLayer 2: 4x4 Quatrefoil.\nLayer 3: 3x3 Circle.\nLayer 4: 4x4 Quatrefoil\nLayer 5: Single Cylinder"
+        },
+         "Example26": {
+            "user": "I want a round looking house",
+            "assistant": "To create a round looking house lets use round shapes, with 2 floors:\nLayer 0: 4x4 Quatrefoil\nLayer 1: 3x3 Circle"
         }
     },
     "architect_system_message": "\nYou are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.\nBuildings are created layer by layer, and can be 3 layers tall, labelled from 0 to 2. Buildings are made up of cubes.\n  The first layer, layer 0 is directly above the ground. The higher the number of the layer the higher it is placed.\n  Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.\n  In other words, if a player wants a square house you should build a complete 5 by 5 square that is 3 layers tall.\n  In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.\n  Structures should also maintain some realism, meaning that you shouldn't build structures that are impossible to support.\n  Use natural language when describing the plans for the buildings.\n",

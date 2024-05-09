@@ -1,6 +1,30 @@
 {
     "layers": [
         {
+            "name": "Single Square",
+            "description": "A single cube 1x1",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "Single Cylinder",
+            "description": "A single cylinder 1x1",
+            "blocks": [
+                {
+                    "type": "CYLINDER",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                }
+            ]
+        },
+        {
             "name": "3x3 Square",
             "description": "A 3x3 square of cubes",
             "blocks": [
@@ -62,7 +86,7 @@
         },
         {
             "name": "small cross",
-            "description": "A 3x3 cross of cubes, fits well with circles and single cubes",
+            "description": "A 3x3 cross made of cubes",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -98,7 +122,7 @@
         },
         {
             "name": "2x2 Square",
-            "description": "A 2x2 square of cubes, also fits well with circles",
+            "description": "A 2x2 square of cubes",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -123,18 +147,6 @@
                     "rotation": 0,
                     "x": 1,
                     "z": 1
-                }
-            ]
-        },
-        {
-            "name": "1x1 Square",
-            "description": "A single cube",
-            "blocks": [
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 0
                 }
             ]
         },
@@ -295,8 +307,8 @@
             ]
         },
         {
-            "name": "large circle",
-            "description": "A 4x4 circle of cubes",
+            "name": "3x3 circle",
+            "description": "A 3x3 circle with curves",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -305,6 +317,90 @@
                     "z": -1
                 },
                 {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "4x4 Rounded Rectangle",
+            "description": "A 4x4 rectangular circle with curves",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
                     "type": "CUBE",
                     "rotation": 0,
                     "x": 1,
@@ -313,42 +409,6 @@
                 {
                     "type": "CUBE",
                     "rotation": 0,
-                    "x": 0,
-                    "z": 2
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 1,
-                    "z": 2
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": -1,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 1,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 2,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
                     "x": -1,
                     "z": 1
                 },
@@ -369,11 +429,280 @@
                     "rotation": 0,
                     "x": 2,
                     "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 2,
+                    "z": -1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                 {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 2
+                },
+                 {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": -1
                 }
             ]
         },
         {
-            "name": "z-aligned line",
+            "name": "4x4 quatrefoil",
+            "description": "4x4 quatrefoil lots of curves",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                }, {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "5x5 Rounded rectangle",
+            "description": "A 5x5 Rounded rectangle with curves",
+            "blocks": [
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": -2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -2
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                 {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "z-aligned line 1x5",
             "description": "A straight 5 block long line of cubes, along the x axis",
             "blocks": [
                 {
@@ -409,7 +738,7 @@
             ]
         },
         {
-            "name": "x-aligned line",
+            "name": "x-aligned line 5x1",
             "description": "A straight horizontal line of cubes, 5 blocks wide, along the z axis",
             "blocks": [
                 {
@@ -625,7 +954,7 @@
             ]
         },
         {
-            "name": "t-shaped",
+            "name": "t-shape 3x3",
             "description": "A T-shaped formation of cubes, flat along the ground",
             "blocks": [
                 {
