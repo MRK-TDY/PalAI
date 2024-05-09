@@ -22,9 +22,12 @@ class PostProcess:
         :type building: list(dict) list of blocks
         """
 
-        self.size_x = max(building, key=lambda b: b.x).x + 1
-        self.size_y = max(building, key=lambda b: b.y).y + 1
-        self.size_z = max(building, key=lambda b: b.z).z + 1
+        self.offset_x = min(building, key=lambda b: b.x).x
+        self.offset_y = min(building, key=lambda b: b.y).y
+        self.offset_z = min(building, key=lambda b: b.z).z
+        self.size_x = max(building, key=lambda b: b.x).x + 1 - self.offset_x
+        self.size_y = max(building, key=lambda b: b.y).y + 1 - self.offset_y
+        self.size_z = max(building, key=lambda b: b.z).z + 1 - self.offset_z
 
         # Grid is indexed (y, x, z) because most transformations happen on a slice of the y axis
         self.grid = [
@@ -36,8 +39,8 @@ class PostProcess:
         )
 
         for b in building:
-            self.grid[b.y][b.x][b.z] = b
-            self.pixel_grid[b.y, b.x, b.z] = 1
+            self.grid[b.y - self.offset_y][b.x - self.offset_x][b.z - self.offset_z] = b
+            self.pixel_grid[b.y - self.offset_y, b.x - self.offset_x, b.z - self.offset_z] = 1
 
     def get_available_styles(self):
         """Returns a list of available styles
@@ -132,7 +135,7 @@ class PostProcess:
                         placeholders = {"rotation": int(c[1])}
                         block = self.grid[c[0][0]][c[0][1]][c[0][2]]
                         block[effect["key"]] = effect["value"].format_map(placeholders)
-                        if block[effect["key"]].isdigit():
+                        if not isinstance(block[effect["key"]], int) and block[effect["key"]].isdigit():
                             block[effect["key"]] = int(block[effect["key"]])
             return self.export_building()
         else:

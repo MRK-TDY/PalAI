@@ -1,0 +1,1875 @@
+{
+    "layers": [
+        {
+            "name": "Single Square",
+            "description": "A single cube 1x1",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "Single Cylinder",
+            "description": "A single cylinder 1x1",
+            "blocks": [
+                {
+                    "type": "CYLINDER",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "3x3 Square",
+            "description": "A 3x3 square of cubes",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "small cross",
+            "description": "A 3x3 cross made of cubes",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                }
+            ]
+        },
+        {
+            "name": "2x2 Square",
+            "description": "A 2x2 square of cubes",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "5x5 Square",
+            "description": "a 5x5 square of cubes",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "3x3 circle",
+            "description": "A 3x3 circle with curves",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "4x4 Rounded Rectangle",
+            "description": "A 4x4 rectangular circle with curves",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 2,
+                    "z": -1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                 {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 2
+                },
+                 {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": -1
+                }
+            ]
+        },
+        {
+            "name": "4x4 quatrefoil",
+            "description": "4x4 quatrefoil lots of curves",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                }, {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "5x5 Rounded rectangle",
+            "description": "A 5x5 Rounded rectangle with curves",
+            "blocks": [
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 2,
+                    "x": -2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -2
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 3,
+                    "x": 2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 1,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                 {
+                    "type": "ROUNDED CORNER",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "z-aligned line 1x5",
+            "description": "A straight 5 block long line of cubes, along the x axis",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 4
+                }
+            ]
+        },
+        {
+            "name": "x-aligned line 5x1",
+            "description": "A straight horizontal line of cubes, 5 blocks wide, along the z axis",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "diagonal line",
+            "description": "A diagonal line of cubes from top left to bottom right, 5 blocks long",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -2
+                }
+            ]
+        },
+        {
+            "name": "triangle",
+            "description": "A triangle flat on the ground, 5 blocks wide, then 3, then 1.",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "diamond",
+            "description": "A diamond shape of cubes, 5 blocks of diameter",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                }
+            ]
+        },
+        {
+            "name": "t-shape 3x3",
+            "description": "A T-shaped formation of cubes, flat along the ground",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "2x3 rectangle",
+            "description": "A rectangle formation of cubes, 2x3",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "3x2 rectangle",
+            "description": "A rectangle formation of cubes, 3x2",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "2x1 rectangle",
+            "description": "A rectangle formation composed of 2 cubes, essentially a single line of 2 blocks in the x axis",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "1x2 rectangle",
+            "description": "A rectangle formation composed of 2 cubes, essentially a single line of 2 blocks in the z axis",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "4x3 rectangle",
+            "description": "A rectangle formation of cubes, 4x3",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "3x4 rectangle",
+            "description": "A rectangle formation of cubes, 3x4",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                }
+            ]
+        },
+        {
+            "name": "5x2 rectangle",
+            "description": "A long, thin rectangle formation of cubes, 5x2",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "2x4 rectangle",
+            "description": "A rectangle formation of cubes, 2x4",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                }
+            ]
+        },
+        {
+            "name": "5x3 rectangle",
+            "description": "A long, thin rectangle formation of cubes, 5x3",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 2
+                }
+            ]
+        },
+        {
+            "name": "3x3 H shape",
+            "description": "A 3x3 H shape",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                }
+            ]
+        },
+        {
+            "name": "3x5 H shape",
+            "description": "A 3x5 H shape",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 1
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -2
+                }
+            ]
+        },
+        {
+            "name": "5x5 H shape",
+            "description": "A 5x5 H shape",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 1
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -2, "z": 2
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": -2
+                }
+            ]
+        },
+        {
+            "name": "large cross",
+            "description": "A large cross-shaped arrangement of cubes, spanning 5 blocks in each direction",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "right triangle",
+            "description": "A right triangle made up of cubes, 3 blocks on each side",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "Open 5x3 rectangle",
+            "description": "An open rectangular frame made up of cubes, 5x3 size",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                }
+
+            ]
+        },
+         {
+            "name": "Open 4x4 Square",
+            "description": "An open square frame made up of cubes, 4x4 size with a 2x2 courtyard",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                }
+
+            ]
+        }
+    ]
+}

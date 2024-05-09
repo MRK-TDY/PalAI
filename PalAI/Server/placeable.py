@@ -26,13 +26,14 @@ class Placeable:
         self.x = x
         self.y = y
         self.z = z
+        self.rotation = 0
         self._add_ons = None
         self._additional_keys = {}
 
     def to_json(self):
         adds = []
         if self._add_ons is not None:
-            ret = {"type": self.block_type.value, "position": self.position, "tags": self._add_ons.to_json()}
+            ret = {"type": self.block_type.value, "position": self.position, "rotation": self.rotation, "tags": self._add_ons.to_json()}
             return ret
         else:
             return {"type": self.block_type.value, "position": self.position}
@@ -67,6 +68,8 @@ class Placeable:
             self.position = value
         elif key == "tags":
             self._add_ons = value
+        elif key == "rotation":
+            self.rotation = int(value) % 4
         else:
             self._additional_keys[key] = value
 
@@ -80,5 +83,7 @@ class Placeable:
             return self.position
         elif key == "tags":
             return self._add_ons
+        elif key == "rotation":
+            return self.rotation
         else:
             return self._additional_keys[key]

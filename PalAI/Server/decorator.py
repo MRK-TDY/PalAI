@@ -77,6 +77,7 @@ class Decorator:
         for i in to_remove:
             self.floor_list.remove(i)
 
+        #TODO: Doesn't work with negative numbers probably
         self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
         self.size_x = max(self.floor_list, key=lambda b: b.x).x + 1
         self.size_z = max(self.floor_list, key=lambda b: b.z).z + 1
@@ -188,17 +189,17 @@ class Decorator:
                     return False
             else:  # Adjacency to another decoration
                 valid = False
+                name = ""
                 for floor in self.grid[ny][nx][nz]:
                     if isinstance(floor, Placeable):
                         if "options" in floor._additional_keys:
                             for o in floor._additional_keys["options"]:
                                 if self.asset_name_to_decoration_name(o["name"]) == r:
                                     valid = True
-                                break
-                        name = self.asset_name_to_decoration_name(floor._additional_keys.get("name", "EMPTY"))
+                                    break
                     else:
                         name = self.asset_name_to_decoration_name(floor["type"])
-                    if name == r:
+                    if name.lower() == r.lower():
                         valid = True
                         break
 
@@ -208,8 +209,17 @@ class Decorator:
         return True
 
     def asset_name_to_decoration_name(self, asset_name):
+        """ Translates the name of an asset to the name of the decoration name.
+        E.g. The decoration table may produce assets such as 'Art Table 1', this function reverses this mapping.
+
+        :param asset_name: name of the asset or decoration
+        :type asset_name: str
+        :raises ValueError: if the given name is not found
+        :return: name of the decoration
+        :rtype: str
+        """
         for d in self.decorations:
-            if asset_name in d.get("asset_name", []) + [d["name"]]:
+            if asset_name in (d.get("asset_name", []) + [d["name"]]):
                 return d["name"]
         raise ValueError(f"{asset_name} not found in decorations")
 
@@ -360,10 +370,10 @@ class Decorator:
             else:
                 placed = False
                 for floor in current_floor:
-                    if floor.x == chosen_block.x and floor.y == chosen_block.y and floor.z == chosen_block.z:
-                        if "options" in floor:
+                    if floor.x == new_pos[1] and floor.y == new_pos[0] and floor.z == new_pos[2]:
+                        if "options" in floor._additional_keys:
                             for d in floor["options"]:
-                                if d["name"] == r:
+                                if self.asset_name_to_decoration_name(d["name"]) == r:
                                     self._add_decoration(
                                         d, floor, placed_decors, current_floor
                                     )

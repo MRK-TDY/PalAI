@@ -1,11 +1,41 @@
 {
     "decorations": [
         {
+            "name": "Coffee Table",
+            "limit": 2,
+            "adjacency": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "height": 0.2,
+            "callback_chance": 0.5,
+            "callback": [
+                {
+                    "name": "Vase",
+                    "weight": 0.5
+                }
+            ],
+            "asset_name": [
+                "CoffeeTable01"
+            ],
+            "room": "LivingRoom"
+        },
+        {
             "name": "Table",
             "limit": 5,
-            "adjacency": ["", "", "", ""],
-            "subdivision": 3,
-            "asset_name": ["Coffee table 1", "Coffee table 2", "Workshop Art Table 1"],
+            "adjacency": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "asset_name": [
+                "WorkbenchArtTable",
+                "Desk02",
+                "Table01"
+            ],
             "height": 0.4,
             "callback_chance": 0.5,
             "callback": [
@@ -16,10 +46,32 @@
             ]
         },
         {
+            "name": "Sofa",
+            "limit": 1,
+             "adjacency": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "height": 0.3,
+            "callback_chance": 0.5,
+              "asset_name": [
+                "Sofa",
+                   "Sofa02"
+            ],
+            "room": "LivingRoom"
+
+        },
+        {
             "name": "Rug",
             "limit": 3,
-            "adjacency": ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
-            "subdivision": 2,
+            "adjacency": [
+                "EMPTY",
+                "EMPTY",
+                "EMPTY",
+                "EMPTY"
+            ],
             "height": 0.1,
             "callback_chance": 0.5,
             "callback": [
@@ -27,45 +79,156 @@
                     "name": "Table",
                     "weight": 0.5
                 }
+            ],
+              "asset_name": [
+                "Rug1",
+                   "Rug2",
+                   "Rug3"
             ]
         },
         {
             "name": "Vase",
             "limit": 3,
-            "adjacency": ["", "", "", ""],
-            "subdivision": 2
+            "adjacency": [
+                "",
+                "",
+                "",
+                ""
+            ],
+              "asset_name": [
+                  "Bush_04_1",
+                  "Bush_04_2"
+            ]
         },
         {
             "name": "Chair",
             "limit": 10,
-            "adjacency": ["EMPTY", "", "Table", ""],
-            "subdivision": 1
+            "adjacency": [
+                "EMPTY",
+                "",
+                "Table",
+                ""
+            ],
+             "asset_name": [
+                "Chair01",
+                 "Chair02"
+            ]
         },
         {
             "name": "Fridge",
             "limit": 3,
-            "adjacency": ["WALL", "", "EMPTY", ""],
-            "subdivision": 10,
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
+            "room": "Kitchen",
+            "asset_name": [
+                "Fridge01"
+            ]
+        },
+        {
+            "name": "CounterCorner",
+            "limit": 1,
+            "adjacency": [
+                "WALL",
+                "WALL",
+                "EMPTY",
+                ""
+            ],
+            "asset_name": [
+                "Couter_01_Corner"
+            ],
             "room": "Kitchen"
+        },
+        {
+            "name": "Kitchen Counter",
+            "limit": 1,
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
+            "asset_name": [
+                "Counter_01"
+            ],
+            "room": "Kitchen"
+        },
+        {
+            "name": "BedsideTable",
+            "limit": 2,
+            "adjacency": [
+                "WALL",
+                "Bed",
+                "EMPTY",
+                ""
+            ],
+            "room": "Bedroom",
+            "asset_name": [
+                "BedsideTable01",
+                "BedsideTable02"
+            ]
+        },
+        {
+            "name": "Bed",
+            "limit": 1,
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
+            "room": "Bedroom",
+            "asset_name": [
+                "Bed01",
+                "Bed02",
+                "Bed03"
+            ]
         },
         {
             "name": "Dishwasher",
             "limit": 3,
-            "adjacency": ["WALL", "", "EMPTY", ""],
-            "subdivision": 1,
-            "room": "Kitchen"
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
+            "room": "Kitchen",
+            "asset_name": [
+                "Dishwasher01"
+            ]
         },
         {
             "name": "Bookshelf",
             "limit": 4,
-            "adjacency": ["WALL", "", "EMPTY", ""],
-            "subdivision": 1
+            "adjacency": [
+                "WALL",
+                "",
+                "EMPTY",
+                ""
+            ],
+            "asset_name": [
+                "Bookshelf_01",
+                "Bookshelf_02",
+                "Bookshelf_03"
+            ]
         }
     ],
     "rooms": [
         {
             "name": "Kitchen",
-            "coverage": 0.25
+            "coverage": 0.2
+        },
+        {
+            "name": "Bedroom",
+            "coverage": 0.2
+        },
+          {
+            "name": "LivingRoom",
+            "coverage": 0.4
         }
     ]
 }

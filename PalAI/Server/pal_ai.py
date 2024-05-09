@@ -21,7 +21,6 @@ class PalAI:
 
     def __init__(self, prompts_file, llm, logger=None, web_socket=None):
         """
-
         :param prompts_file: all prompts to be used
         :type prompts_file: dict
         :param llm: llm client to be used or type of client (gpt, together, google, anyscale, local)
@@ -85,6 +84,8 @@ class PalAI:
         elif llm is not None:
             self.llm_client = llm
 
+        with open(os.path.join(os.path.dirname(__file__), "layers.json"), "r") as file:
+            self.layers = json.load(file)["layers"]
         self.building: list[Placeable] = []
         self.history = []
         self.api_result = {}
@@ -122,7 +123,8 @@ class PalAI:
         await self.get_architect_plan()
         self.logger.info(f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}")
 
-        await self.build_structure()
+        self.build_structure()
+
         self.logger.info(f"{Fore.BLUE}Received basic structure{Fore.RESET}")
 
         await self.apply_add_ons()
@@ -131,23 +133,24 @@ class PalAI:
         await self.get_artist_response()
         self.logger.info(f"{Fore.BLUE}Received artist response{Fore.RESET}")
 
-        # XXX: Still needs checking
         await self.apply_style()
         self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
 
-        # XXX: Still needs checking
         await self.decorate()
         self.logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
 
-        # XXX: Still needs checking
         self.api_result["result"] = [i.to_json() for i in self.building]
         self.logger.info(f"{Fore.GREEN}Finished Request{Fore.RESET}")
         return self.api_result
 
     async def get_architect_plan(self):
         """Gets the architect's plan for the building"""
+        described_layers = ""
+        for l in self.layers:
+            described_layers += f"{l['name']}: {l['description']}\n"
+
         self.prompt = await self.llm_client.get_agent_response(
-            "architect", self.prompts_file["plan_prompt"].format(self.prompt)
+            "architect", self.prompts_file["plan_prompt"].format(self.prompt), presets=described_layers
         )
         self.api_result["architect"] = [l for l in self.prompt.split("\n") if l != ""]
         self.plan_list = [
@@ -156,47 +159,30 @@ class PalAI:
             if i.lstrip().lower().startswith(f"layer")
         ]
 
-    async def build_structure(self):
-        """Adds the blocks of the structure, layer by layer and using only cubes for now"""
-        for i, layer_prompt in enumerate(self.plan_list):
-            current_layer_prompt = self.prompt_template.format(
-                prompt=layer_prompt, layer=i
-            )
+        return
 
-            if len(self.history) > 0:
-                complete_history = ('\n').join(self.history)
-                formatted_prompt = f"Current request: {current_layer_prompt}\n\nHere are the previous layers:\n{complete_history}"
-            else:
-                formatted_prompt = current_layer_prompt
+    def build_structure(self):
+        for y, l in enumerate(self.plan_list):
+            l = l.split(":")
+            chosen_layer = self._get_similarity_response(l[1], [i["name"] for i in self.layers])
+            blocks = [i for i in self.layers if i["name"] == chosen_layer][0]["blocks"]
+            for b in blocks:
+                p = Placeable(b.get("type", "CUBE"), b["x"], y, b["z"])
+                p.rotation = b.get("rotation", 0)
+                self.building.append(p)
 
-            # if i == 0:
-            #     example = self.prompts_file["basic_example"]
-            # else:
-            #     example = self.prompts_file["basic_example"]
+        if self.ws is not None:
+            json_building = []
+            for l in self.building:
+                json_building.append(l.to_json())
 
-            response = await self.llm_client.get_agent_response(
-                "bricklayer", formatted_prompt
-            )
-            self.history.append(f"Layer {i}:")
-            self.history.append(current_layer_prompt)
-            self.history.append(self.extract_history(formatted_prompt, response))
-            new_layer = self.extract_building_information(response, i)
-            self.building.extend(new_layer)
+            message = {"value": json_building}
+            message["event"] = "layer"
 
-            if self.ws is not None:
-                json_new_layer = []
-                for l in new_layer:
-                    json_new_layer.append(l.to_json())
+            self.ws.send(json.dumps(message))
+        self.logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
 
-                message = {"value": json_new_layer}
-                message["event"] = "layer"
 
-                self.ws.send(json.dumps(message))
-            self.api_result[f"bricklayer_{i}"] = [
-                l for l in response.split("\n") if l != ""
-            ]
-
-            self.logger.info(f"{Fore.BLUE}Received layer {i} of structure{Fore.RESET}")
 
     async def apply_add_ons(self):
         """Adds doors and windows to the building"""
