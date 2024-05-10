@@ -25,6 +25,36 @@
             ]
         },
         {
+            "name": "2x2 Square",
+            "description": "A 2x2 square of cubes",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                }
+            ]
+        },
+        {
             "name": "3x3 Square",
             "description": "A 3x3 square of cubes",
             "blocks": [
@@ -85,9 +115,33 @@
             ]
         },
         {
-            "name": "small cross",
-            "description": "A 3x3 cross made of cubes",
+            "name": "4x4 Square",
+            "description": "A 4x4 square of cubes",
             "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
                 {
                     "type": "CUBE",
                     "rotation": 0,
@@ -97,45 +151,28 @@
                 {
                     "type": "CUBE",
                     "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
                     "x": 1,
                     "z": 0
                 },
-                {
+               {
                     "type": "CUBE",
                     "rotation": 0,
-                    "x": 0,
+                    "x": 2,
                     "z": 0
                 },
                 {
                     "type": "CUBE",
                     "rotation": 0,
-                    "x": 0,
+                    "x": -1,
                     "z": 1
                 },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": -1
-                }
-            ]
-        },
-        {
-            "name": "2x2 Square",
-            "description": "A 2x2 square of cubes",
-            "blocks": [
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 1,
-                    "z": 0
-                },
+
                 {
                     "type": "CUBE",
                     "rotation": 0,
@@ -147,6 +184,37 @@
                     "rotation": 0,
                     "x": 1,
                     "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
                 }
             ]
         },
@@ -303,6 +371,228 @@
                     "rotation": 0,
                     "x": 2,
                     "z": 2
+                }
+            ]
+        },
+        {
+            "name": "6x6 Square",
+            "description": "a 6x6 square of cubes",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": -1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 3
                 }
             ]
         },
@@ -984,6 +1274,66 @@
             ]
         },
         {
+            "name": "3x3 Octagon",
+            "description": "A 3x3 Octagon",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                }
+            ]
+        },
+        {
             "name": "t-shape 3x3",
             "description": "A T-shaped formation of cubes, flat along the ground",
             "blocks": [
@@ -1624,6 +1974,42 @@
             ]
         },
         {
+            "name": "3X3 cross",
+            "description": "A 3x3 cross made of cubes",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                }
+            ]
+        },
+        {
             "name": "large cross",
             "description": "A large cross-shaped arrangement of cubes, spanning 5 blocks in each direction",
             "blocks": [
@@ -1822,7 +2208,7 @@
 
             ]
         },
-         {
+        {
             "name": "Open 4x4 Square",
             "description": "An open square frame made up of cubes, 4x4 size with a 2x2 courtyard",
             "blocks": [
@@ -1899,6 +2285,61 @@
                     "z": 2
                 }
 
+            ]
+        },
+        {
+            "name": "Open 3x3 Square",
+            "description": "A 3x3 square with a hole in the middle",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                }
             ]
         }
     ]

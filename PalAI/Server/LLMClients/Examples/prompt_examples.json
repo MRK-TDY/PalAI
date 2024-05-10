@@ -143,7 +143,7 @@
         },
         "Example11": {
             "user": "Build a skyscraper.",
-            "assistant": "To create a skyscraper, we'll design a tall, multi-layered building with a solid large base with a tip at the end\nLayer 0: 5x5 Square.\nLayer 1: 3x3 Square.\nLayer 2: 3x3 Square.\nLayer 3: 3x3 Square.\nLayer 4: 3x3 Square.\nLayer 5: 3x3 Square.\nLayer 6: 1x1 Square\nLayer 7: 1x1 Square\n"
+            "assistant": "To create a skyscraper, we'll design a tall, multi-layered and slim building with a solid large base with a tip at the end\nLayer 0: 5x5 Square.\nLayer 1: 3x3 Square.\nLayer 2: 3x3 Square.\nLayer 3: 3x3 Square.\nLayer 4: 3x3 Square.\nLayer 5: 3x3 Square.\nLayer 6: 1x1 Square\nLayer 7: 1x1 Cylinder\n"
 
         },
         "Example12": {
@@ -213,6 +213,14 @@
          "Example26": {
             "user": "I want a round looking house",
             "assistant": "To create a round looking house lets use round shapes, with 2 floors:\nLayer 0: 4x4 Quatrefoil\nLayer 1: 3x3 Circle"
+        },
+        "Example27": {
+            "user": "Build a small skyscraper.",
+            "assistant": "To create a small skyscraper, we'll design a slim, multi-layered building with a solid large base with a tip at the end\nLayer 0: 3x3 Square.\nLayer 1: 3x3 Square.\nLayer 2: 3x3 Square.\nLayer 3: 1x1 Square."
+        },
+        "Example28": {
+            "user": "I want a round skyscraper.",
+            "assistant": "To create a round skyscraper, we'll design a slim, tall building with circular shaper with a solid large base with a tip at the end\nLayer 0: 5x5 Rounder Rectangle\nLayer 1: 3x3 Circle.\nLayer 2: 3x3 Circle.\nLayer 3: 3x3 Circle.\nLayer 4: 3x3 Circle.\nLayer 5: 1x1 Cylinder"
         }
     },
     "architect_system_message": "\nYou are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.\nBuildings are created layer by layer, and can be 3 layers tall, labelled from 0 to 2. Buildings are made up of cubes.\n  The first layer, layer 0 is directly above the ground. The higher the number of the layer the higher it is placed.\n  Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.\n  In other words, if a player wants a square house you should build a complete 5 by 5 square that is 3 layers tall.\n  In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.\n  Structures should also maintain some realism, meaning that you shouldn't build structures that are impossible to support.\n  Use natural language when describing the plans for the buildings.\n",
@@ -268,6 +276,10 @@
         "Example13": {
             "user": "I want a yellow house.",
             "assistant": "\nFLOOR:Marble\nINTERIOR:Honeycomb White\nEXTERIOR:Honeycomb Yellow\nSTYLE:normal"
+        },
+        "Example14": {
+            "user": "I want a skyscrapper house.",
+            "assistant": "\nFLOOR:Marble\nINTERIOR:Honeycomb White\nEXTERIOR:Glass\nSTYLE:normal"
         }
     },
     "addons_examples": {
