@@ -1,3 +1,4 @@
+import json
 import random
 import unittest
 from PalAI.Server.placeable import Placeable
@@ -159,6 +160,36 @@ class PostProcessTest(unittest.TestCase):
         pp.style("blocky")
         building = pp.export_building()
         self.assertEqual(len(building), 9)
+
+    def test_fill_house_center(self):
+        building = []
+        for x in range(-3, 3):
+            for z in range(-3, 3):
+                building.append(Placeable("CUBE", x, 0, z))
+
+        for x in range(-3, 3):
+            for z in range(-3, 3):
+                if x != 0 or z != 0:
+                    building.append(Placeable("CUBE", x, 1, z))
+
+        for x in range(-2, 2):
+            for z in range(-2, 2):
+                building.append(Placeable("DIAGONAL", x, 2, z))
+
+        # Building currently has a hole in the center
+        # it is made of 36 + 35 + 16 = 87 blocks
+        self.assertEqual(len(building), 87)
+
+        pp = PostProcess()
+        pp.import_building(building)
+        pp.style(pp.get_styles_list()[0])
+        building = pp.export_building()
+
+        # Verify hole was filled in
+        self.assertEqual(len(building), 88)
+        self.assertTrue([p for p in building if p.y == 1 and p.x == 0 and p.z == 0])
+
+
 
     def test_rounded_style(self):
         pp = PostProcess()

@@ -328,6 +328,7 @@ class PalAI:
                 try:
                     if level is not None:
                         line += f"|{level}"  # if a level is given then it is not present in the script at this point
+                    line = line.split(" ")[0]  # sometimes LLMs return garbage after the immportant part
                     building_info.append(line[2:])
                 except Exception as e:
                     self.logger.warning(

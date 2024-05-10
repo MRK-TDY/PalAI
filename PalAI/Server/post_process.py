@@ -99,7 +99,7 @@ class PostProcess:
                                     labelArray[y, x, z] = label
                                     if label > 1:
                                         # found empty space, fill it in
-                                        p = Placeable("CUBE", i - 1, k, j - 1)
+                                        p = Placeable("CUBE", i - 1 + self.offset_x, k + self.offset_y, j - 1 + self.offset_z)
                                         self.grid[k][i - 1][j - 1] = p
                                         self.pixel_grid[k, i - 1, j - 1] = 1
                                     for dy, dx, dz in neighbors:
