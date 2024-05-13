@@ -10,7 +10,7 @@ class AnyscaleClient(LLMClient):
         LLMClient.__init__(self, prompts_file, logger)
         self.logger = logger
         self.api_key = self.config.get("anyscale", "api_key")
-        self.model_name = "mistralai/Mistral-7B-Instruct-v0.1"
+        self.model_name = "meta-llama/Meta-Llama-3-70B-Instruct"
 
         self.verbose = kwargs.get("verbose", False)
         self.client = openai.OpenAI(
@@ -45,41 +45,34 @@ class AnyscaleClient(LLMClient):
 
         return chat_completion.choices[0].message.content
 
-    def preparePrompt(self, system_message):
-        prompt_array = system_message.split("\n")
-        user = []
-        assistant = [""]
-        instructions = ""
-        assistant_index = -1
-        bUser = False
-        bAssistant = False
-        for p in prompt_array:
-            if len(p) < 2:
-                continue
-            if "EXAMPLE" in p:
-                continue
-            if "USER" in p:
-                bUser = True
-                bAssistant = False
-            if "ARCHITECT" in p or "PalAI" in p:
-                bAssistant = True
-                bUser = False
-                assistant_index += 1
+    def _get_agent_system_message(self, agent, **kwargs):
+        system_message = ""
+        match agent:
+            case "architect":
+                system_message = self.prompts_file["architect"]
+                system_message = system_message.format(
+                    presets=kwargs.get("presets", "")
+                )
+            case "bricklayer":
+                system_message = self.prompts_file["bricklayer"]
+            case "materials":
+                system_message = self.prompts_file["materials"]
+                materials = kwargs.get("materials", "")
+                styles = kwargs.get("styles", "")
+                system_message = system_message.format(
+                    materials=materials, styles=styles
+                )
+            case "add_ons":
+                system_message = self.prompts_file["add_ons"]
+            case _:
+                system_message = self.prompts_file["architect"]
+        return system_message
 
-            if bUser:
-                backup = p.replace("USER: ", "")
-                user.append(backup + "\n")
+    async def get_agent_response(self, agent, prompt, **kwargs):
+        system_message = self._get_agent_system_message(agent, **kwargs)
 
-            elif bAssistant:
-                if len(assistant) <= assistant_index:
-                    assistant.append(p)
-                else:
-                    assistant[assistant_index] += p + "\n"
+        return await self.get_llm_response(system_message, prompt, **kwargs)
 
-            else:
-                instructions += p
-
-        return user, assistant, instructions
 
     def extractResponse(self, user, assistant, request, response):
 
