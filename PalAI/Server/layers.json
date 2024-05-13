@@ -1022,174 +1022,6 @@
             ]
         },
         {
-            "name": "z-aligned line 1x5",
-            "description": "A straight 5 block long line of cubes, along the x axis",
-            "blocks": [
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 1
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 2
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 3
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 4
-                }
-            ]
-        },
-        {
-            "name": "x-aligned line 5x1",
-            "description": "A straight horizontal line of cubes, 5 blocks wide, along the z axis",
-            "blocks": [
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 1,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 2,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": -1,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": -2,
-                    "z": 0
-                }
-            ]
-        },
-        {
-            "name": "diagonal line",
-            "description": "A diagonal line of cubes from top left to bottom right, 5 blocks long",
-            "blocks": [
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 1,
-                    "z": 1
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 2,
-                    "z": 2
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": -1,
-                    "z": -1
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": -2,
-                    "z": -2
-                }
-            ]
-        },
-        {
-            "name": "triangle",
-            "description": "A triangle flat on the ground, 5 blocks wide, then 3, then 1.",
-            "blocks": [
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 2,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 1,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": -1,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": -2,
-                    "z": 0
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 1,
-                    "z": 1
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 1
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": -1,
-                    "z": 1
-                },
-                {
-                    "type": "CUBE",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 2
-                }
-            ]
-        },
-        {
             "name": "diamond",
             "description": "A diamond shape of cubes, 5 blocks of diameter",
             "blocks": [
@@ -2010,7 +1842,7 @@
             ]
         },
         {
-            "name": "large cross",
+            "name": "5x5 Cross",
             "description": "A large cross-shaped arrangement of cubes, spanning 5 blocks in each direction",
             "blocks": [
                 {
@@ -2521,8 +2353,7 @@
                     "z": 4
                 }
             ]
-        }
-        ,
+        },
          {
             "name": "5x5 Inverted U-Shape",
             "description": "5x5 Inverted U-Shape with bridge at 0,5",
@@ -2606,6 +2437,295 @@
                     "z": 4
                 }
             ]
+        },
+        {
+            "name": "2x2 Right Triangle",
+            "description": "A small 2x2 Triangle to the right of 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "2x2 Right Triangle",
+            "description": "A small 2x2 Triangle to the right of 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "3x3 Right Triangle",
+            "description": "A 3x3 Triangle to the right of 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "4x4 Right Triangle",
+            "description": "A 4x4 Triangle to the right of 0,0 made with diagonal block",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "2x2 Left Triangle",
+            "description": "A small 2x2 Triangle leaning to the left ending at 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 0,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "3x3 Left Triangle",
+            "description": "A 3x3 Triangle leaning to the left ending at 0,0",
+            "blocks": [
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 0,
+                    "z": 0
+                },
+                 {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 2,
+                    "z": 2
+                }
+            ]
         }
-    ]
+        ,
+        {
+            "name": "4x4 Left Triangle",
+            "description": "A 4x4 Triangle leaning to the left ending at 0,0",
+            "blocks": [
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 0,
+                    "z": 0
+                },
+                 {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 0
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 2
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 3,
+                    "z": 3
+                }
+            ]
+        }
+        ]
 }
