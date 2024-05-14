@@ -1958,9 +1958,8 @@
                     "rotation": 0,
                     "x": 0,
                     "z": 2
-                }
-                ,
-                 {
+                },
+                {
                     "type": "CONCAVE CURVE",
                     "rotation": 3,
                     "x": -1,
@@ -2043,28 +2042,27 @@
                     "rotation": 0,
                     "x": 0,
                     "z": 2
-                }
-                ,
-                 {
-                    "type": "CONVEX CURVE",
+                },
+                {
+                    "type": "CONCAVE CURVE",
                     "rotation": 3,
                     "x": -1,
                     "z": -1
                 },
                 {
-                    "type": "CONVEX CURVE",
+                    "type": "CONCAVE CURVE",
                     "rotation": 0,
                     "x": 1,
                     "z": -1
                 },
                 {
-                   "type": "CONVEX CURVE",
+                   "type": "CONCAVE CURVE",
                     "rotation": 1,
                     "x": 1,
                     "z": 1
                 },
                 {
-                    "type": "CONVEX CURVE",
+                    "type": "CONCAVE CURVE",
                     "rotation": 2,
                     "x": -1,
                     "z": 1
@@ -2107,25 +2105,25 @@
                 },
                  {
                     "type": "CONCAVE CURVE",
-                    "rotation": 2,
+                    "rotation": 3,
                     "x": -1,
                     "z": -1
                 },
                 {
                     "type": "CONCAVE CURVE",
-                    "rotation": 3,
+                    "rotation": 0,
                     "x": 1,
                     "z": -1
                 },
                 {
                    "type": "CONCAVE CURVE",
-                    "rotation": 0,
+                    "rotation": 1,
                     "x": 1,
                     "z": 1
                 },
                 {
                     "type": "CONCAVE CURVE",
-                    "rotation": 1,
+                    "rotation": 2,
                     "x": -1,
                     "z": 1
                 }
@@ -2159,27 +2157,27 @@
                     "x": 0,
                     "z": -1
                 },
-                 {
+                {
                     "type": "CONCAVE CURVE",
-                    "rotation": 2,
+                    "rotation": 3,
                     "x": -1,
                     "z": -1
                 },
                 {
                     "type": "CONCAVE CURVE",
-                    "rotation": 3,
+                    "rotation": 0,
                     "x": 1,
                     "z": -1
                 },
                 {
                    "type": "CONCAVE CURVE",
-                    "rotation": 0,
+                    "rotation": 1,
                     "x": 1,
                     "z": 1
                 },
                 {
                     "type": "CONCAVE CURVE",
-                    "rotation": 1,
+                    "rotation": 2,
                     "x": -1,
                     "z": 1
                 }
@@ -4053,6 +4051,1160 @@
                     "rotation": 0,
                     "x": 1,
                     "z": 1
+                }
+            ]
+        },
+        {
+            "name": "11x11 Cross-form arm",
+            "description": "11x11 Cross-form arm with 4 blocks of 3x3 blocks in each arm with center at (0,0) connecting the edges",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -3,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -4,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -5,
+                    "z": -1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -3,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -4,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -5,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -3,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -4,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -5,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 4,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 5,
+                    "z": -1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 4,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 5,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 4,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 5,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 4
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 5
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 5
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 5
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -5
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -5
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -5
+                }
+            ]
+        },
+        {
+            "name": "11x11 Concave Cross-form arm",
+            "description": "11x11 Cross-form arm with 4 blocks of 3x3 blocks in each arm with center at (0,0) connecting the edges and concave curses and the joints",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -3,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -4,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -5,
+                    "z": -1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -3,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -4,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -5,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -3,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -4,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -5,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 4,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 5,
+                    "z": -1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 4,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 5,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 4,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 5,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 4
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 5
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 5
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 5
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -5
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -5
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -5
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 3,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                   "type": "CONCAVE CURVE",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "3x3 Thin C-shape",
+            "description": "A 3x3 C-shape with center at (0,0)",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": -1
+                }
+            ]
+        },
+        {
+            "name": "4x7 C-shape",
+            "description": "A 4x7 C-shape with center at (0,0)",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 3
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": -3
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 3
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -3
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 3
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": -3
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 3, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 3, "z": 3
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 3, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 3, "z": -3
+                }
+            ]
+        },
+        {
+            "name": "3x3 Round C-shape",
+            "description": "A 3x3 concave C-shape with center at (0,0)",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CONCAVE CURVE", "rotation": 1,
+                    "x": 0, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 1
+                },
+                {
+                    "type": "CONCAVE CURVE", "rotation": 2,
+                    "x": 0, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "CONCAVE CURVE", "rotation": 3,
+                    "x": 2, "z": -1
+                }
+            ]
+        },
+        {
+            "name": "5x5 Thin Trident",
+            "description": "5x5 Thin Trident with center at (0,0)",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": 0, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": -1, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -2, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": -2, "z": -2
+                },
+                 {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 2, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": 2, "z": -2
+                }
+            ]
+        },
+        {
+            "name": "6x6 Trident",
+            "description": "6x6 Trident, 2 blocks width, with center at (0,0)",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": 0, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": 0, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -2, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": -2, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": -1, "z": -2
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                 {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 2, "z": 0
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 3, "z": -1
+                },
+                 {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": 3, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": 2, "z": -2
+                },
+                 {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": -1
+                }
+            ]
+        },
+        {
+            "name": "7x7 X-shape",
+            "description": "7x7 X-shape, 3x3 cube in the center and 4 arms, 1 block width for each arm, with center at (0,0)",
+            "blocks": [
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 0, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": 0, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": 0, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": -1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": -1, "z": -1
+                },
+
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -2, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": -1, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -3, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": -3, "z": -3
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": -2, "z": -3
+                },
+                 {
+                    "type": "CUBE", "rotation": 1,
+                    "x": -2, "z": -2
+                },
+
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 2, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 3, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": 1, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": 2, "z": -3
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": 3, "z": -3
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": 2, "z": -2
+                },
+
+
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": 2, "z": 1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": 3, "z": 2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": 1, "z": 2
+                },
+                 {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": 2, "z": 3
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 3, "z": 3
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 2
+                },
+
+
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": -2, "z": 1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": -3, "z": 2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": -1, "z": 2
+                },
+                 {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": -2, "z": 3
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -3, "z": 3
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": -2, "z": 2
+                }
+            ]
+        },
+        {
+            "name": "7x7 Open X-shape",
+            "description": "7x7 Open X-shape, 3x3 cube in the center with one empty block in the middle, and 4 arms, 1 block width for each arm, with center at (0,0)",
+            "blocks": [
+                 {
+                    "type": "CUBE", "rotation": 1,
+                    "x": 0, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": 0, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 1, "z": -1
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": -1, "z": 0
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": -1, "z": 1
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": -1, "z": -1
+                },
+
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -2, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": -1, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -3, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": -3, "z": -3
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": -2, "z": -3
+                },
+                 {
+                    "type": "CUBE", "rotation": 1,
+                    "x": -2, "z": -2
+                },
+
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 2, "z": -1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 3, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": 1, "z": -2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": 2, "z": -3
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": 3, "z": -3
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": 2, "z": -2
+                },
+
+
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": 2, "z": 1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 3,
+                    "x": 3, "z": 2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": 1, "z": 2
+                },
+                 {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": 2, "z": 3
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": 3, "z": 3
+                },
+                {
+                    "type": "CUBE", "rotation": 0,
+                    "x": 2, "z": 2
+                },
+
+
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": -2, "z": 1
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 2,
+                    "x": -3, "z": 2
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": -1, "z": 2
+                },
+                 {
+                    "type": "DIAGONAL", "rotation": 0,
+                    "x": -2, "z": 3
+                },
+                {
+                    "type": "DIAGONAL", "rotation": 1,
+                    "x": -3, "z": 3
+                },
+                {
+                    "type": "CUBE", "rotation": 1,
+                    "x": -2, "z": 2
                 }
             ]
         }
