@@ -9,6 +9,8 @@ class Placeable:
         CYLINDER = "CYLINDER"
         DIAGONAL = "DIAGONAL"
         ROUNDED_CORNER = "ROUNDED CORNER"
+        CONCAVE_CURVE = "CONCAVE CURVE"
+        CONVEX_CUBE = "CONVEX CUBE"
         WINDOW = "WINDOW"
         DOOR = "DOOR"
 

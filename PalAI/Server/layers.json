@@ -687,7 +687,7 @@
             ]
         },
         {
-            "name": "4x4 Rounded Rectangle",
+            "name": "4x4 Convex Rectangle",
             "description": "A 4x4 rectangular circle with curves",
             "blocks": [
                 {
@@ -866,7 +866,7 @@
             ]
         },
         {
-            "name": "5x5 Rounded rectangle",
+            "name": "5x5 Convex rectangle",
             "description": "A 5x5 Rounded rectangle with curves",
             "blocks": [
                 {
@@ -1806,8 +1806,8 @@
             ]
         },
         {
-            "name": "3X3 cross",
-            "description": "A 3x3 cross made of cubes",
+            "name": "3X3 Plus-shaped",
+            "description": "A 3x3 Plus-shaped made of cubes",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -1842,8 +1842,8 @@
             ]
         },
         {
-            "name": "5x5 Cross",
-            "description": "A large cross-shaped arrangement of cubes, spanning 5 blocks in each direction",
+            "name": "5x5 Plus-shaped",
+            "description": "A large Plus-shaped-shaped arrangement of cubes, spanning 5 blocks in each direction",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -1902,9 +1902,21 @@
             ]
         },
         {
-            "name": "right triangle",
-            "description": "A right triangle made up of cubes, 3 blocks on each side",
+            "name": "5x5 Connected Concave Plus-shaped",
+            "description": "A large Plus-shaped-shaped arrangement of cubes, spanning 5 blocks in each direction with concaves connecting its corners",
             "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
                 {
                     "type": "CUBE",
                     "rotation": 0,
@@ -1926,20 +1938,250 @@
                 {
                     "type": "CUBE",
                     "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                }
+                ,
+                 {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 3,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                   "type": "CONCAVE CURVE",
+                    "rotation": 1,
                     "x": 1,
                     "z": 1
                 },
                 {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "5x5 Connected Convex Plus-shaped",
+            "description": "A large Plus-shaped-shaped arrangement of cubes, spanning 5 blocks in each direction with convex curves connecting its corners",
+            "blocks": [
+                {
                     "type": "CUBE",
                     "rotation": 0,
-                    "x": 2,
-                    "z": 1
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
                 },
                 {
                     "type": "CUBE",
                     "rotation": 0,
                     "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
                     "z": 2
+                }
+                ,
+                 {
+                    "type": "CONVEX CURVE",
+                    "rotation": 3,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                   "type": "CONVEX CURVE",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "3X3 Concave Plus-shaped",
+            "description": "A 3x3 Concave Plus-shaped made of cubes and curves",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                 {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                   "type": "CONCAVE CURVE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "3X3 Open Concave Plus-shaped",
+            "description": "A 3x3 Round Plus-shaped made of cubes and concave curves with an empty space in the middle",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                 {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                   "type": "CONCAVE CURVE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 1
                 }
             ]
         },
@@ -2174,9 +2416,9 @@
                 }
             ]
         },
-         {
-            "name": "3x3 U-Shape",
-            "description": "3x3 U-Shape with bridge at 0,0",
+        {
+            "name": "3x3 Blocky U-Shape",
+            "description": "3x3 Blocky U-Shape with bridge at 0,0",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -2222,9 +2464,9 @@
                 }
             ]
         },
-         {
-            "name": "3x3 Inverted U-Shape",
-            "description": "3x3 Inverted U-Shape with bridge at 0,2",
+        {
+            "name": "3x3 Blocky Inverted U-Shape",
+            "description": "3x3 Blocky Inverted U-Shape with bridge at 0,2 made with cubes",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -2270,9 +2512,9 @@
                 }
             ]
         },
-         {
-            "name": "5x5 U-Shape",
-            "description": "5x5 U-Shape with bridge at 0,0",
+        {
+            "name": "5x5 Blocky U-Shape",
+            "description": "5x5 Blocky U-Shape with bridge at 0,0",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -2354,9 +2596,9 @@
                 }
             ]
         },
-         {
-            "name": "5x5 Inverted U-Shape",
-            "description": "5x5 Inverted U-Shape with bridge at 0,5",
+        {
+            "name": "5x5 Blocky Inverted U-Shape",
+            "description": "5x5 Blocky Inverted U-Shape with bridge at 0,5",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -2408,6 +2650,270 @@
                 },
                 {
                     "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 4
+                }
+            ]
+        },
+        {
+            "name": "3x3 Convex U-Shape",
+            "description": "3x3 Convex U-Shape with bridge at 0,0",
+            "blocks": [
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "3x3 Convex Inverted U-Shape",
+            "description": "3x3 Rounded Inverted U-Shape with bridge at (0,2) made with curves",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "CONVEX CURVE",
+                    "rotation": 1,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "5x5 Convex U-Shape",
+            "description": "5x5 Convex U-Shape with bridge at 0,0",
+            "blocks": [
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 2,
+                    "x": -2,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 3,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 4
+                }
+            ]
+        },
+        {
+            "name": "5x5 Convex Inverted U-Shape",
+            "description": "5x5 Convex Inverted U-Shape with bridge at 0,5",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 3
+                },
+                {
+                  "type": "CONVEX CURVE",
+                    "rotation": 1,
+                    "x": -2,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 4
+                },
+                {
+                   "type": "CONVEX CURVE",
                     "rotation": 0,
                     "x": 2,
                     "z": 0
@@ -2659,8 +3165,7 @@
                     "z": 2
                 }
             ]
-        }
-        ,
+        },
         {
             "name": "4x4 Left Triangle",
             "description": "A 4x4 Triangle leaning to the left ending at 0,0",
@@ -2726,6 +3231,830 @@
                     "z": 3
                 }
             ]
+        },
+        {
+            "name": "3X5 Thin Cross",
+            "description": "A 3x5 Cross-shape made of cubes with long section in the Z axis with 1 block of width",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                }
+            ]
+        },
+        {
+            "name": "5X3 Thin Cross",
+            "description": "A 5x3 Cross-shape made of cubes with long section in the X axis with the center at 0,0, 1 block of width",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                }
+            ]
+        },
+        {
+            "name": "4X6 Wide Cross",
+            "description": "A 3x5 Cross-shape made of cubes with long section in the Z axis with 2 blocks of width",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -2
+                }
+            ]
+        },
+        {
+            "name": "6X4 Wide Cross",
+            "description": "A 6x4 Cross-shape made of cubes with long section in the X axis with 2 blocks of width",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 0
+                },
+                                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "5x4 Z-Shape",
+            "description": "A 5x4 Z-shape made of cubes with long section in the X axis with 2 blocks of width",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+               {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+               {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+               {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+               {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "5x5 Z-Shape",
+            "description": "A 5x5 Z-shape made of cubes 2 blocks of width and a bridge at 0,0 connecting the edges",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -2
+                },
+               {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -2
+                },
+               {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+               {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+               {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": -1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "7x4 Thick Y-Shape",
+            "description": "A 7x4 Thick Y-Shape made of cubes 3 blocks of width and the center 0,0 connecting the edges",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -3,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -3,
+                    "z": 3
+                }
+
+            ]
+        },
+        {
+            "name": "7x4 Thick Concave Y-Shape",
+            "description": "A 7x4 Thick Y-Shape made of cubes 3 blocks of width and the center 0,0 connecting the edges with curves in the edges",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": -1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 3,
+                    "x": 3,
+                    "z": 2
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 3
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 2
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 2,
+                    "x": -3,
+                    "z": 2
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 3
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 1,
+                    "x": -3,
+                    "z": 3
+                }
+
+            ]
+        },
+        {
+            "name": "5x3 Y-Shape",
+            "description": "A 5x3 Thick Y-Shape made of cubes with 2 width in the wings and 1 block as a base, the center at (0,0) connecting the edges",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -2,
+                    "z": 1
+                }
+            ]
+        },
+        {
+            "name": "3x3 Thin Y-Shape",
+            "description": "A 3x3 Thick Y-Shape with 1 block of width with the center at (0,0) connecting the edges",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": -1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                }
+            ]
         }
-        ]
+    ]
 }
