@@ -53,21 +53,26 @@ class GPTClient(LLMClient):
             )
             self.logger.info(f"{colorama.Fore.BLUE}Prompt:{colorama.Fore.RESET} {prompt}")
 
-        self.prompt_total += system_message
-        self.prompt_total += prompt
+        self.prompt_total += system_message + prompt
 
         chat_prompt = ChatPromptTemplate.from_messages(
             [("system", "{system_message}"), ("user", f"{prompt}")]
         )
-        llm = self.llm
 
-        self.chain = chat_prompt | llm | StrOutputParser()
-        response = await self.chain.ainvoke(
-            {"system_message": system_message, "prompt": prompt}
-        )
+        llm = self.llm
+        chain = chat_prompt | llm | StrOutputParser()
+
+        # Invoke the chain asynchronously
+        try:
+            response = await chain.ainvoke(
+                {"system_message": system_message, "prompt": chat_prompt}
+            )
+        except Exception as e:
+            self.logger.error(f"Error during chain invocation: {e}")
+            raise
 
         if self.verbose:
-            self.logger.info(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
+            self.logger.info(f"{colorama.Fore.CYAN} Response:{colorama.Fore.RESET} {response}")
 
         return response
 

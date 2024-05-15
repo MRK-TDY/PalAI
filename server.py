@@ -69,20 +69,25 @@ match config.get("llm", "type"):
 
 def create_pal_instance():
     return PalAI(prompts_file, llm_client, logger)
-    # return PalAI("gpt", 'gpt-4-0125-preview')
 
 
 def create_descriptor_instance():
     return BuildingDescriptor(config.get("openai", "api_key"))
 
 
-@sockets.route("/echo", websocket=True)
+
+@sockets.route("/echo")
 def test_connect(ws):
-    while not ws.closed:
-        message = ws.receive()
-        if message:
-            logger.info("Client connected")
-            ws.send(message)
+    try:
+        while not ws.closed:
+            message = ws.receive()
+            if message:
+                logger.info("Client connected")
+                ws.send(message)
+    except Exception as e:
+        logger.error(f"Error in test_connect: {e}")
+    finally:
+        logger.info("WebSocket closed")
 
 
 @sockets.route("/disconnect")
@@ -90,90 +95,49 @@ def test_disconnect():
     logger.info("Client disconnected")
 
 
+
+async def _handle_post(ws):
+    """Main function to handle building requests.
+    Takes in a JSON with a prompt and returns a JSON with the generated building.
+    """
+    logger.info("Client Build Request")
+    try:
+        while not ws.closed:
+            message = ws.receive()
+            if message:
+                logger.info(f"Received message: {message}")
+                try:
+                    json_data = json.loads(message)
+                    logger.info(f"Building: {json_data}")
+                    if "prompt" in json_data:
+                        pal = create_pal_instance()
+                        result = await pal.build(json_data["prompt"], ws)
+                        result["event"] = "result"
+                        result["message"] = "Data processed"
+                        ws.send(json.dumps(result))
+                        logger.debug(f"Sent Json Response: {result}")
+                    else:
+                        ws.send(json.dumps({"message": "Missing or invalid JSON payload"}))
+                        logger.warning("Missing or invalid JSON payload")
+                except Exception as e:
+                    logger.error(f"Error processing request: {e}")
+                    traceback.print_exc()
+                    ws.send(json.dumps({"message": "Error processing request", "error": str(e)}))
+            else:
+                ws.send(json.dumps({"message": "No message received"}))
+                logger.warning("No message received")
+    except Exception as e:
+        logger.error(f"Error in handle_post: {e}")
+    finally:
+        logger.info("WebSocket closed")
+
 @sockets.route("/build")
 def handle_post(ws):
     """Main function to handle building requests.
     Takes in a JSON with a prompt and returns a JSON with the generated building.
     """
+    asyncio.run(_handle_post(ws))
 
-    logger.info("Client Build Request")
-    while not ws.closed:
-        message = ws.receive()
-        logger.info("Received message" + str(message))
-        if message:
-            try:
-                json_data = json.loads(message)
-                logger.info("Building: " + str(json_data))
-                if "prompt" in json_data:
-                    pal = create_pal_instance()
-                    result = asyncio.run(pal.build(json_data["prompt"], ws))
-                    result["event"] = "result"
-                    result["message"] = "Data processed"
-                    ws.send(json.dumps(result))
-                    logger.debug("Sent Json Response: " + str(result))
-                else:
-                    ws.send(json.dumps({"message": "Missing or invalid JSON payload"}))
-                    logger.warning("Missing or invalid JSON payload")
-            except Exception as e:
-                traceback.print_exc()
-                ws.send(
-                    json.dumps({"message": "Error processing request", "error": str(e)})
-                )
-                logger.warning("message: Error processing request")
-        else:
-            ws.send(json.dumps({"message": "No message received"}))
-            logger.warning("No message received")
-
-
-@sockets.route("/description")
-def handle_post(ws):
-    """ Takes in 4 images and describes the building given.
-    """
-
-    logger.info("Client Build Request")
-    while not ws.closed:
-        message = ws.receive()
-        logger.info("Received message" + str(message))
-        if message:
-            try:
-                json_object = json.loads(message)
-                # Generate or specify your filename here. For example:
-                filenameFront = "front.png"
-                filenameRight = "right.png"
-                filenameLeft = "left.png"
-                filenameBack = "back.png"
-
-                file_path = os.path.join(UPLOAD_FOLDER, filenameFront)
-                imgdata = base64.b64decode(json_object["front"])
-                with open(file_path, "wb") as fileFront:
-                    fileFront.write(imgdata)
-
-                file_path = os.path.join(UPLOAD_FOLDER, filenameRight)
-                imgdata = base64.b64decode(json_object["right"])
-                with open(file_path, "wb") as fileRight:
-                    fileRight.write(imgdata)
-
-                file_path = os.path.join(UPLOAD_FOLDER, filenameLeft)
-                imgdata = base64.b64decode(json_object["left"])
-                with open(file_path, "wb") as fileLeft:
-                    fileLeft.write(imgdata)
-
-                file_path = os.path.join(UPLOAD_FOLDER, filenameBack)
-                imgdata = base64.b64decode(json_object["back"])
-                with open(file_path, "wb") as fileBack:
-                    fileBack.write(imgdata)
-
-                descriptor = create_descriptor_instance()
-                response = descriptor.get_image_description()
-                ws.send(json.dumps(response))
-                logger.debug("Sent Json Response: " + str(response))
-
-            except Exception as e:
-                traceback.print_exc()
-                ws.send(
-                    json.dumps({"message": "Error processing request", "error": str(e)})
-                )
-                logger.warning("message: Error processing request")
 
 
 if __name__ == "__main__":
