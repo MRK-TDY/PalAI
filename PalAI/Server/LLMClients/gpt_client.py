@@ -56,33 +56,12 @@ class GPTClient(LLMClient):
         self.prompt_total += system_message
         self.prompt_total += prompt
 
-        if image_path != "":
-            with open(image_path, "rb") as image_file:
-                image = base64.b64encode(image_file.read()).decode("utf-8")
+        chat_prompt = ChatPromptTemplate.from_messages(
+            [("system", "{system_message}"), ("user", f"{prompt}")]
+        )
+        llm = self.llm
 
-            prompt = ChatPromptTemplate.from_messages(
-                [
-                    ("system", "{system_message}"),
-                    HumanMessage(
-                        content=[
-                            {"type": "text", "text": f"{prompt}"},
-                            {
-                                "type": "image_url",
-                                "image_url": f"data:image/jpeg;base64,{image}",
-                            },
-                        ]
-                    ),
-                ]
-            )
-            llm = self.mm_llm
-
-        else:
-            prompt = ChatPromptTemplate.from_messages(
-                [("system", "{system_message}"), ("user", f"{prompt}")]
-            )
-            llm = self.llm
-
-        self.chain = prompt | llm | StrOutputParser()
+        self.chain = chat_prompt | llm | StrOutputParser()
         response = await self.chain.ainvoke(
             {"system_message": system_message, "prompt": prompt}
         )
