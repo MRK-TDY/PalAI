@@ -1,9 +1,9 @@
 import base64
 import json
-
+import uuid
 import traceback
 import logging
-from flask import Flask
+from flask import Flask, request
 from flask_sockets import Sockets
 import yaml
 import os
@@ -50,6 +50,8 @@ config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
 
 PORT = config.getint("server", "port")
 
+use_tokens = config.getboolean("server", "use_tokens")
+
 with open(os.path.join(os.path.dirname(__file__), "prompts.yaml"), "r") as file:
     prompts_file = yaml.safe_load(file)
 
@@ -75,9 +77,23 @@ def create_descriptor_instance():
     return BuildingDescriptor(config.get("openai", "api_key"))
 
 
+# Dictionary to keep track of active WebSocket connections
+active_connections = {}
+active_tasks = {}
 
-@sockets.route("/echo")
-def test_connect(ws):
+def test_connect_token(ws):
+    session_token = request.args.get('token')
+    if not session_token:
+        session_token = str(uuid.uuid4())
+        ws.send(json.dumps({"token": session_token}))
+
+    if session_token in active_connections:
+        # Close the previous connection
+        previous_ws = active_connections[session_token]
+        previous_ws.close()
+
+    active_connections[session_token] = ws
+
     try:
         while not ws.closed:
             message = ws.receive()
@@ -88,7 +104,41 @@ def test_connect(ws):
         logger.error(f"Error in test_connect: {e}")
     finally:
         logger.info("WebSocket closed")
+        # Remove the connection from active connections
+        if session_token in active_connections and active_connections[session_token] == ws:
+            del active_connections[session_token]
 
+
+def test_connect_ip(ws):
+    client_ip = request.remote_addr
+    if client_ip in active_connections:
+        # Close the previous connection
+        previous_ws = active_connections[client_ip]
+        previous_ws.close()
+
+    active_connections[client_ip] = ws
+
+    try:
+        while not ws.closed:
+            message = ws.receive()
+            if message:
+                logger.info("Client connected")
+                ws.send(message)
+    except Exception as e:
+        logger.error(f"Error in test_connect: {e}")
+    finally:
+        logger.info("WebSocket closed")
+        # Remove the connection from active connections
+        if client_ip in active_connections and active_connections[client_ip] == ws:
+            del active_connections[client_ip]
+
+@sockets.route("/echo", websocket=True)
+def test_connect(ws):
+
+    if use_tokens:
+        test_connect_token(ws)
+    else:
+        test_connect_ip(ws)
 
 @sockets.route("/disconnect")
 def test_disconnect():
@@ -96,7 +146,7 @@ def test_disconnect():
 
 
 
-async def _handle_post(ws):
+async def _handle_post(ws, token):
     """Main function to handle building requests.
     Takes in a JSON with a prompt and returns a JSON with the generated building.
     """
@@ -130,17 +180,76 @@ async def _handle_post(ws):
         logger.error(f"Error in handle_post: {e}")
     finally:
         logger.info("WebSocket closed")
+        if token in active_connections and active_connections[token] == ws:
+            del active_connections[token]
+        if token in active_tasks:
+            del active_tasks[token]
+
+
+def handle_post_token(ws):
+    session_token = request.args.get('token')
+    if not session_token:
+        ws.send(json.dumps({"error": "Missing session token"}))
+        return
+
+    if session_token in active_connections:
+        # Close the previous connection
+        previous_ws = active_connections[session_token]
+        previous_ws.close()
+
+    active_connections[session_token] = ws
+
+    loop = asyncio.new_event_loop()
+    asyncio.run(_handle_post(ws, session_token))
+    #asyncio.set_event_loop(loop)
+    #loop.create_task(_handle_post(ws, session_token, loop))
+
+def handle_post_ip(ws):
+    client_ip = request.remote_addr
+    if client_ip in active_connections:
+        # Cancel the previous task
+        if client_ip in active_tasks:
+            task = active_tasks[client_ip]
+            if(task != None):
+                task.cancel()
+            else:
+                del active_tasks[client_ip]
+
+        # Close the previous connection
+        previous_ws = active_connections[client_ip]
+        previous_ws.close()
+
+    active_connections[client_ip] = ws
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            task = loop.create_task(_handle_post(ws, client_ip))
+        else:
+            task = loop.run_until_complete(_handle_post(ws, client_ip))
+        active_tasks[client_ip] = task
+
+    except Exception as e:
+            logger.error(f"Error processing message: {e}")
+
+#except Exception as e:
+    #    logger.error(f"Error in handle_post: {e}")
+
+    #loop.create_task(_handle_post(ws, client_ip, loop))
 
 @sockets.route("/build")
 def handle_post(ws):
-    """Main function to handle building requests.
-    Takes in a JSON with a prompt and returns a JSON with the generated building.
-    """
-    asyncio.run(_handle_post(ws))
+    if(use_tokens):
+        #test_connect_token(ws)
+        handle_post_token(ws)
+    else:
+        handle_post_ip(ws)
 
 
 
 if __name__ == "__main__":
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     server = pywsgi.WSGIServer(("0.0.0.0", PORT), app, handler_class=WebSocketHandler)
     logger.info(f"Running on ws://0.0.0.0:{PORT}")
     server.serve_forever()

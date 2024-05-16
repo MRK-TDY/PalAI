@@ -171,6 +171,7 @@ class PalAI:
                 return
             chosen_layer = self._get_similarity_response(l[1], [i["name"] for i in self.layers])
             print("Chosen layer: " + str(l))
+            self.logger.info(f"{Fore.BLUE}Chosen Layer: {chosen_layer}{Fore.RESET}")
             blocks = [i for i in self.layers if i["name"] == chosen_layer][0]["blocks"]
             for b in blocks:
                 p = Placeable(b.get("type", "CUBE"), b["x"], y, b["z"])
