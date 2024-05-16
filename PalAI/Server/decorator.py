@@ -78,9 +78,21 @@ class Decorator:
             self.floor_list.remove(i)
 
         #TODO: Doesn't work with negative numbers probably
-        self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
-        self.size_x = max(self.floor_list, key=lambda b: b.x).x + 1
-        self.size_z = max(self.floor_list, key=lambda b: b.z).z + 1
+
+        if self.floor_list:
+            self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
+        else:
+            self.size_y = 0
+
+        if self.floor_list:
+            self.size_x = max(self.floor_list, key=lambda b: b.x).x + 1
+        else:
+            self.size_x = 0
+
+        if self.floor_list:
+            self.size_z = max(self.floor_list, key=lambda b: b.z).z + 1
+        else:
+            self.size_z = 0
 
         # Grid is indexed (y, x, z) because most transformations happen on a slice of the y axis
         self.grid = [
@@ -113,32 +125,33 @@ class Decorator:
                 self.floor_list.remove(i)
 
         # Apply rooms
-        for r in self.rooms:
-            seed = random.choice(self.floor_list)
+        if self.floor_list:
+            for r in self.rooms:
+                seed = random.choice(self.floor_list)
 
-            for b in sorted(self.floor_list, key=lambda _: random.random()):
-                if len(self._get_pos_neighbors((b.y, b.x, b.z))) < 4:
-                    seed = b
-                    break
+                for b in sorted(self.floor_list, key=lambda _: random.random()):
+                    if len(self._get_pos_neighbors((b.y, b.x, b.z))) < 4:
+                        seed = b
+                        break
 
-            open, closed = [], []
-            open.append(seed)
-            i = 0
-            while (
-                i < int(float(r["coverage"]) * len(self.floor_list))
-                and len(open) > 0
-                and len(closed) < len(self.floor_list)
-            ):
-                i += 1
-                seed = open.pop(0)
-                seed["room"] = r["name"]
-                closed.append(seed)
-                for b in self._get_pos_neighbors((b.y, b.x, b.z)):
-                    if b not in open and b not in closed:
-                        open.append(b)
+                open, closed = [], []
+                open.append(seed)
+                i = 0
+                while (
+                    i < int(float(r["coverage"]) * len(self.floor_list))
+                    and len(open) > 0
+                    and len(closed) < len(self.floor_list)
+                ):
+                    i += 1
+                    seed = open.pop(0)
+                    seed["room"] = r["name"]
+                    closed.append(seed)
+                    for b in self._get_pos_neighbors((b.y, b.x, b.z)):
+                        if b not in open and b not in closed:
+                            open.append(b)
 
         # Recalculate size_y
-        self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
+            self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
 
     def _is_valid_option(self, decoration, block, current_floor_list):
         """Evaluates if a decoration can be placed on a block
