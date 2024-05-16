@@ -252,7 +252,8 @@ class PalAI:
         self.api_result["add_on_agent"] = windows
 
         if self.ws is not None:
-            message = {"value": self.api_result["add_on_agent"]}
+            json_building = [i.to_json() for i in self.building]
+            message = {"value": json_building}
             message["event"] = "add_ons"
             self.ws.send(json.dumps(message))
 
