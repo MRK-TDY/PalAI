@@ -88,12 +88,12 @@ def _create_erratic_windows(
 def _create_maximalist_windows(
     layered_candidates: list[list[Placeable]], window_quantifier: float
 ):
-    return _create_symmetric_windows(layered_candidates, [min(i * 2, 1) for i in window_quantifier])
+    return _create_symmetric_windows(layered_candidates, window_quantifier * 2)
 
 def _create_default_windows(
     layered_candidates: list[list[Placeable]], window_quantifier: float
 ):
-    return _create_symmetric_windows(layered_candidates, [min(i / 2, 1) for i in window_quantifier])
+    return _create_symmetric_windows(layered_candidates, window_quantifier / 2)
 
 
 def _create_symmetric_windows(
