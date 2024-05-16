@@ -13,6 +13,7 @@ from PalAI.Server.LLMClients import (
     local_client,
 )
 from PalAI.Server.post_process import PostProcess
+import PalAI.Server.window_layer as window_layer
 from PalAI.Server.decorator import Decorator
 from PalAI.Server.placeable import Placeable
 
@@ -55,7 +56,7 @@ class PalAI:
             self.logger = logging.getLogger(__name__)
             self.console_handler = logging.StreamHandler()
             self.console_handler.setLevel(logging.DEBUG)
-            console_formatter = logging.Formatter('%(levelname)s - %(message)s')
+            console_formatter = logging.Formatter("%(levelname)s - %(message)s")
             self.console_handler.setFormatter(console_formatter)
             self.logger.addHandler(self.console_handler)
 
@@ -86,6 +87,9 @@ class PalAI:
 
         with open(os.path.join(os.path.dirname(__file__), "layers.json"), "r") as file:
             self.layers = json.load(file)["layers"]
+
+        with open(os.path.join(os.path.dirname(__file__), "windows.json"), "r") as file:
+            self.windows = json.load(file)
         self.building: list[Placeable] = []
         self.history = []
         self.api_result = {}
@@ -118,16 +122,16 @@ class PalAI:
 
         self.logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 
-        # TODO: do requests that may be parallel in parallel
-
         await self.get_architect_plan()
-        self.logger.info(f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}")
+        self.logger.info(
+            f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}"
+        )
 
         self.build_structure()
 
         self.logger.info(f"{Fore.BLUE}Received basic structure{Fore.RESET}")
 
-        await self.apply_add_ons()
+        await self.apply_windows()
         self.logger.info(f"{Fore.BLUE}Received add-ons{Fore.RESET}")
 
         await self.get_artist_response()
@@ -150,7 +154,9 @@ class PalAI:
             described_layers += f"{l['name']}: {l['description']}\n"
 
         self.prompt = await self.llm_client.get_agent_response(
-            "architect", self.prompts_file["plan_prompt"].format(self.prompt), presets=described_layers
+            "architect",
+            self.prompts_file["plan_prompt"].format(self.prompt),
+            presets=described_layers,
         )
         self.api_result["architect"] = [l for l in self.prompt.split("\n") if l != ""]
         self.plan_list = [
@@ -164,12 +170,19 @@ class PalAI:
     def build_structure(self):
         for y, l in enumerate(self.plan_list):
             l = l.split(":")
-            if(len(l) < 2):
+            if len(l) < 2:
                 self.ws.send(
-                    json.dumps({"message": "Error processing request", "error": " Unable to read " + str(l)})
+                    json.dumps(
+                        {
+                            "message": "Error processing request",
+                            "error": " Unable to read " + str(l),
+                        }
+                    )
                 )
                 return
-            chosen_layer = self._get_similarity_response(l[1], [i["name"] for i in self.layers])
+            chosen_layer = self._get_similarity_response(
+                l[1], [i["name"] for i in self.layers]
+            )
             print("Chosen layer: " + str(l))
             self.logger.info(f"{Fore.BLUE}Chosen Layer: {chosen_layer}{Fore.RESET}")
             blocks = [i for i in self.layers if i["name"] == chosen_layer][0]["blocks"]
@@ -189,25 +202,54 @@ class PalAI:
             self.ws.send(json.dumps(message))
         self.logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
 
-
-
-    async def apply_add_ons(self):
+    async def apply_windows(self):
         """Adds doors and windows to the building"""
 
-        pal_script = ""
-        for i in self.building:
-            type = i.block_type
-            pal_script += f"B:{type}|{i.x},{i.z}|{i.y}\n"
-
         plan = "\n".join(self.plan_list)
-        add_on_prompt = f"Here is the plan for the requests building:\n{plan}\n Here is the building code without doors or windows:\n{pal_script}"
-        #print("ADD ON PROMPT: \n" + str(add_on_prompt))
+        add_on_prompt = f"Here is the building:\n{plan}\n"
+        # print("ADD ON PROMPT: \n" + str(add_on_prompt))
         self.logger.debug(f"ADDON PROMPT: {add_on_prompt}")
-        add_ons = await self.llm_client.get_agent_response("add_ons", add_on_prompt)
-        add_ons = self.extract_building_information(add_ons)
-        self.building = self.overlap_blocks(add_ons, self.building)
+        styles = ""
+        for s in self.windows["styles"]:
+            styles += f"{s['name']}:{s['description']}\n"
+        windows = await self.llm_client.get_agent_response(
+            "add_ons",
+            add_on_prompt,
+            styles=styles,
+            quantifiers=self.windows["quantifiers"],
+        )
+        self.logger.debug(f"ADDON RESPONSE: {windows}")
+        windows = windows.split("\n")
+
+        height = max([i.y for i in self.building]) + 1
+        self.window_styles = [None for _ in range(height)]
+        self.window_quantifiers = [None for _ in range(height)]
+
+        style_options = [i["name"] for i in self.windows["styles"]]
+        quantifier_options = [i["name"] for i in self.windows["quantifiers"]]
+        for line in windows:
+            if line.lower().startswith("layer"):
+                i = int(line.split(":")[0].split(" ")[1])
+                self.window_styles[i] = self._get_similarity_response(
+                    line.split(":")[1].split("|")[0].strip(), style_options
+                )
+                quantifier = self._get_similarity_response(
+                    line.split(":")[1].split("|")[1].strip(),
+                    quantifier_options,
+                )
+                self.window_quantifiers[i] = [
+                    i["value"] for i in self.windows["quantifiers"] if i["name"] == quantifier
+                ][0]
+
+        for i, w in enumerate(self.window_styles):
+            if w is None:
+                self.window_styles[i] = "none"
+                self.window_quantifiers[i] = "none"
+
+        self.building = window_layer.create_windows(self.building, self.window_styles, self.window_quantifiers)
+
         ## Only sending the blocks with add_ons
-        self.api_result["add_on_agent"] = [i.to_json() for i in self.building if i._add_ons is not None]
+        self.api_result["add_on_agent"] = windows
 
         if self.ws is not None:
             message = {"value": self.api_result["add_on_agent"]}
@@ -228,14 +270,22 @@ class PalAI:
             l = [i.strip() for i in l.upper().split(":")]
             if len(l) == 2:
                 if "STYLE" in l[0]:
-                    self.style = self._get_similarity_response(l[1].strip(), self.post_process.get_styles_list())
+                    self.style = self._get_similarity_response(
+                        l[1].strip(), self.post_process.get_styles_list()
+                    )
                     material["STYLE"] = self.style
                 elif "FLOOR" in l[0]:
-                    material["FLOOR"] = self._get_similarity_response(l[1].strip(), self.material_types)
+                    material["FLOOR"] = self._get_similarity_response(
+                        l[1].strip(), self.material_types
+                    )
                 elif "INTERIOR" in l[0]:
-                    material["INTERIOR"] = self._get_similarity_response(l[1].strip(), self.material_types)
+                    material["INTERIOR"] = self._get_similarity_response(
+                        l[1].strip(), self.material_types
+                    )
                 elif "EXTERIOR" in l[0]:
-                    material["EXTERIOR"] = self._get_similarity_response(l[1].strip(), self.material_types)
+                    material["EXTERIOR"] = self._get_similarity_response(
+                        l[1].strip(), self.material_types
+                    )
 
         self.api_result["materials"] = material
         if self.ws is not None:
@@ -251,7 +301,7 @@ class PalAI:
         :param possibilities: list of possibilities
         :type possibilities: list(str)
         """
-        aux = sorted(possibilities, key = lambda x: Levenshtein.distance(x, response))
+        aux = sorted(possibilities, key=lambda x: Levenshtein.distance(x, response))
         return aux[0]
 
     async def apply_style(self):
@@ -276,8 +326,9 @@ class PalAI:
             message["event"] = "decorations"
             self.ws.send(json.dumps(message))
 
-
-    def overlap_blocks(self, base_structure: list[Placeable], extra_blocks: list[Placeable]):
+    def overlap_blocks(
+        self, base_structure: list[Placeable], extra_blocks: list[Placeable]
+    ):
         """Overlaps a base structure with a set of extra blocks
         If there are multiple blocks in the same position, the one in the base structure is kept
 
@@ -289,7 +340,16 @@ class PalAI:
         :rtype: list(dict)
         """
         for b in extra_blocks:
-            if len([i for i in base_structure if (i.x == b.x and i.y == b.y and i.z == b.z)]) == 0:
+            if (
+                len(
+                    [
+                        i
+                        for i in base_structure
+                        if (i.x == b.x and i.y == b.y and i.z == b.z)
+                    ]
+                )
+                == 0
+            ):
                 base_structure.append(b)
         return base_structure
 
@@ -321,7 +381,7 @@ class PalAI:
         :rtype: list(dict)
         """
         lines = text.split("\n")
-        building_info: list[str]= []
+        building_info: list[str] = []
 
         # match lines that have two `|` characters
         for line in lines:
@@ -329,7 +389,9 @@ class PalAI:
                 try:
                     if level is not None:
                         line += f"|{level}"  # if a level is given then it is not present in the script at this point
-                    line = line.split(" ")[0]  # sometimes LLMs return garbage after the immportant part
+                    line = line.split(" ")[
+                        0
+                    ]  # sometimes LLMs return garbage after the immportant part
                     building_info.append(line[2:])
                 except Exception as e:
                     self.logger.warning(
@@ -339,21 +401,17 @@ class PalAI:
         blocks: list[Placeable] = []
         for block in building_info:
             try:
-
                 block = block.split("|")
                 if len(block) > 2:
                     position = block[1].split(",")
                     b_type = Placeable.BlockType.from_str(block[0])
-                    aux = Placeable(b_type, int(position[1]), int(block[2]), int(position[0]))
-                    if len(block) == 5:
-                        position = block[4].split(",")
-                        tag = Placeable(block[3].upper(), int(position[1]), int(block[2]), int(position[0]))
-                        aux.tag = tag
+                    aux = Placeable(
+                        b_type, int(position[1]), int(block[2]), int(position[0])
+                    )
                     blocks.append(aux)
             except Exception as e:
-                print(e)
                 self.logger.warning(
-                    f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}"
+                    f"{Fore.RED}Error extracting building information from LLM response:{Fore.RESET}{e}"
                 )
                 continue
         return blocks

@@ -1,4 +1,5 @@
 import os
+from PalAI.Server.placeable import Placeable
 
 
 class ObjVisualizer:
@@ -99,41 +100,38 @@ class ObjVisualizer:
         vertex_offset = 0  # Initialize vertex offset
 
         for block in api_response:
+            if isinstance(block, Placeable):
+                block = block.to_json()
             if block["type"] not in self.block_obj_paths:
                 print("Block type not implemented:", block["type"])
                 block["type"] = (
                     "CUBE"  # Default to a cube if the block type is not implemented
                 )
 
-            try:
-                block_name = block["type"]
-                position = tuple(
-                    map(
-                        float,
-                        block["position"].replace("(", "").replace(")", "").split(","),
-                    )
+            size = 1
+            block_name = block["type"]
+            position = tuple(
+                map(
+                    float,
+                    block["position"].replace("(", "").replace(")", "").split(","),
                 )
-                rotation = block.get("rotation", 0)
-                add_on = block.get("tags", {})
+            )
+            rotation = block.get("rotation", 0 )
+            for add_on in block.get("tags", [] ):
                 # size = float(block['size'])
                 size = 1
-                if add_on.get("type", "") in ["WINDOW", "DOOR"]:
-                    add_on_position = tuple(
-                        map(
-                            lambda x: float(x),
-                            add_on["position"]
-                            .replace("(", "")
-                            .replace(")", "")
-                            .split(","),
-                        )
-                    )
-                    placed_block = self.__place_block(
-                        add_on_position, "CUBE", 0.3, vertex_offset
-                    )
-                    obj_content += placed_block[0]
-                    vertex_offset = placed_block[1]
-            except Exception as _:
-                continue
+                pos = add_on["position"].replace("(", "").replace(")", "").split(",")
+                diff = (position[0] - float(pos[0]), position[2] - float(pos[2]))
+                add_on_position = (
+                    0.35 + float(pos[0]) + diff[0] * 0.5,
+                    0.5 + float(pos[1]),
+                    0.35 + float(pos[2]) + diff[1] * 0.5,
+                )
+                placed_block = self.__place_block(
+                    add_on_position, "CUBE", 0.3, vertex_offset
+                )
+                obj_content += placed_block[0]
+                vertex_offset = placed_block[1]
             placed_block = self.__place_block(
                 position, block_name, size, vertex_offset, rotation
             )

@@ -5,6 +5,7 @@ from collections import deque
 
 from PalAI.Server.placeable import Placeable
 
+
 class PostProcess:
     def __init__(self, style_sheet="styles.json"):
         """Responsible for applying post-processing and style rules to a building
@@ -40,7 +41,9 @@ class PostProcess:
 
         for b in building:
             self.grid[b.y - self.offset_y][b.x - self.offset_x][b.z - self.offset_z] = b
-            self.pixel_grid[b.y - self.offset_y, b.x - self.offset_x, b.z - self.offset_z] = 1
+            self.pixel_grid[
+                b.y - self.offset_y, b.x - self.offset_x, b.z - self.offset_z
+            ] = 1
 
     def get_available_styles(self):
         """Returns a list of available styles
@@ -99,7 +102,12 @@ class PostProcess:
                                     labelArray[y, x, z] = label
                                     if label > 1:
                                         # found empty space, fill it in
-                                        p = Placeable("CUBE", i - 1 + self.offset_x, k + self.offset_y, j - 1 + self.offset_z)
+                                        p = Placeable(
+                                            "CUBE",
+                                            i - 1 + self.offset_x,
+                                            k + self.offset_y,
+                                            j - 1 + self.offset_z,
+                                        )
                                         self.grid[k][i - 1][j - 1] = p
                                         self.pixel_grid[k, i - 1, j - 1] = 1
                                     for dy, dx, dz in neighbors:
@@ -126,7 +134,6 @@ class PostProcess:
             self.remove_floating_blocks()
 
         self.fill_empty_spaces()
-        self.clean_add_ons()
         for s in self.styles["styles"]:
             if s.upper() == style.upper():
                 for rule in self.styles["styles"][s]["rules"]:
@@ -135,8 +142,13 @@ class PostProcess:
                         for c in matching_positions:
                             placeholders = {"rotation": int(c[1])}
                             block = self.grid[c[0][0]][c[0][1]][c[0][2]]
-                            block[effect["key"]] = effect["value"].format_map(placeholders)
-                            if not isinstance(block[effect["key"]], int) and block[effect["key"]].isdigit():
+                            block[effect["key"]] = effect["value"].format_map(
+                                placeholders
+                            )
+                            if (
+                                not isinstance(block[effect["key"]], int)
+                                and block[effect["key"]].isdigit()
+                            ):
                                 block[effect["key"]] = int(block[effect["key"]])
                 return self.export_building()
         else:
@@ -162,6 +174,29 @@ class PostProcess:
             block_count -= 1
             self.grid[c[0][0]][c[0][1]][c[0][2]] = None
             self.pixel_grid[c[0][0], c[0][1], c[0][2]] = -1
+
+    def create_windows(self, window_styles, window_quantifiers):
+        """Creates windows in the building
+
+        :param window_styles: style of the windows
+        :type window_styles: list(str)
+        :param window_quantifiers: ration of windows to be created (vs total possibilities)
+        :type window_quantifiers: list(float) (0 to 1)
+        :return: None
+        """
+        for i, w in enumerate(window_styles):
+            match w:
+                case "maximalist":
+                    pass
+                case "symmetric":
+                    pass
+                case "erratic":
+                    pass
+                case "none":
+                    pass
+                case _:
+                    pass
+        return
 
     def export_building(self):
         """Converts the grid to a list of blocks, the common format for buildings
@@ -261,86 +296,3 @@ class PostProcess:
 
         return filtered_values
 
-    def clean_add_ons(self):
-        def is_valid_add_on(x, y , z, add_on_pos):
-            ny, nx, nz = (
-                add_on_pos[1],
-                add_on_pos[0],
-                add_on_pos[2],
-            )
-            dx, dy, dz = nx - x, ny - y, nz - z
-
-            # Must be adjacent to attached block
-            distance = abs(dx) + abs(dy) + abs(dz)
-            if distance != 1:
-                return False
-
-            # Must be attached to a block
-            if self.grid[y][x][z] is None:
-                return False
-
-            # If is outside grid size it is on an empty space
-            if (
-                ny < 0
-                or ny >= self.size_y
-                or nx < 0
-                or nx >= self.size_x
-                or nz < 0
-                or nz >= self.size_z
-            ):
-                return True
-
-            # Must be placed on an empty space
-            if self.grid[ny][nx][nz] is not None:
-                return False
-            return True
-
-        for y in range(self.size_y):
-            for x in range(self.size_x):
-                for z in range(self.size_z):
-                    if self.grid[y][x][z] is not None:
-                        if self.grid[y][x][z]._add_ons is not None:
-                            tag = self.grid[y][x][z].tag
-                            if not is_valid_add_on(x, y, z, (tag.x, tag.y, tag.z)):
-                                # Place add on adjacent to the block
-                                self.grid[y][x][z].tag = None
-                                ny, nx, nz = (
-                                    y,
-                                    tag.x,
-                                    tag.z
-                                )
-
-                                dx, dz = nx - x, nz - z
-                                if dx == 0 and dz == 0:
-                                    dx = 1
-                                elif abs(dx) > abs(dz):
-                                    dx = dx / abs(dx)  # normalize but keep direction
-                                    dz = 0
-                                else:
-                                    dz = dz / abs(dz)  # normalize but keep direction
-                                    dx = 0
-
-                                i = 1
-                                outside_bounds_count = 0
-                                while True:
-                                    if self.grid[y][x][z] is None or nx > self.size_x or nz > self.size_z:
-                                        outside_bounds_count += 1
-                                        # verify both sides of the building
-                                        if outside_bounds_count == 2:
-                                            break
-                                    nx, nz = int(x + dx * i), int(z + dz * i)
-                                    if is_valid_add_on(x, y, z, (nx, ny, nz)):
-                                        if self.grid[y][x][z].tag is None:
-                                            tag.x = nx
-                                            tag.y = ny
-                                            tag.z = nz
-                                            self.grid[y][x][z].tag = tag
-                                            break
-                                        else:
-                                            break # There already is an add-on
-
-                                    if i > 0:
-                                        i = -i
-                                    else:
-                                        i = -i + 1
-        return

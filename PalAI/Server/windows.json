@@ -1,0 +1,42 @@
+{
+    "styles": [
+        {
+            "name": "maximalist",
+            "description": "Adds many windows, think of a busy office"
+        },
+        {
+            "name": "symmetric",
+            "description": "Make sure windows are placed symmetrically, creates a very clean look."
+        },
+        {
+            "name": "default",
+            "description": "Normal way of placing windows, nothing too crazy."
+        },
+        {
+            "name": "erratic",
+            "description": "Randomly place windows, creates a very chaotic look."
+        },
+        {
+            "name": "none",
+            "description": "No windows."
+        }
+    ],
+    "quantifiers": [
+        {
+            "name": "none",
+            "value": 0
+        },
+        {
+            "name": "few",
+            "value": 0.25
+        },
+        {
+            "name": "some",
+            "value": 0.4
+        },
+        {
+            "name": "many",
+            "value": 0.8
+        }
+    ]
+}

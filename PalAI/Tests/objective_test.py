@@ -34,6 +34,7 @@ class TestClient(unittest.TestCase):
 
         pal_ai.prompt = prompt
         asyncio.run(pal_ai.get_architect_plan())
+        pal_ai.build_structure()
 
         return pal_ai, pal_ai.building
 

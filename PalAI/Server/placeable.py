@@ -29,7 +29,7 @@ class Placeable:
         self.y = y
         self.z = z
         self.rotation = 0
-        self._add_ons = None
+        self._add_ons = []
         self._additional_keys = {}
 
     def to_json(self):
@@ -37,16 +37,16 @@ class Placeable:
 
         if self.rotation != 0:
             aux["rotation"] = self.rotation
-        if self._add_ons is not None:
-            aux["tags"] = self._add_ons.to_json()
+        if self._add_ons is not None and len(self._add_ons) > 0:
+            aux["tags"] = [i.to_json() for i in self._add_ons]
         return aux
 
     @property
-    def tag(self) -> Self:
+    def tags(self) -> Self:
         return self._add_ons
 
-    @tag.setter
-    def tag(self, value: Self):
+    @tags.setter
+    def tags(self, value: Self):
         self._add_ons = value
 
     # Backwards compatibility

@@ -1,3 +1,4 @@
+from abc import abstractmethod
 import os
 from configparser import RawConfigParser
 import logging
@@ -25,6 +26,7 @@ class LLMClient:
         self.max_tokens = int(self.config.get("llm", "max_tokens"))
         self.verbose = bool(self.config.get("llm", "verbose"))
 
+    @abstractmethod
     async def get_llm_response(self, system_message, prompt, image_path="", **kwargs):
         pass
 
@@ -46,7 +48,12 @@ class LLMClient:
                     materials=materials, styles=styles
                 )
             case "add_ons":
-                system_message = self.prompts_file["add_ons"]
+                system_message = self.prompts_file["windows"]
+                styles = kwargs.get("styles", "")
+                quantifiers = kwargs.get("quantifiers", "")
+                system_message = system_message.format(
+                    styles=styles, quantifiers=quantifiers
+                )
             case _:
                 system_message = self.prompts_file["architect"]
         return system_message
