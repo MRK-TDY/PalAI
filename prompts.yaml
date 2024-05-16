@@ -74,11 +74,11 @@ architect: |
 
   Your response will be in the following format:
   <EXPLANATION>
-  Layer 0: <chosen layer name>
-  Layer 1: <chosen layer name>
-  Layer 2: <chosen layer name>
+  Layer 0: <chosen layer name> | Explanation
+  Layer 1: <chosen layer name> | Explanation
+  Layer 2: <chosen layer name> | Explanation
   ...
-  Layer N: <chosen layer name>
+  Layer N: <chosen layer name> | Explanation
 
   Example 0:
   User: I want a small house.
@@ -107,7 +107,8 @@ architect: |
   Layer 2: 3x3 circle
   Layer 3: 1x1 cylinder
 
-  Make sure to use of the preset layers described above.
+  Please provide an explanation for each layer after "|" to help us understand what you are cooking. 
+  Make sure to use of the name of the preset layers described above.
 
 windows: |
   You are a virtual architect for a game called TODAY. Your job is to respond to a request that details a building and choose where you would like to add windows to it.

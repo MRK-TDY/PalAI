@@ -597,7 +597,7 @@
             ]
         },
         {
-            "name": "2x2 circle",
+            "name": "2x2 Circle",
             "description": "A small 2x2 circle with curves",
             "blocks": [
                 {
@@ -627,7 +627,7 @@
             ]
         },
         {
-            "name": "3x3 circle",
+            "name": "3x3 Circle",
             "description": "A 3x3 circle with curves",
             "blocks": [
                 {
@@ -866,7 +866,7 @@
             ]
         },
         {
-            "name": "5x5 Convex rectangle",
+            "name": "5x5 Convex Rectangle",
             "description": "A 5x5 Rounded rectangle with curves",
             "blocks": [
                 {
@@ -1022,7 +1022,7 @@
             ]
         },
         {
-            "name": "diamond",
+            "name": "3x3 Diamond",
             "description": "A diamond shape of cubes, 5 blocks of diameter",
             "blocks": [
                 {
@@ -1166,7 +1166,7 @@
             ]
         },
         {
-            "name": "t-shape 3x3",
+            "name": "3x3 T-shape",
             "description": "A T-shaped formation of cubes, flat along the ground",
             "blocks": [
                 {
@@ -1202,7 +1202,7 @@
             ]
         },
         {
-            "name": "2x3 rectangle",
+            "name": "2x3 Rectangle",
             "description": "A rectangle formation of cubes, 2x3",
             "blocks": [
                 {
@@ -1244,7 +1244,7 @@
             ]
         },
         {
-            "name": "3x2 rectangle",
+            "name": "3x2 Rectangle",
             "description": "A rectangle formation of cubes, 3x2",
             "blocks": [
                 {
@@ -1286,7 +1286,7 @@
             ]
         },
         {
-            "name": "2x1 rectangle",
+            "name": "2x1 Rectangle",
             "description": "A rectangle formation composed of 2 cubes, essentially a single line of 2 blocks in the x axis",
             "blocks": [
                 {
@@ -1304,7 +1304,7 @@
             ]
         },
         {
-            "name": "1x2 rectangle",
+            "name": "1x2 Rectangle",
             "description": "A rectangle formation composed of 2 cubes, essentially a single line of 2 blocks in the z axis",
             "blocks": [
                 {
@@ -1322,7 +1322,7 @@
             ]
         },
         {
-            "name": "4x3 rectangle",
+            "name": "4x3 Rectangle",
             "description": "A rectangle formation of cubes, 4x3",
             "blocks": [
                 {

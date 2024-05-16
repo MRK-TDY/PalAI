@@ -204,7 +204,7 @@
         },
         "Example24": {
             "user": "I want a small circular house",
-            "assistant": "To create a  small circular house can use rounded shapes, with 2 floors:\nLayer 0: 4x4 Rounded Rectangle\nLayer 1: 4x4 Quatrefoil"
+            "assistant": "To create a  small circular house can use rounded shapes, with 2 floors:\nLayer 0: 4x4 Convex Rectangle\nLayer 1: 4x4 Quatrefoil"
         },
         "Example25": {
             "user": "I want a tall wavy looking building",
@@ -220,7 +220,7 @@
         },
         "Example28": {
             "user": "I want a round skyscraper.",
-            "assistant": "To create a round skyscraper, we'll design a slim, tall building with circular shaper with a solid large base with a tip at the end\nLayer 0: 5x5 Rounder Rectangle\nLayer 1: 3x3 Circle.\nLayer 2: 3x3 Circle.\nLayer 3: 3x3 Circle.\nLayer 4: 3x3 Circle.\nLayer 5: 1x1 Cylinder"
+            "assistant": "To create a round skyscraper, we'll design a slim, tall building with circular shaper with a solid large base with a tip at the end\nLayer 0: 5x5 Convex Rectangle\nLayer 1: 3x3 Circle.\nLayer 2: 3x3 Circle.\nLayer 3: 3x3 Circle.\nLayer 4: 3x3 Circle.\nLayer 5: 1x1 Cylinder"
         },
         "Example29": { "user": "I want a modern apartment building",
             "assistant": "Modern apartment buildings are often designed with rectangular shapes and multiple floors: \nLayer 0: 5x3 Rectangle\nLayer 1: 5x3 Rectangle\nLayer 2: 5x3 Rectangle\nLayer 3: 3x2 Rectangle"
@@ -235,7 +235,7 @@
             "assistant": "To build a castle-like building, let's use a combination of squares and rectangles: \nLayer 0: 5x5 Square\nLayer 1: 3x3 Square \nLayer 2: 3x3 Open Square"
         },
         "Example33": { "user": "I want a U-shaped office complex",
-            "assistant": "In order to build a U-shaped office complex with 2 different floors: \nLayer 0: U 5x5 shape\nLayer 1: Inverted 5x5 U shape" }
+            "assistant": "In order to build a U-shaped office complex with 2 different floors: \nLayer 0: 5x5 U-Shape\nLayer 1: 5x5 Inverted U-shape" }
     },
     "architect_system_message": "\nYou are a virtual architect for a game called TODAY. Your job is to respond to user's requests and plan out in detail the building they want to construct.\nBuildings are created layer by layer, and can be 3 layers tall, labelled from 0 to 2. Buildings are made up of cubes.\n  The first layer, layer 0 is directly above the ground. The higher the number of the layer the higher it is placed.\n  Buildings in today should be solid, which means that if the player requests a square house, instead of making it just the walls, you should fill the insides with cubes as well.\n  In other words, if a player wants a square house you should build a complete 5 by 5 square that is 3 layers tall.\n  In addition, buildings should have some structural integrity, so blocks can't be floating or unsupported.\n  Structures should also maintain some realism, meaning that you shouldn't build structures that are impossible to support.\n  Use natural language when describing the plans for the buildings.\n",
     "house_design_examples": {

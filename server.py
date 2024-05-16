@@ -134,7 +134,6 @@ def test_connect_ip(ws):
 
 @sockets.route("/echo", websocket=True)
 def test_connect(ws):
-
     if use_tokens:
         test_connect_token(ws)
     else:
@@ -176,6 +175,9 @@ async def _handle_post(ws, token):
             else:
                 ws.send(json.dumps({"message": "No message received"}))
                 logger.warning("No message received")
+    except asyncio.CancelledError:
+        logger.info("Task was cancelled")
+
     except Exception as e:
         logger.error(f"Error in handle_post: {e}")
     finally:
@@ -184,7 +186,10 @@ async def _handle_post(ws, token):
             del active_connections[token]
         if token in active_tasks:
             del active_tasks[token]
-
+async def stop():
+    loop = asyncio.get_event_loop()
+    loop.stop()
+    loop.close()
 
 def handle_post_token(ws):
     session_token = request.args.get('token')
@@ -217,19 +222,18 @@ def handle_post_ip(ws):
 
         # Close the previous connection
         previous_ws = active_connections[client_ip]
-        previous_ws.close()
+        if not previous_ws.closed:
+            previous_ws.close()
 
     active_connections[client_ip] = ws
-    try:
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            task = loop.create_task(_handle_post(ws, client_ip))
-        else:
-            task = loop.run_until_complete(_handle_post(ws, client_ip))
-        active_tasks[client_ip] = task
+    loop = asyncio.get_event_loop()
+    if loop.is_running():
+        task = loop.create_task(_handle_post(ws, client_ip))
+    else:
+        task = loop.run_until_complete(_handle_post(ws, client_ip))
+    active_tasks[client_ip] = task
 
-    except Exception as e:
-            logger.error(f"Error processing message: {e}")
+    # logger.error(f"Error in task management: {e}")
 
 #except Exception as e:
     #    logger.error(f"Error in handle_post: {e}")
