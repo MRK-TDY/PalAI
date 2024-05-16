@@ -169,6 +169,8 @@ class PalAI:
 
     def build_structure(self):
         for y, l in enumerate(self.plan_list):
+            if("|" in l):
+                l = l.split("|")[0]
             l = l.split(":")
             if len(l) < 2:
                 self.ws.send(
