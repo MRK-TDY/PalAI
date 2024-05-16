@@ -39,7 +39,7 @@ def create_windows(
         for x in range(size_x):
             for z in range(size_z):
                 cell = grid[y][x][z]
-                if cell is not None:
+                if cell is not None and cell.block_type == "CUBE":
                     for i, d in enumerate(directions):
                         # a block can have a window if the block in the direction of the window is None
                         if (

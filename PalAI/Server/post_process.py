@@ -150,9 +150,11 @@ class PostProcess:
                                 and block[effect["key"]].isdigit()
                             ):
                                 block[effect["key"]] = int(block[effect["key"]])
-                return self.export_building()
+                break
         else:
             raise ValueError(f"Style {style} not found")
+        self.remove_impossible_add_ons()
+        return self.export_building()
 
     def remove_floating_blocks(self):
         """Removes floating blocks from the building
@@ -295,4 +297,12 @@ class PostProcess:
                             break  # only first orientation matches
 
         return filtered_values
+
+    def remove_impossible_add_ons(self):
+        for y in range(self.size_y):
+            for x in range(self.size_x):
+                for z in range(self.size_z):
+                    block: Placeable = self.grid[y][x][z]
+                    if block is not None and block.block_type != "CUBE" and len(block.tags) > 0:
+                        block.tags = []
 

@@ -16,7 +16,7 @@ class MockClient(LLMClient):
             case "bricklayer":
                 return "B:CUBE|0,0\nB:CUBE|0,1\nB:CUBE|1,0\nB:CUBE|1,1\n"
             case "materials":
-                return "FLOOR:Sand\nINTERIOR:Sand\nEXTERIOR:Sand\nSTYLE:blocky"
+                return "FLOOR:Sand\nINTERIOR:Sand\nEXTERIOR:Sand\nSTYLE:modern"
             case "add_ons":
                 return "Layer 0: symmetric | many\nLayer 1: erratic | many\nLayer 2: symmetric | few\n"
             case _:
