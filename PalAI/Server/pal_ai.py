@@ -14,6 +14,7 @@ from PalAI.Server.LLMClients import (
 )
 from PalAI.Server.post_process import PostProcess
 import PalAI.Server.window_layer as window_layer
+import PalAI.Server.door_layer as door_layer
 from PalAI.Server.decorator import Decorator
 from PalAI.Server.placeable import Placeable
 
@@ -140,6 +141,8 @@ class PalAI:
         await self.apply_style()
         self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
 
+        self.apply_doors()
+
         await self.decorate()
         self.logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
 
@@ -257,6 +260,16 @@ class PalAI:
             json_building = [i.to_json() for i in self.building]
             message = {"value": json_building}
             message["event"] = "add_ons"
+            self.ws.send(json.dumps(message))
+
+
+    def apply_doors(self):
+        doors = door_layer.create_doors(self.building)
+
+        if self.ws is not None:
+            json_building = [i.to_json() for i in doors]
+            message = {"value": json_building}
+            message["event"] = "doors"
             self.ws.send(json.dumps(message))
 
     async def get_artist_response(self):
