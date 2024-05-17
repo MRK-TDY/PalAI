@@ -1,4 +1,6 @@
 import os
+
+from numpy import add
 from PalAI.Server.placeable import Placeable
 
 
@@ -108,7 +110,6 @@ class ObjVisualizer:
                     "CUBE"  # Default to a cube if the block type is not implemented
                 )
 
-            size = 1
             block_name = block["type"]
             position = tuple(
                 map(
@@ -119,7 +120,7 @@ class ObjVisualizer:
             rotation = block.get("rotation", 0 )
             for add_on in block.get("tags", [] ):
                 # size = float(block['size'])
-                size = 1
+                size = 0.3 if add_on["type"] == "WINDOW" else 0.5
                 pos = add_on["position"].replace("(", "").replace(")", "").split(",")
                 diff = (position[0] - float(pos[0]), position[2] - float(pos[2]))
                 add_on_position = (
@@ -128,10 +129,23 @@ class ObjVisualizer:
                     0.35 + float(pos[2]) + diff[1] * 0.5,
                 )
                 placed_block = self.__place_block(
-                    add_on_position, "CUBE", 0.3, vertex_offset
+                    add_on_position, "CUBE", size, vertex_offset
                 )
                 obj_content += placed_block[0]
                 vertex_offset = placed_block[1]
+                if add_on["type"] == "DOOR":
+                    add_on_position = (
+                            add_on_position[0],
+                            add_on_position[1] - 0.4,
+                            add_on_position[2]
+                    )
+                    placed_block = self.__place_block(
+                        add_on_position, "CUBE", size, vertex_offset
+                    )
+                    obj_content += placed_block[0]
+                    vertex_offset = placed_block[1]
+
+            size = 1
             placed_block = self.__place_block(
                 position, block_name, size, vertex_offset, rotation
             )
