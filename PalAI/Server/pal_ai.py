@@ -15,6 +15,7 @@ from PalAI.Server.LLMClients import (
 from PalAI.Server.post_process import PostProcess
 import PalAI.Server.window_layer as window_layer
 import PalAI.Server.door_layer as door_layer
+import PalAI.Server.gardener as gardener
 from PalAI.Server.decorator import Decorator
 from PalAI.Server.placeable import Placeable
 
@@ -142,6 +143,7 @@ class PalAI:
         self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
 
         self.apply_doors()
+        self.create_garden()
 
         await self.decorate()
         self.logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
@@ -272,6 +274,16 @@ class PalAI:
             message["event"] = "doors"
             self.ws.send(json.dumps(message))
 
+    def create_garden(self):
+        self.garden = gardener.create_gardens(self.building, self.garden_size)
+        self.api_result["garden"] = [i.to_json() for i in self.garden]
+
+        if self.ws is not None:
+            json_building = [i.to_json() for i in self.garden]
+            message = {"value": json_building}
+            message["event"] = "garden"
+            self.ws.send(json.dumps(message))
+
     async def get_artist_response(self):
         materials_response = await self.llm_client.get_agent_response(
             "materials",
@@ -302,7 +314,6 @@ class PalAI:
                     material["EXTERIOR"] = self._get_similarity_response(
                         l[1].strip(), self.material_types
                     )
-
         self.api_result["materials"] = material
         if self.ws is not None:
             message = {"value": material}

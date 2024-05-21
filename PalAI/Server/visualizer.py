@@ -13,6 +13,8 @@ class ObjVisualizer:
             "ROUNDED CORNER": "Blocks/ConvexCurve.obj",
             "DIAGONAL": "Blocks/Diagonal.obj",
             "CYLINDER": "Blocks/Cylinder.obj",
+            "SMALL GARDEN": "Blocks/Cube_Block.obj",
+            "LARGE GARDEN": "Blocks/long_cube.obj",
             # Add more block types here
         }
 
@@ -117,10 +119,15 @@ class ObjVisualizer:
                     block["position"].replace("(", "").replace(")", "").split(","),
                 )
             )
+            size = 1
+            if "GARDEN" in block_name:
+                position = (position[0] + 0.25, position[1], position[2] + 0.25)
+                size = 0.5
+
             rotation = block.get("rotation", 0 )
             for add_on in block.get("tags", [] ):
-                # size = float(block['size'])
-                size = 0.3 if add_on["type"] == "WINDOW" else 0.5
+                # add_on_size = float(block['add_on_size'])
+                add_on_size = 0.3 if add_on["type"] == "WINDOW" else 0.5
                 pos = add_on["position"].replace("(", "").replace(")", "").split(",")
                 diff = (position[0] - float(pos[0]), position[2] - float(pos[2]))
                 add_on_position = (
@@ -129,7 +136,7 @@ class ObjVisualizer:
                     0.35 + float(pos[2]) + diff[1] * 0.5,
                 )
                 placed_block = self.__place_block(
-                    add_on_position, "CUBE", size, vertex_offset
+                    add_on_position, "CUBE", add_on_size, vertex_offset
                 )
                 obj_content += placed_block[0]
                 vertex_offset = placed_block[1]
@@ -140,12 +147,11 @@ class ObjVisualizer:
                             add_on_position[2]
                     )
                     placed_block = self.__place_block(
-                        add_on_position, "CUBE", size, vertex_offset
+                        add_on_position, "CUBE", add_on_size, vertex_offset
                     )
                     obj_content += placed_block[0]
                     vertex_offset = placed_block[1]
 
-            size = 1
             placed_block = self.__place_block(
                 position, block_name, size, vertex_offset, rotation
             )
