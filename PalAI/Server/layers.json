@@ -3555,6 +3555,132 @@
             ]
         },
         {
+            "name": "3X2 Hexagon",
+            "description": "A 3x2 hexagon made of cubes and diagonals",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "DIAGONAL",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 1
+                },
+                 {
+                    "type": "DIAGONAL",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "DIAGONAL",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "3X2 Convex Hexagon",
+            "description": "A 3x2 Convex hexagon made of cubes and convex curves",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CONVEX CURVE",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 1
+                },
+                 {
+                    "type": "CONVEX CURVE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "CONVEX CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "3X2 Concave Hexagon",
+            "description": "A 3x2 Concave hexagon made of cubes and concave curves, looks like a capsule.",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 3,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 1,
+                    "x": 1,
+                    "z": 1
+                },
+                 {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 0,
+                    "x": -1,
+                    "z": 1
+                },
+                 {
+                    "type": "CONCAVE CURVE",
+                    "rotation": 2,
+                    "x": -1,
+                    "z": 0
+                }
+            ]
+        },
+        {
             "name": "5x4 Z-Shape",
             "description": "A 5x4 Z-shape made of cubes with long section in the X axis with 2 blocks of width",
             "blocks": [
