@@ -2,11 +2,10 @@ import random
 import numpy as np
 from PalAI.Server.placeable import Placeable
 
-def create_gardens(building: list[Placeable], size: float) -> list[Placeable]:
+def create_gardens(building: list[Placeable]) -> list[Placeable]:
     """Creates the garden for a given building
 
     :param building: input building, will be used to determine size and placement according to doors
-    :param size: size of the garden as a measure of the size of the house
     :return: list of garden plots
     """
 
@@ -20,7 +19,7 @@ def create_gardens(building: list[Placeable], size: float) -> list[Placeable]:
     directions = ((1, 0), (0, 1), (-1, 0), (0, -1))
     chosen_rotation = random.choice(directions)
 
-    garden_area = _choose_garden_area(((min_x, min_z), (max_x, max_z)), chosen_rotation, size)
+    garden_area = _choose_garden_area(((min_x, min_z), (max_x, max_z)), chosen_rotation)
     garden_size = (abs(garden_area[1][0] - garden_area[0][0]), abs(garden_area[1][1] - garden_area[0][1]))
     garden = []
     for x in range(garden_area[0][0], garden_area[1][0] + 1):
@@ -68,16 +67,17 @@ def create_gardens(building: list[Placeable], size: float) -> list[Placeable]:
     return garden
 
 
-def _choose_garden_area(building_area: tuple[tuple[float]], door_rotation: tuple[int], garden_size: float):
+def _choose_garden_area(building_area: tuple[tuple[float]], door_rotation: tuple[int]):
     # area is calculated as such:
     # with a size of 1 the garden perfectly mirrors the house
     # direction is chosen based on the door, such that the garden is outside it
     # there is then a buffer of 1 block between the house and garden
 
+    # Using garden size as 1 for now
     building_size_x = abs(building_area[1][0] - building_area[0][0])
     building_size_z = abs(building_area[1][1] - building_area[0][1])
-    garden_size_x = int(building_size_x * garden_size)
-    garden_size_z = int(building_size_z * garden_size)
+    garden_size_x = int(building_size_x * 1)
+    garden_size_z = int(building_size_z * 1)
 
     match(door_rotation):
         # I don't know why we add by 2 instead of 1, but it works

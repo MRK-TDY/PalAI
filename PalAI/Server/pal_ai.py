@@ -275,7 +275,7 @@ class PalAI:
             self.ws.send(json.dumps(message))
 
     def create_garden(self):
-        self.garden = gardener.create_gardens(self.building, self.garden_size)
+        self.garden = gardener.create_gardens(self.building)
         self.api_result["garden"] = [i.to_json() for i in self.garden]
 
         if self.ws is not None:
