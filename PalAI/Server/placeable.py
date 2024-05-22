@@ -13,6 +13,8 @@ class Placeable:
         CONVEX_CURVE = "CONVEX CURVE"
         WINDOW = "WINDOW"
         DOOR = "DOOR"
+        SMALL_GARDEN = "SMALL GARDEN"
+        LARGE_GARDEN = "LARGE GARDEN"
 
         @classmethod
         def from_str(cls, value: str):
