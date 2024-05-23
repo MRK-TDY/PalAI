@@ -4,6 +4,7 @@ import os
 from colorama import Fore
 import Levenshtein
 import logging
+from dataclasses import dataclass
 
 from PalAI.Server.LLMClients import (
     gpt_client,
@@ -21,6 +22,23 @@ from PalAI.Server.placeable import Placeable
 
 
 class PalAI:
+
+    @dataclass
+    class PalAIRequest:
+        create_windows: bool
+        create_materials: bool
+        create_garden: bool
+        create_doors: bool
+        apply_post_process: bool
+        create_decorations: bool
+
+        @staticmethod
+        def full_request():
+            return PalAI.PalAIRequest(True, True, True, True, True, True)
+
+        @staticmethod
+        def layers_only():
+            return PalAI.PalAIRequest(False, False, False, False, False, False)
 
     def __init__(self, prompts_file, llm, logger=None, web_socket=None):
         """
@@ -108,7 +126,7 @@ class PalAI:
 
         os.chdir(os.path.dirname(__file__))
 
-    async def build(self, prompt, ws=None):
+    async def build(self, prompt, ws=None, request_type: PalAIRequest = None):
         """Constructs the entire building based on the prompt
 
         :type prompt: string
@@ -133,20 +151,29 @@ class PalAI:
 
         self.logger.info(f"{Fore.BLUE}Received basic structure{Fore.RESET}")
 
-        await self.apply_windows()
-        self.logger.info(f"{Fore.BLUE}Received add-ons{Fore.RESET}")
+        if request_type is None or request_type.create_windows:
+            await self.apply_windows()
+            self.logger.info(f"{Fore.BLUE}Received add-ons{Fore.RESET}")
 
-        await self.get_artist_response()
-        self.logger.info(f"{Fore.BLUE}Received artist response{Fore.RESET}")
+        if request_type is None or request_type.create_materials:
+            await self.get_artist_response()
+            self.logger.info(f"{Fore.BLUE}Received artist response{Fore.RESET}")
 
-        await self.apply_style()
-        self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
+        if request_type is None or request_type.apply_post_process:
+            await self.apply_style()
+            self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
 
-        self.apply_doors()
-        self.create_garden()
+        if request_type is None or request_type.create_doors:
+            self.apply_doors()
+            self.logger.info(f"{Fore.BLUE}Applied doors{Fore.RESET}")
 
-        await self.decorate()
-        self.logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
+        if request_type is None or request_type.create_garden:
+            self.create_garden()
+            self.logger.info(f"{Fore.BLUE}Created gardens{Fore.RESET}")
+
+        if request_type is None or request_type.create_decorations:
+            await self.decorate()
+            self.logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
 
         self.api_result["result"] = [i.to_json() for i in self.building]
         self.logger.info(f"{Fore.GREEN}Finished Request{Fore.RESET}")
@@ -178,19 +205,19 @@ class PalAI:
                 l = l.split("|")[0]
             l = l.split(":")
             if len(l) < 2:
-                self.ws.send(
-                    json.dumps(
-                        {
-                            "message": "Error processing request",
-                            "error": " Unable to read " + str(l),
-                        }
+                if self.ws is not None:
+                    self.ws.send(
+                        json.dumps(
+                            {
+                                "message": "Error processing request",
+                                "error": " Unable to read " + str(l),
+                            }
+                        )
                     )
-                )
                 return
             chosen_layer = self._get_similarity_response(
                 l[1], [i["name"] for i in self.layers]
             )
-            print("Chosen layer: " + str(l))
             self.logger.info(f"{Fore.BLUE}Chosen Layer: {chosen_layer}{Fore.RESET}")
             blocks = [i for i in self.layers if i["name"] == chosen_layer][0]["blocks"]
             for b in blocks:
