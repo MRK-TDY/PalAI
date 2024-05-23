@@ -4885,15 +4885,15 @@
             ]
         },
         {
-            "name": "3x3 Round C-shape",
-            "description": "A 3x3 concave C-shape with center at (0,0)",
+            "name": "3x3 Convex C-shape",
+            "description": "A 3x3 Convex C-shape with center at (0,0)",
             "blocks": [
                 {
                     "type": "CUBE", "rotation": 0,
                     "x": 0, "z": 0
                 },
                 {
-                    "type": "CONCAVE CURVE", "rotation": 1,
+                    "type": "CONVEX CURVE", "rotation": 1,
                     "x": 0, "z": 1
                 },
                 {
@@ -4905,7 +4905,7 @@
                     "x": 2, "z": 1
                 },
                 {
-                    "type": "CONCAVE CURVE", "rotation": 2,
+                    "type": "CONVEX CURVE", "rotation": 2,
                     "x": 0, "z": -1
                 },
                 {
@@ -4913,7 +4913,7 @@
                     "x": 1, "z": -1
                 },
                 {
-                    "type": "CONCAVE CURVE", "rotation": 3,
+                    "type": "CONVEX CURVE", "rotation": 3,
                     "x": 2, "z": -1
                 }
             ]
@@ -5953,6 +5953,380 @@
                   {
                     "type": "CUBE", "rotation": 0,
                     "x": 3, "z": -3
+                }
+            ]
+        },
+        {
+            "name": "3x2 Thin L-Shape",
+            "description": "A very thin L shape of cubes with the long edge on the Z axis, base at 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                }
+            ]
+        },
+        {
+            "name": "3x4 L-Shape",
+            "description": "A 3x4 L shape of cubes with the long edge on the Z axis, south west corner at 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 4
+                }
+            ]
+        },
+        {
+            "name": "4x5 L-Shape",
+            "description": "A 4x5 L shape of cubes with the long edge on the Z axis, south west corner at 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 0
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 1
+                },
+
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 4
+                }
+            ]
+        },
+        {
+            "name": "3x2 Thin Upside Down L-Shape",
+            "description": "A very thin Upside Down L shape of cubes with the long edge on the Z axis and small one at the end of that edge, base at 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                }
+            ]
+        },
+        {
+            "name": "3x4 Upside Down L-Shape",
+            "description": "A 3x4 L Upside Down shape of cubes with the long edge on the Z axis, south west corner at 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                }
+            ]
+        },
+        {
+            "name": "4x5 Upside Down L-Shape",
+            "description": "A 4x5 L Upside Down shape of cubes with the long edge on the Z axis, south west corner at 0,0",
+            "blocks": [
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 0
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 3,
+                    "z": 3
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 1
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 2,
+                    "z": 4
+                },
+
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 2
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 2
+                },
+                 {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 3
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 3
+                },
+                  {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 0,
+                    "z": 4
+                },
+                {
+                    "type": "CUBE",
+                    "rotation": 0,
+                    "x": 1,
+                    "z": 4
                 }
             ]
         }
