@@ -43,6 +43,20 @@ class Placeable:
             aux["tags"] = [i.to_json() for i in self._add_ons]
         return aux
 
+    @classmethod
+    def from_json(cls, data: dict) -> Self:
+        block_type = Placeable.BlockType.from_str(data["type"])
+        x, y, z = map(
+                    float,
+                    data["position"].replace("(", "").replace(")", "").split(","),
+                )
+        aux = cls(block_type, x, y, z)
+        if "rotation" in data:
+            aux.rotation = int(data["rotation"])
+        if "tags" in data:
+            aux.tags = [cls.from_json(i) for i in data["tags"]]
+        return aux
+
     @property
     def tags(self) -> Self:
         return self._add_ons
@@ -55,6 +69,16 @@ class Placeable:
     @property
     def position(self) -> str:
         return f"({self.x},{self.y},{self.z})"
+
+    def has_door(self) -> bool:
+        if self.tags is None:
+            return False
+        return len([t.block_type == Placeable.BlockType.DOOR for t in self.tags]) > 0
+
+    def has_window(self) -> bool:
+        if self.tags is None:
+            return False
+        return len([t.block_type == Placeable.BlockType.WINDOW for t in self.tags]) > 0
 
     @position.setter
     def position(self, value: str):

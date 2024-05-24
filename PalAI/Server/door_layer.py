@@ -13,6 +13,7 @@ def create_doors(building: list[Placeable]) -> list[Placeable]:
     :return: list of blocks that have been added doors
     """
 
+
     offset_x = min(building, key=lambda b: b.x).x
     offset_z = min(building, key=lambda b: b.z).z
     size_x = max(building, key=lambda b: b.x).x + 1 - offset_x
@@ -20,8 +21,10 @@ def create_doors(building: list[Placeable]) -> list[Placeable]:
 
     # Grid is indexed (x, z)
     grid = [[None for _ in range(size_z)] for _ in range(size_x)]
+    full_grid = [[None for _ in range(size_z)] for _ in range(size_x)]
 
     for b in building:
+        full_grid[b.x - offset_x][b.z - offset_z] = b
         if b.y != 0 or b.block_type != "CUBE":
             continue
         grid[b.x - offset_x][b.z - offset_z] = b
@@ -39,12 +42,30 @@ def create_doors(building: list[Placeable]) -> list[Placeable]:
                         or x + d[0] >= size_x
                         or z + d[1] < 0
                         or z + d[1] >= size_z
-                        or grid[x + d[0]][z + d[1]] is None
+                        or full_grid[x + d[0]][z + d[1]] is None
                     ):
                         candidates[i].append(cell)
 
+    if candidates == [[] for _ in range(4)]:
+        for x in range(size_x):
+            for z in range(size_z):
+                cell = full_grid[x][z]
+                if cell is not None:
+                    for i, d in enumerate(directions):
+                        # a block can have a door if the block in the direction of the door is None
+                        if (
+                            x + d[0] < 0
+                            or x + d[0] >= size_x
+                            or z + d[1] < 0
+                            or z + d[1] >= size_z
+                            or full_grid[x + d[0]][z + d[1]] is None
+                        ):
+                            cell.block_type = Placeable.BlockType.CUBE
+                            candidates[i].append(cell)
+
     door_count = _decide_door_count(candidates, building)
     building = _create_doors(candidates, door_count)
+
     return building
 
 def _decide_door_count(candidates: list[list[Placeable]], building: list[Placeable]) -> int:
@@ -67,7 +88,7 @@ def _create_doors(candidates: list[list[Placeable]], door_count: int) -> list[Pl
     :param candidates: list of possible candidates, organized by direction
     :return: only the placeables that have been added doors
     """
-    indices = list(range(4))
+    indices = [i for i in range(len(candidates)) if len(candidates[i]) > 0]
     random.shuffle(indices)
     return_list = []
     for i in range(door_count):

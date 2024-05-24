@@ -174,6 +174,8 @@ class PostProcess:
             if block_count <= 1:
                 break
             block_count -= 1
+            if c[0][0] == 0:
+                continue  #allow floating blocks on the ground floor
             self.grid[c[0][0]][c[0][1]][c[0][2]] = None
             self.pixel_grid[c[0][0], c[0][1], c[0][2]] = -1
 

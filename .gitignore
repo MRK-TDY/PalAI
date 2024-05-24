@@ -158,3 +158,4 @@ cython_debug/
 #.idea/
 config.yaml
 PalAI/Tools/output
+PalAI/Tests/test_results
