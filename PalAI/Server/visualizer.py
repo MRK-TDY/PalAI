@@ -15,6 +15,8 @@ class ObjVisualizer:
             "CYLINDER": "Blocks/Cylinder.obj",
             "SMALL GARDEN": "Blocks/Cube_Block.obj",
             "LARGE GARDEN": "Blocks/long_cube.obj",
+            "CONVEX CURVE": "Blocks/ConvexCurve.obj",
+            "CONCAVE CURVE": "Blocks/Concave.obj",
             # Add more block types here
         }
 
