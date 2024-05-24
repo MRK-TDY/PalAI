@@ -12,10 +12,16 @@ class ParrotClient(LLMClient):
 
     async def get_agent_response(self, agent, prompt, **kwargs):
         prompt = prompt.replace("\n", " ").replace("USER:", "").replace("ARCHITECT:", "")
-        print(prompt)
+        aux = ""
+        for i, l in enumerate(prompt.split("\n")):
+            if not l.lower().startswith("layer"):
+                aux += f"Layer {i}: {l}\n"
+            else:
+                aux += l + "\n"
+        prompt = aux.strip()
         match agent:
             case "architect":
-                return f"We will create a building made up of 1 layers.\nLayer 0: {prompt}"
+                return f"We will create a building made up of 1 layers.\n{prompt}"
             case "materials":
                 return "FLOOR:Sand\nINTERIOR:Sand\nEXTERIOR:Sand\nSTYLE:modern"
             case "add_ons":
