@@ -1,4 +1,5 @@
 import asyncio
+from copy import copy
 import json
 import yaml
 import unittest
@@ -63,7 +64,11 @@ def generate_obj(building, response, name = "test"):
 class PropertyTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        # delete the test_results folderl
         os.makedirs(os.path.join(os.path.dirname(__file__), "test_results"), exist_ok=True)
+        # delete all files in the test_results folder
+        for file in os.listdir(os.path.join(os.path.dirname(__file__), "test_results")):
+            os.remove(os.path.join(os.path.dirname(__file__), "test_results", file))
         return super().setUpClass()
 
     @given(building_strategy())
@@ -72,7 +77,7 @@ class PropertyTestCase(unittest.TestCase):
         # Extract building from the response
         building = [Placeable.from_json(i) for i in api_response["result"]]
         garden = [Placeable.from_json(i) for i in api_response["garden"]]
-        gardened_building = garden
+        gardened_building = copy(garden)
         gardened_building.extend(building)
 
         # Statistics
@@ -87,6 +92,7 @@ class PropertyTestCase(unittest.TestCase):
         # Assert tests
         self.assert_ground_floor(building)
         self.assert_door_exists(building)
+        self.assert_maximum_garden_size(garden)
 
 
     def assert_door_exists(self, building: list[Placeable]):
@@ -100,6 +106,10 @@ class PropertyTestCase(unittest.TestCase):
             if i.y == 0:
                 return
         self.fail("No door found in building")
+
+    def assert_maximum_garden_size(self, garden: list[Placeable]):
+        max_size = 25
+        self.assertLess(len(garden), max_size, f"Garden size exceeds {max_size}")
 
 
 if __name__ == '__main__':
