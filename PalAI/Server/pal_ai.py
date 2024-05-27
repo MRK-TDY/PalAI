@@ -296,7 +296,7 @@ class PalAI:
 
         self.building = window_layer.create_windows(self.building, self.window_styles, self.window_quantifiers, self.rng)
 
-        ## Only sending the blocks with add_ons
+        # Only sending the blocks with add_ons
         self.api_result["add_on_agent"] = windows
 
         if self.ws is not None:
@@ -304,7 +304,6 @@ class PalAI:
             message = {"value": json_building}
             message["event"] = "add_ons"
             self.ws.send(json.dumps(message))
-
 
     def apply_doors(self):
         doors = door_layer.create_doors(self.building, self.rng)

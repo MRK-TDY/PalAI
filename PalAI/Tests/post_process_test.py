@@ -24,7 +24,7 @@ class PostProcessTest(unittest.TestCase):
                 0,
                 0,
             ),
-            Placeable("CUBE", 0, 2, 2),
+            Placeable("CUBE", 2, 2, 2),
         ]
 
         pp = PostProcess()

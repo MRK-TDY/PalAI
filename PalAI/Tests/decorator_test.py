@@ -1,5 +1,6 @@
 import os
 import json
+import random
 import unittest
 from PalAI.Server.placeable import Placeable
 from PalAI.Server.decorator import Decorator
@@ -18,7 +19,7 @@ class PostProcessTest(unittest.TestCase):
 
     def test_decorations_are_placed(self):
         building = self._get_square_building(3)
-        decorator = Decorator()
+        decorator = Decorator(random.Random())
         decorator.import_building(building)
         decorations = decorator.decorate()
         self.assertGreater(len(decorations), 0)
@@ -39,7 +40,7 @@ class PostProcessTest(unittest.TestCase):
 
         for _ in range(1000):
             building = self._get_square_building(5)
-            decorator = Decorator()
+            decorator = Decorator(random.Random())
             decorator.import_building(building)
             decorations = decorator.decorate()
 
@@ -75,7 +76,7 @@ class PostProcessTest(unittest.TestCase):
         # Repeat test multiple times
         for _ in range(100):
             building = self._get_square_building(5)
-            decorator = Decorator()
+            decorator = Decorator(random.Random())
             decorator.import_building(building)
             decorations = decorator.decorate()
 
