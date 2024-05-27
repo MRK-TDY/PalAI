@@ -2,7 +2,8 @@ import random
 import numpy as np
 from PalAI.Server.placeable import Placeable
 
-def create_gardens(building: list[Placeable]) -> list[Placeable]:
+
+def create_gardens(building: list[Placeable], rng: random.Random) -> list[Placeable]:
     """Creates the garden for a given building
 
     :param building: input building, will be used to determine size and placement according to doors
@@ -15,12 +16,14 @@ def create_gardens(building: list[Placeable]) -> list[Placeable]:
     min_z = min(building, key=lambda b: b.z).z
     max_z = max(building, key=lambda b: b.z).z
 
-
     directions = ((1, 0), (0, 1), (-1, 0), (0, -1))
-    chosen_rotation = random.choice(directions)
+    chosen_rotation = rng.choice(directions)
 
     garden_area = _choose_garden_area(((min_x, min_z), (max_x, max_z)), chosen_rotation)
-    garden_size = (abs(garden_area[1][0] - garden_area[0][0]), abs(garden_area[1][1] - garden_area[0][1]))
+    garden_size = (
+        abs(garden_area[1][0] - garden_area[0][0]),
+        abs(garden_area[1][1] - garden_area[0][1]),
+    )
     garden = []
     for x in range(garden_area[0][0], garden_area[1][0] + 1):
         for z in range(garden_area[0][1], garden_area[1][1] + 1):
@@ -30,7 +33,7 @@ def create_gardens(building: list[Placeable]) -> list[Placeable]:
     for b in building:
         if b.tags is not None and len(b.tags) > 0:
             for t in b.tags:
-                t:Placeable
+                t: Placeable
                 if t.block_type == Placeable.BlockType.DOOR:
                     d = (t.x - b.x, t.z - b.z)
                     # there is a better data structure for this, but this is fine for now
@@ -44,8 +47,7 @@ def create_gardens(building: list[Placeable]) -> list[Placeable]:
     for g in garden:
         garden_array[g.x - garden_area[0][0], g.z - garden_area[0][1]] = g
 
-
-    alignment = random.choice([0, 1])
+    alignment = rng.choice([0, 1])
     for x in range(garden_size[0] + 1):
         for z in range(garden_size[1] + 1):
             if garden_array[x, z] is not None:
@@ -71,15 +73,15 @@ def _choose_garden_area(building_area: tuple[tuple[float]], door_rotation: tuple
     # area is calculated as such:
     # with a size of 1 the garden perfectly mirrors the house
     # direction is chosen based on the door, such that the garden is outside it
-    # there is then a buffer of 1 block between the house and garden
+   # there is then a buffer of 1 block between the house and garden
 
     # Using garden size as 1 for now
     building_size_x = abs(building_area[1][0] - building_area[0][0])
     building_size_z = abs(building_area[1][1] - building_area[0][1])
-    garden_size_x = min(int(building_size_x * 1), 3)
-    garden_size_z = min(int(building_size_z * 1), 3)
+    garden_size_x = min(int(building_size_x * 1), 2)
+    garden_size_z = min(int(building_size_z * 1), 2)
 
-    match(door_rotation):
+    match (door_rotation):
         # I don't know why we add by 2 instead of 1, but it works
         case (1, 0):
             starting_point_x = building_area[0][0] + building_size_x + 2

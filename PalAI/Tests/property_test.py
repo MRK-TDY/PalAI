@@ -7,6 +7,7 @@ import os
 import logging
 from hypothesis import given, settings, event
 from hypothesis import strategies as st
+import warnings
 
 from PalAI.Server.visualizer import ObjVisualizer
 from PalAI.Server.pal_ai import PalAI
@@ -24,13 +25,6 @@ def building_strategy(draw):
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.WARNING)
-    file_handler = logging.FileHandler(
-            os.path.join(os.path.dirname(__file__), "records.log")
-            )
-    file_handler.setLevel(logging.WARNING)
-    file_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    file_handler.setFormatter(file_formatter)
-    logger.addHandler(file_handler)
 
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.WARNING)
@@ -40,7 +34,9 @@ def building_strategy(draw):
 
     client = StrategyClient(prompts_file, logger, draw=draw)
 
+    rng = draw(st.randoms())
     pal = PalAI(prompts_file, client, logger)
+    pal.rng = rng
 
     prompt = "Where we're going we don't need prompts."
     response = asyncio.run(pal.build(prompt))
@@ -69,6 +65,7 @@ class PropertyTestCase(unittest.TestCase):
         # delete all files in the test_results folder
         for file in os.listdir(os.path.join(os.path.dirname(__file__), "test_results")):
             os.remove(os.path.join(os.path.dirname(__file__), "test_results", file))
+
         return super().setUpClass()
 
     @given(building_strategy())
