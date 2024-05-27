@@ -5,7 +5,10 @@ directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
 
 def create_windows(
-    building: list[Placeable], window_styles: list[str], window_quantifiers: list[float]
+    building: list[Placeable],
+    window_styles: list[str],
+    window_quantifiers: list[float],
+    rng: random.Random,
 ) -> list[Placeable]:
     """Creates windows in the building
 
@@ -54,13 +57,13 @@ def create_windows(
     for i, w in enumerate(window_styles):
         match w:
             case "maximalist":
-                _create_maximalist_windows(layered_candidates[i], window_quantifiers[i])
+                _create_maximalist_windows(layered_candidates[i], window_quantifiers[i], rng)
             case "symmetric":
-                _create_symmetric_windows(layered_candidates[i], window_quantifiers[i])
+                _create_symmetric_windows(layered_candidates[i], window_quantifiers[i], rng)
             case "default":
-                _create_default_windows(layered_candidates[i], window_quantifiers[i])
+                _create_default_windows(layered_candidates[i], window_quantifiers[i], rng)
             case "erratic":
-                _create_erratic_windows(layered_candidates[i], window_quantifiers[i])
+                _create_erratic_windows(layered_candidates[i], window_quantifiers[i], rng)
             case "none":
                 pass
             case _:
@@ -69,14 +72,16 @@ def create_windows(
 
 
 def _create_erratic_windows(
-    layered_candidates: list[list[Placeable]], window_quantifier: float
+    layered_candidates: list[list[Placeable]],
+    window_quantifier: float,
+    rng: random.Random,
 ):
     limit = int(len(layered_candidates) * window_quantifier)
     windows_added = 0
     for i, side in enumerate(layered_candidates):
         d = directions[i]
         for b in side:
-            if random.random() < window_quantifier:
+            if rng.random() < window_quantifier:
                 win = Placeable("WINDOW", b.x + d[0], b.y, b.z + d[1])
                 b.tags.append(win)
                 windows_added += 1
@@ -86,18 +91,21 @@ def _create_erratic_windows(
 
 
 def _create_maximalist_windows(
-    layered_candidates: list[list[Placeable]], window_quantifier: float
+    layered_candidates: list[list[Placeable]], window_quantifier: float, rng: random.Random
 ):
-    return _create_symmetric_windows(layered_candidates, window_quantifier * 2)
+    return _create_symmetric_windows(layered_candidates, window_quantifier * 2, rng)
+
 
 def _create_default_windows(
-    layered_candidates: list[list[Placeable]], window_quantifier: float
+    layered_candidates: list[list[Placeable]], window_quantifier: float, rng: random.Random
 ):
-    return _create_symmetric_windows(layered_candidates, window_quantifier / 2)
+    return _create_symmetric_windows(layered_candidates, window_quantifier / 2, rng)
 
 
 def _create_symmetric_windows(
-    layered_candidates: list[list[Placeable]], window_quantifier: float
+    layered_candidates: list[list[Placeable]],
+    window_quantifier: float,
+    rng: random.Random,
 ):
     limit = int(sum([len(i) for i in layered_candidates]) * window_quantifier)
     windows_added = 0
@@ -110,14 +118,16 @@ def _create_symmetric_windows(
                 cond = lambda x: x.z == b.z
             else:
                 cond = lambda x: x.x == b.x
-            opposite_candidates = [c for c in layered_candidates[(i + 2) % 4] if cond(c)]
+            opposite_candidates = [
+                c for c in layered_candidates[(i + 2) % 4] if cond(c)
+            ]
 
             if len(opposite_candidates) == 0:
                 continue
 
-            o = random.choice(opposite_candidates)
+            o = rng.choice(opposite_candidates)
 
-            if random.random() < window_quantifier:
+            if rng.random() < window_quantifier:
                 win = Placeable("WINDOW", b.x + d[0], b.y, b.z + d[1])
                 b.tags.append(win)
 

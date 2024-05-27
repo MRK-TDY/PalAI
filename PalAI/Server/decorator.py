@@ -10,12 +10,13 @@ from PalAI.Server.placeable import Placeable
 
 
 class Decorator:
-    def __init__(self, style_sheet="decorations.json"):
+    def __init__(self, rng: random.Random, style_sheet="decorations.json"):
         """
 
         :param style_sheet: list of decorations and their rules
         :type style_sheet: (str) relative path to the style sheet
         """
+        self.rng = rng
         with open(os.path.join(os.path.dirname(__file__), style_sheet), "r") as fptr:
             loaded = json.load(fptr)
             self.decorations = loaded["decorations"]
@@ -127,9 +128,9 @@ class Decorator:
         # Apply rooms
         if self.floor_list:
             for r in self.rooms:
-                seed = random.choice(self.floor_list)
+                seed = self.rng.choice(self.floor_list)
 
-                for b in sorted(self.floor_list, key=lambda _: random.random()):
+                for b in sorted(self.floor_list, key=lambda _: self.rng.random()):
                     if len(self._get_pos_neighbors((b.y, b.x, b.z))) < 4:
                         seed = b
                         break
@@ -270,7 +271,7 @@ class Decorator:
                 # Unlike regular WFC we don't choose the lowest entropy block
                 # This is because of the limits, which means not all blocks will be collapsed
                 # Choosing the lowest entropy would cause the blocks with less options to fill first
-                current_block = sorted(current_floor, key=lambda _: random.random())[0]
+                current_block = sorted(current_floor, key=lambda _: self.rng.random())[0]
                 if len(current_block["options"]) == 0:
                     current_floor.remove(current_block)
                     continue
@@ -278,10 +279,10 @@ class Decorator:
                 # Get a random decoration but prioritize least used types first
                 current_block["options"] = sorted(
                     current_block["options"],
-                    key=lambda x: random.random()
+                    key=lambda x: self.rng.random()
                     - used_decorations_count.get(x["name"], 0),
                 )
-                current_decor = random.choice(current_block["options"])
+                current_decor = self.rng.choice(current_block["options"])
 
                 # Add the chosen decoration
                 self._add_decoration(
@@ -319,13 +320,14 @@ class Decorator:
         current_floor,
     ):
         callbacker = current_decoration
+        chosen = None
         while callbacker.get("callback", None) is not None:
-            if random.random() > callbacker.get("callback_chance", 1):
-                break
+            if self.rng.random() > callbacker.get("callback_chance", 1):
+                break  # Callback chance failed
             total_weight = reduce(
                 lambda x, y: x + y.get("weight", 1), callbacker["callback"], 0
             )
-            rand = random.random() * total_weight
+            rand = self.rng.random() * total_weight
             for option in callbacker["callback"]:
                 if rand < option["weight"]:
                     chosen = [
@@ -333,6 +335,9 @@ class Decorator:
                     ][0]
                     break
                 rand -= option["weight"]
+
+            if chosen is None:
+                break
 
             if chosen.get("limit", 0) != 0:
                 if used_decorations_count[chosen["name"]] >= chosen["limit"]:
@@ -399,7 +404,7 @@ class Decorator:
         if block in current_floor:
             current_floor.remove(block)
 
-        decor_type = random.choice(decor.get("asset_name", [decor["name"]]))
+        decor_type = self.rng.choice(decor.get("asset_name", [decor["name"]]))
 
         y = int(block.y)
         c = {

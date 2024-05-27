@@ -5,7 +5,7 @@ from PalAI.Server.placeable import Placeable
 directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
 
-def create_doors(building: list[Placeable]) -> list[Placeable]:
+def create_doors(building: list[Placeable], rng: random.Random) -> list[Placeable]:
     """Creates doors in the building
 
     :param building: the building to add the doors to
@@ -64,7 +64,7 @@ def create_doors(building: list[Placeable]) -> list[Placeable]:
                             candidates[i].append(cell)
 
     door_count = _decide_door_count(candidates, building)
-    building = _create_doors(candidates, door_count)
+    building = _create_doors(candidates, door_count, rng)
 
     return building
 
@@ -82,19 +82,19 @@ def _decide_door_count(candidates: list[list[Placeable]], building: list[Placeab
     return 1
 
 
-def _create_doors(candidates: list[list[Placeable]], door_count: int) -> list[Placeable]:
+def _create_doors(candidates: list[list[Placeable]], door_count: int, rng: random.Random) -> list[Placeable]:
     """Creates doors in the building
 
     :param candidates: list of possible candidates, organized by direction
     :return: only the placeables that have been added doors
     """
     indices = [i for i in range(len(candidates)) if len(candidates[i]) > 0]
-    random.shuffle(indices)
+    rng.shuffle(indices)
     return_list = []
     for i in range(door_count):
         side = candidates[indices[i]]
         d = directions[indices[i]]
-        random.shuffle(side)
+        rng.shuffle(side)
         b = side[0]
         b.tags = []
         win = Placeable("DOOR", b.x + d[0], b.y, b.z + d[1])

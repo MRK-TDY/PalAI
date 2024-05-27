@@ -5,6 +5,7 @@ from colorama import Fore
 import Levenshtein
 import logging
 from dataclasses import dataclass
+import random
 
 from PalAI.Server.LLMClients import (
     gpt_client,
@@ -126,6 +127,7 @@ class PalAI:
         self.history = []
         self.api_result = {}
 
+        self.rng = random.Random()
         self.post_process = PostProcess()
 
         self.ws = web_socket
@@ -292,7 +294,7 @@ class PalAI:
                 self.window_styles[i] = "none"
                 self.window_quantifiers[i] = "none"
 
-        self.building = window_layer.create_windows(self.building, self.window_styles, self.window_quantifiers)
+        self.building = window_layer.create_windows(self.building, self.window_styles, self.window_quantifiers, self.rng)
 
         ## Only sending the blocks with add_ons
         self.api_result["add_on_agent"] = windows
@@ -305,7 +307,7 @@ class PalAI:
 
 
     def apply_doors(self):
-        doors = door_layer.create_doors(self.building)
+        doors = door_layer.create_doors(self.building, self.rng)
 
         if self.ws is not None:
             json_building = [i.to_json() for i in doors]
@@ -314,7 +316,7 @@ class PalAI:
             self.ws.send(json.dumps(message))
 
     def create_garden(self):
-        self.garden = gardener.create_gardens(self.building)
+        self.garden = gardener.create_gardens(self.building, self.rng)
         self.api_result["garden"] = [i.to_json() for i in self.garden]
 
         if self.ws is not None:
@@ -381,7 +383,7 @@ class PalAI:
             self.ws.send(json.dumps("Error found with post-processing"))
 
     async def decorate(self):
-        decorator = Decorator()
+        decorator = Decorator(self.rng)
         decorator.import_building(self.building)
         self.decorations = decorator.decorate()
 
