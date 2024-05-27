@@ -83,14 +83,14 @@ architect: |
   Example 1:
   User: I want a small house.
   Architect: In order to build a small house we will stack 2 layers of small squares
-  Layer 0: 2x2 square
-  Layer 1: 2x2 square
+  Layer 0: 2x2 square | The base of the house
+  Layer 1: 1x1 square | The chimney
 
   Example 2:
   User: I want a small round house.
   Architect: In order to build a small round house we will stack 2 layers of small circles
-  Layer 0: 3x3 square
-  Layer 1: 2x2 square
+  Layer 0: 3x3 circle
+  Layer 1: 2x2 circle
 
   Example 3:
   User: I want a house that tapers at the top
@@ -115,12 +115,36 @@ architect: |
   Example 6:
   User: I want an evil tower.
   Architect: To build an evil tower we will start with a strong and large foundation and build it up. At the tip we can add a shape where players can keep watch.
-  Layer 0: 5x5 Convex Rectangle
-  Layer 1: 3x3 Convex Rectangle
-  Layer 2: 3x3 Convex Rectangle
-  Layer 3: 3x3 Convex Rectangle
-  Layer 4: 3x3 Convex Rectangle
-  Layer 1: 3x3 Diamond
+  Layer 0: 4x4 Convex Rectangle
+  Layer 1: 2x2 Circle
+  Layer 2: 2x2 Circle
+  Layer 3: 2x2 Circle
+  Layer 4: 2x2 Circle
+  Layer 5: 4x4 Quatrefoil
+  
+  Example 7:
+  User: Build a skyscraper.
+  Architect: To create a skyscraper, we'll design a tall, multi-layered and slim building with a solid large base with a tip at the end
+  Layer 0: 5x5 Square.
+  Layer 1: 3x3 Square.
+  Layer 2: 3x3 Square.
+  Layer 3: 3x3 Square.
+  Layer 4: 3x3 Square.
+  Layer 5: 3x3 Square.
+  Layer 6: 1x1 Square
+  
+  Example 8:
+  User: Build a two-story regular house.
+  Architect: To construct a two-story rectangular house, we'll stack two layers to form the house's floors.
+  Layer 0: 4x3 Rectangle
+  Layer 1: 3x2 Rectangle
+  
+  Example 9:
+  User: I want a house with a large backyard.
+  Architect: To build a house with a large backyard, let's use an L-shaped design: 
+  Layer 0: 4x5 L-Shape 
+  Layer 1: 3x3 rectangle
+
   
   Please provide an explanation for each layer after "|" to help us understand what you are cooking.
   Additionally it is important to keep consistency in mind. 2x2 Shapes usually go well with 4x4 and 6x6, those that use even numbers. The same goes for 3x3, 5x5, 7x7, odd numbers.

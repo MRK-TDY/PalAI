@@ -21,14 +21,32 @@
                 "CoffeeTable01"
             ]
         },
+         {
+            "name": "Coffee Table",
+            "limit": 2,
+            "adjacency": [
+                "EMPTY",
+                "EMPTY",
+                "EMPTY",
+                "EMPTY"
+            ],
+            "height": 0.5,
+            "asset_name": [
+                "Statue01",
+                "Statue02",
+                "Statue03",
+                "DecorativeCrystal01",
+                "DecorativeCrystal02"
+            ]
+        },
         {
             "name": "Table",
             "limit": 5,
             "adjacency": [
-                "",
-                "",
-                "",
-                ""
+                "EMPTY",
+                "EMPTY",
+                "EMPTY",
+                "EMPTY"
             ],
             "asset_name": [
                 "DinnerTable01",
@@ -48,9 +66,9 @@
             "name": "Sofa",
             "limit": 1,
             "adjacency": [
+                "EMPTY",
                 "",
-                "",
-                "",
+                "EMPTY",
                 ""
             ],
             "height": 0.3,
@@ -62,7 +80,7 @@
         },
         {
             "name": "Rug",
-            "limit": 3,
+            "limit": 5,
             "adjacency": [
                 "EMPTY",
                 "EMPTY",
@@ -80,12 +98,14 @@
             "asset_name": [
                 "Rug1",
                 "Rug2",
-                "Rug3"
+                "Rug3",
+                "DesignFloorRug02",
+                "DesignFloorRug01"
             ]
         },
         {
             "name": "Vase",
-            "limit": 3,
+            "limit": 10,
             "adjacency": [
                 "",
                 "",
@@ -95,12 +115,13 @@
               "asset_name": [
                   "PlantInPot01",
                   "PlantInPot02",
-                  "TallPlant01"
+                  "TallPlant01",
+                  "Flower_05"
               ]
         },
          {
             "name": "ArmChair",
-            "limit": 10,
+            "limit": 3,
             "adjacency": [
                 "EMPTY",
                 "Sofa",
@@ -127,7 +148,7 @@
         },
         {
             "name": "Fridge",
-            "limit": 3,
+            "limit": 2,
             "adjacency": [
                 "WALL",
                 "",
@@ -228,7 +249,7 @@
         },
         {
             "name": "Bookshelf",
-            "limit": 4,
+            "limit": 2,
             "adjacency": [
                 "WALL",
                 "",
