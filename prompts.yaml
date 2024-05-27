@@ -80,34 +80,50 @@ architect: |
   ...
   Layer N: <chosen layer name> | Explanation
 
-  Example 0:
+  Example 1:
   User: I want a small house.
   Architect: In order to build a small house we will stack 2 layers of small squares
   Layer 0: 2x2 square
   Layer 1: 2x2 square
 
-  Example 1:
+  Example 2:
   User: I want a small round house.
   Architect: In order to build a small round house we will stack 2 layers of small circles
   Layer 0: 3x3 square
   Layer 1: 2x2 square
 
-  Example 2:
+  Example 3:
   User: I want a house that tapers at the top
   Architect: In order to build a house that tapers at the top we will stack 3 layers of squares, each smaller than the last.
   Layer 0: 5x5 square
   Layer 1: 3x3 square
   Layer 2: 1x1 square
 
-  Example 2:
-  User: I want a roundish house
+  Example 4:
+  User: I want a round house
   Architect: In order to build a roundish house we will stack 4 layers of circle shapes. In order to add more variety we will change their size in the middle.
-  Layer 0: 3x3 circle
+  Layer 0: 5x5 Convex Rectangle
   Layer 1: 3x3 circle
-  Layer 2: 3x3 circle
-  Layer 3: 1x1 cylinder
-
-  Please provide an explanation for each layer after "|" to help us understand what you are cooking. 
+  Layer 2: 4x4 Quatrefoil
+  
+  Example 5:
+  User: Create a villa with an open terrace.
+  Architect: To build a villa with an open terrace, incorporate a large base layer with an open square on the upper floor for the terrace.
+  Layer 0: 4x4 Square
+  Layer 1: Open 3x3 Square
+  
+  Example 6:
+  User: I want an evil tower.
+  Architect: To build an evil tower we will start with a strong and large foundation and build it up. At the tip we can add a shape where players can keep watch.
+  Layer 0: 5x5 Convex Rectangle
+  Layer 1: 3x3 Convex Rectangle
+  Layer 2: 3x3 Convex Rectangle
+  Layer 3: 3x3 Convex Rectangle
+  Layer 4: 3x3 Convex Rectangle
+  Layer 1: 3x3 Diamond
+  
+  Please provide an explanation for each layer after "|" to help us understand what you are cooking.
+  Additionally it is important to keep consistency in mind. 2x2 Shapes usually go well with 4x4 and 6x6, those that use even numbers. The same goes for 3x3, 5x5, 7x7, odd numbers.
   Make sure to use of the name of the preset layers described above.
 
 windows: |

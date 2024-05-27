@@ -158,7 +158,7 @@ async def _handle_post(ws, token):
                 try:
                     json_data = json.loads(message)
                     logger.info(f"Building: {json_data}")
-                    if "prompt" in json_data:
+                    if "prompt" in json_data and len(json_data["prompt"]) > 3:
                         pal = create_pal_instance()
                         result = await pal.build(json_data["prompt"], ws)
                         result["event"] = "result"

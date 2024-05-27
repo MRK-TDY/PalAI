@@ -143,7 +143,7 @@
         },
         "Example11": {
             "user": "Build a skyscraper.",
-            "assistant": "To create a skyscraper, we'll design a tall, multi-layered and slim building with a solid large base with a tip at the end\nLayer 0: 5x5 Square.\nLayer 1: 3x3 Square.\nLayer 2: 3x3 Square.\nLayer 3: 3x3 Square.\nLayer 4: 3x3 Square.\nLayer 5: 3x3 Square.\nLayer 6: 1x1 Square\nLayer 7: 1x1 Cylinder\n"
+            "assistant": "To create a skyscraper, we'll design a tall, multi-layered and slim building with a solid large base with a tip at the end\nLayer 0: 5x5 Square.\nLayer 1: 3x3 Square.\nLayer 2: 3x3 Square.\nLayer 3: 3x3 Square.\nLayer 4: 3x3 Square.\nLayer 5: 3x3 Square.\nLayer 6: 1x1 Square\n"
 
         },
         "Example12": {
@@ -192,7 +192,7 @@
         },
         "Example21": {
             "user": "I want a circular house that looks like a pyramid.",
-            "assistant": "To create a circular house that looks like a pyramid let's start with a large base and decrease it by layer \nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 4x4 quatrefoil\nLayer 2: 3x3 Circle.\nLayer 3: Single Cylinder"
+            "assistant": "To create a circular house that looks like a pyramid let's start with a large base and decrease it by layer \nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 4x4 quatrefoil\nLayer 2: 3x3 Circle.\nLayer 3: 3x3 Circle"
         },
         "Example22": {
             "user": "I want a quatrefoil house",
@@ -200,7 +200,7 @@
         },
         "Example23": {
             "user": "I want a wavy looking house",
-            "assistant": "To create a wavy looking house we can use rounded shapes, let's use 5 floors:\nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 4x4 Quatrefoil.\nLayer 2: Cylinder\nLayer 3: 3x3 Circle\nLayer 4:Single Cylinder"
+            "assistant": "To create a wavy looking house we can use rounded shapes, let's use 5 floors:\nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 4x4 Quatrefoil.\nLayer 2: 3x3 Circle\nLayer 3: 3x3 Circle\nLayer 4:3x3 Circle"
         },
         "Example24": {
             "user": "I want a small circular house",
@@ -208,7 +208,7 @@
         },
         "Example25": {
             "user": "I want a tall wavy looking building",
-            "assistant": "To create a tall wavy looking building we can use rounded shapes with lots of layers, let's start with a strong foundation \nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 3x3 Circle.\nLayer 2: 4x4 Quatrefoil.\nLayer 3: 3x3 Circle.\nLayer 4: 4x4 Quatrefoil\nLayer 5: Single Cylinder"
+            "assistant": "To create a tall wavy looking building we can use rounded shapes with lots of layers, let's start with a strong foundation \nLayer 0: 5x5 Rounded Rectangle\nLayer 1: 3x3 Circle.\nLayer 2: 4x4 Quatrefoil.\nLayer 3: 3x3 Circle.\nLayer 4: 4x4 Quatrefoil\nLayer 5: 3x3 Circle"
         },
          "Example26": {
             "user": "I want a round looking house",
@@ -220,7 +220,7 @@
         },
         "Example28": {
             "user": "I want a round skyscraper.",
-            "assistant": "To create a round skyscraper, we'll design a slim, tall building with circular shaper with a solid large base with a tip at the end\nLayer 0: 5x5 Convex Rectangle\nLayer 1: 3x3 Circle.\nLayer 2: 3x3 Circle.\nLayer 3: 3x3 Circle.\nLayer 4: 3x3 Circle.\nLayer 5: 1x1 Cylinder"
+            "assistant": "To create a round skyscraper, we'll design a slim, tall building with circular shaper with a solid large base with a tip at the end\nLayer 0: 5x5 Convex Rectangle\nLayer 1: 3x3 Circle.\nLayer 2: 3x3 Circle.\nLayer 3: 3x3 Circle.\nLayer 4: 3x3 Circle.\nLayer 5: 3x3 Circle"
         },
         "Example29": { "user": "I want a modern apartment building",
             "assistant": "Modern apartment buildings are often designed with rectangular shapes and multiple floors: \nLayer 0: 5x3 Rectangle\nLayer 1: 5x3 Rectangle\nLayer 2: 5x3 Rectangle\nLayer 3: 3x2 Rectangle"

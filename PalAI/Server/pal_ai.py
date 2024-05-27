@@ -54,9 +54,10 @@ class PalAI:
             "GENERIC WHITE",
             "PLASTIC ORANGE",
             "CONCRETE WHITE",
-            "METAL BLUE",
-            "METAL DARK BLUE",
+            "HONEYCOMB BLUE",
+            "METAL",
             "HONEYCOMB WHITE",
+            "HONEYCOMB YELLOW",
             "GREY LIGHT WOOD",
             "CONCRETE GREY",
             "CONCRETE DARK STRIPES BLUE",
@@ -68,6 +69,17 @@ class PalAI:
             "PLASTIC RED",
             "STONE LIGHT GREY",
             "DARK CONCRETE",
+            "DARK PATTERN",
+            "WORN DOWN ORANGE",
+            "WORN DOWN PINK",
+            "WORN DOWN RED",
+            "WORN DOWN GREEN",
+            "WORN DOWN BLUE",
+            "WORN DOWN BROWN",
+            "WORN DOWN WOOD",
+            "LIGHT WOOD",
+            "HONEYCOMB STEEL"
+            "HONEYCOMB DARK GREY",
         ]
 
         if logger is not None:

@@ -13,18 +13,6 @@
             ]
         },
         {
-            "name": "1X1 Cylinder",
-            "description": "A single cylinder 1x1",
-            "blocks": [
-                {
-                    "type": "CYLINDER",
-                    "rotation": 0,
-                    "x": 0,
-                    "z": 0
-                }
-            ]
-        },
-        {
             "name": "2x2 Square",
             "description": "A 2x2 square of cubes",
             "blocks": [
