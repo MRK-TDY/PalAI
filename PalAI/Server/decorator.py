@@ -78,22 +78,14 @@ class Decorator:
         for i in to_remove:
             self.floor_list.remove(i)
 
-        #TODO: Doesn't work with negative numbers probably
+        if not self.floor_list:
+            return
 
-        if self.floor_list:
-            self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
-        else:
-            self.size_y = 0
-
-        if self.floor_list:
-            self.size_x = max(self.floor_list, key=lambda b: b.x).x + 1
-        else:
-            self.size_x = 0
-
-        if self.floor_list:
-            self.size_z = max(self.floor_list, key=lambda b: b.z).z + 1
-        else:
-            self.size_z = 0
+        self.offset_x = min(self.floor_list, key=lambda b: b.x).x
+        self.offset_z = min(self.floor_list, key=lambda b: b.z).z
+        self.size_x = max(self.floor_list, key=lambda b: b.x).x + 1 - self.offset_x
+        self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
+        self.size_z = max(self.floor_list, key=lambda b: b.z).z + 1 - self.offset_z
 
         # Grid is indexed (y, x, z) because most transformations happen on a slice of the y axis
         self.grid = [
@@ -105,17 +97,17 @@ class Decorator:
         )
 
         for b in self.floor_list:
-            self.grid[b.y][b.x][b.z].append(b)
-            self.pixel_grid[b.y, b.x, b.z] = 1
+            self.grid[b.y][b.x - self.offset_x][b.z - self.offset_z].append(b)
+            self.pixel_grid[b.y, b.x - self.offset_x, b.z - self.offset_z] = 1
 
         # Remove blocks on top of existing blocks, we are only interested in floors
         to_remove = []
         for b in self.floor_list:
             for y in range(b.y + 1, self.size_y):
-                if len(self.grid[y][b.x][b.z]) > 0:
-                    extra = self.grid[y][b.x][b.z]
-                    self.grid[y][b.x][b.z] = []
-                    self.pixel_grid[y][b.x][b.z] = -1
+                if len(self.grid[y][b.x - self.offset_x][b.z - self.offset_z]) > 0:
+                    extra = self.grid[y][b.x - self.offset_x][b.z - self.offset_z]
+                    self.grid[y][b.x - self.offset_x][b.z - self.offset_z] = []
+                    self.pixel_grid[y][b.x - self.offset_x][b.z - self.offset_z] = -1
                     if b not in to_remove:
                         to_remove.append(extra)
                 else:
@@ -151,7 +143,7 @@ class Decorator:
                         if b not in open and b not in closed:
                             open.append(b)
 
-        # Recalculate size_y
+            # Recalculate size_y
             self.size_y = max(self.floor_list, key=lambda b: b.y).y + 1
 
     def _is_valid_option(self, decoration, block, current_floor_list):
@@ -174,11 +166,11 @@ class Decorator:
 
             if (
                 ny < 0
-                or nx < 0
-                or nz < 0
+                or nx < self.offset_x
+                or nz < self.offset_z
                 or ny >= self.size_y
-                or nx >= self.size_x
-                or nz >= self.size_z
+                or nx - self.offset_x >= self.size_x
+                or nz - self.offset_z >= self.size_z
             ):
                 if r == "WALL":
                     continue
@@ -189,22 +181,25 @@ class Decorator:
                 # There is a wall if there is no block on the position
                 # (walls are boundaries of the building)
                 valid = True
-                for neighbor in self.grid[ny][nx][nz]:
-                    if neighbor.block_type == Placeable.BlockType.CUBE:
+                for neighbor in self.grid[ny][nx - self.offset_x][nz - self.offset_z]:
+                    if neighbor["type"] == "CUBE":
                         valid = False
                 return valid
 
             elif r == "EMPTY":
                 # There is an empty space if there is a block
                 if (
-                    len(self.grid[ny][nx][nz]) < 1
-                    or self.grid[ny][nx][nz][0].block_type != Placeable.BlockType.CUBE
+                    len(self.grid[ny][nx - self.offset_x][nz - self.offset_z]) == 0
+                    or self.grid[ny][nx - self.offset_x][nz - self.offset_z][
+                        0
+                    ]["type"]
+                    != "CUBE"
                 ):
                     return False
             else:  # Adjacency to another decoration
                 valid = False
                 name = ""
-                for floor in self.grid[ny][nx][nz]:
+                for floor in self.grid[ny][nx - self.offset_x][nz - self.offset_z]:
                     if isinstance(floor, Placeable):
                         if "options" in floor._additional_keys:
                             for o in floor._additional_keys["options"]:
@@ -223,7 +218,7 @@ class Decorator:
         return True
 
     def asset_name_to_decoration_name(self, asset_name):
-        """ Translates the name of an asset to the name of the decoration name.
+        """Translates the name of an asset to the name of the decoration name.
         E.g. The decoration table may produce assets such as 'Art Table 1', this function reverses this mapping.
 
         :param asset_name: name of the asset or decoration
@@ -250,7 +245,6 @@ class Decorator:
             d["name"]: 0 for d in self.decorations if d["limit"] > 0
         }
 
-        # foreach floor level
         for y in range(self.size_y):
             # Initialize options for each block
             current_floor = [b for b in self.floor_list if b.y == y]
@@ -271,7 +265,9 @@ class Decorator:
                 # Unlike regular WFC we don't choose the lowest entropy block
                 # This is because of the limits, which means not all blocks will be collapsed
                 # Choosing the lowest entropy would cause the blocks with less options to fill first
-                current_block = sorted(current_floor, key=lambda _: self.rng.random())[0]
+                current_block = sorted(current_floor, key=lambda _: self.rng.random())[
+                    0
+                ]
                 if len(current_block["options"]) == 0:
                     current_floor.remove(current_block)
                     continue
@@ -307,8 +303,11 @@ class Decorator:
                 )
 
                 # Update the neighbor options based on their own adjacency rules
-                self._validate_cell((current_block.y, current_block.x, current_block.z), current_floor)
+                self._validate_cell(
+                    (current_block.y, current_block.x, current_block.z), current_floor
+                )
 
+            print(json.dumps(placed_decors, indent=2))
             return placed_decors
 
     def _apply_callback(
@@ -388,7 +387,11 @@ class Decorator:
             else:
                 placed = False
                 for floor in current_floor:
-                    if floor.x == new_pos[1] and floor.y == new_pos[0] and floor.z == new_pos[2]:
+                    if (
+                        floor.x == new_pos[1]
+                        and floor.y == new_pos[0]
+                        and floor.z == new_pos[2]
+                    ):
                         if "options" in floor._additional_keys:
                             for d in floor["options"]:
                                 if self.asset_name_to_decoration_name(d["name"]) == r:
@@ -415,7 +418,7 @@ class Decorator:
 
         if c["type"] != "EMPTY":
             placed_decors.append(c)
-            self.grid[y][block.x][block.z].append(c)
+            self.grid[y][block.x - self.offset_x][block.z - self.offset_z].append(c)
 
     def _get_pos_neighbors(self, pos):
         neighbors = []
@@ -424,15 +427,17 @@ class Decorator:
 
             if (
                 new_pos[0] < 0
-                or new_pos[1] < 0
-                or new_pos[2] < 0
+                or new_pos[1] < self.offset_x
+                or new_pos[2] < self.offset_z
                 or new_pos[0] >= self.size_y
-                or new_pos[1] >= self.size_x
-                or new_pos[2] >= self.size_z
+                or new_pos[1] - self.offset_x >= self.size_x
+                or new_pos[2] - self.offset_z >= self.size_z
             ):
                 continue
 
-            for b in self.grid[new_pos[0]][new_pos[1]][new_pos[2]]:
+            for b in self.grid[new_pos[0]][new_pos[1] - self.offset_x][
+                new_pos[2] - self.offset_z
+            ]:
                 neighbors.append(b)
 
         return neighbors

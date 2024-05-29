@@ -20,6 +20,7 @@ from PalAI.Server.LLMClients import (
     anyscale_client,
     local_client,
 )
+from PalAI.Tools.LLMClients import (random_client, mock_client)
 
 
 # Set up a directory to store uploaded images
@@ -67,6 +68,10 @@ match config.get("llm", "type"):
         llm_client = anyscale_client.AnyscaleClient(prompts_file, logger)
     case "local":
         llm_client = local_client.LocalClient(prompts_file, logger)
+    case "random":
+        llm_client = random_client.RandomClient(prompts_file, logger)
+    case "mock":
+        llm_client = mock_client.MockClient(prompts_file, logger)
 
 
 def create_pal_instance():

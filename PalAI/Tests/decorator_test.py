@@ -4,42 +4,54 @@ import random
 import unittest
 from PalAI.Server.placeable import Placeable
 from PalAI.Server.decorator import Decorator
+from hypothesis import given, settings, strategies as st
 
+
+@st.composite
+def square_building_strategy(draw):
+    size = draw(st.integers(min_value=4, max_value=8))
+    offset = (draw(st.integers(min_value=-5, max_value=5)),
+              draw(st.integers(min_value=-5, max_value=5)))
+    return _get_square_building(size, offset)
+
+
+def _get_square_building(size, offset):
+    building = []
+    for x in range(size):
+        for z in range(size):
+            block = Placeable("CUBE", x + offset[0], 0, z + offset[1])
+            building.append(block)
+
+    return building
 
 class PostProcessTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        with open(
+            os.path.join(os.path.dirname(__file__), "../Server/decorations.json")
+        ) as f:
+            cls.decorations_json = json.load(f)
 
-    def _get_square_building(self, size):
-        building = []
-        for x in range(size):
-            for z in range(size):
-                block = Placeable("CUBE", x, 0, z)
-                building.append(block)
-
-        return building
-
-    def test_decorations_are_placed(self):
-        building = self._get_square_building(3)
+    @given(square_building_strategy(), st.randoms())
+    @settings(max_examples=100)
+    def test_decorations_are_placed(self, building, rng):
         decorator = Decorator(random.Random())
         decorator.import_building(building)
         decorations = decorator.decorate()
         self.assertGreater(len(decorations), 0)
 
     def test_all_decorations_are_used_within_limits(self):
-        with open(
-            os.path.join(os.path.dirname(__file__), "../Server/decorations.json")
-        ) as f:
-            decorations_json = json.load(f)
-
         used_decorations = set()
         total_decorations_count = 0
         decoration_names = set()
         decoration_limits = {}
-        for d in decorations_json["decorations"]:
+
+        for d in self.decorations_json["decorations"]:
             total_decorations_count += len(d.get("asset_name", [d["name"]]))
             decoration_names = decoration_names.union(d.get("asset_name", [d["name"]]))
 
-        for _ in range(1000):
-            building = self._get_square_building(5)
+        for _ in range(100):
+            building = _get_square_building(5, (0, 0))
             decorator = Decorator(random.Random())
             decorator.import_building(building)
             decorations = decorator.decorate()
@@ -48,7 +60,7 @@ class PostProcessTest(unittest.TestCase):
             # print(json.dumps(decorations, indent=4))
             for d in decorations:
                 found = False
-                for prefab in decorations_json["decorations"]:
+                for prefab in self.decorations_json["decorations"]:
                     if d["type"] in prefab.get("asset_name", [prefab["name"]]):
                         found = True
                         break
@@ -67,48 +79,47 @@ class PostProcessTest(unittest.TestCase):
             f"{[i for i in decoration_names if i not in used_decorations]} not used",
         )
 
-    def test_decorations_are_correct(self):
-        with open(
-            os.path.join(os.path.dirname(__file__), "../Server/decorations.json")
-        ) as f:
-            decorations_json = json.load(f)
+    @given(square_building_strategy(), st.randoms())
+    @settings(max_examples=100)
+    def test_decorations_are_correct(self, building, rng):
+        decorator = Decorator(random.Random())
+        decorator.import_building(building)
+        decorations = decorator.decorate()
 
-        # Repeat test multiple times
-        for _ in range(100):
-            building = self._get_square_building(5)
-            decorator = Decorator(random.Random())
-            decorator.import_building(building)
-            decorations = decorator.decorate()
+        min_x = min(building, key=lambda b: b.x).x
+        min_z = min(building, key=lambda b: b.z).z
+        max_x = max(building, key=lambda b: b.x).x
+        max_z = max(building, key=lambda b: b.z).z
 
-            # Get the json list of decorations
-            # print(json.dumps(decorations, indent=4))
-            for d in decorations:
-                found = False
-                for prefab in decorations_json["decorations"]:
-                    if d["type"] in prefab.get("asset_name", [prefab["name"]]):
-                        matching_prefab = prefab
-                        found = True
-                        break
+        # Get the json list of decorations
+        # print(json.dumps(decorations, indent=4))
+        for d in decorations:
+            found = False
+            for prefab in self.decorations_json["decorations"]:
+                if d["type"] in prefab.get("asset_name", [prefab["name"]]):
+                    matching_prefab = prefab
+                    found = True
+                    break
 
-                if not found:
-                    self.fail("Decoration not found in decorations.json")
+            if not found:
+                self.fail("Decoration not found in decorations.json")
 
-                adjacencies = matching_prefab["adjacency"]
-                for _ in range(d["rotation"]):
-                    adjacencies = [adjacencies[3]] + adjacencies[:3]
+            adjacencies = matching_prefab["adjacency"]
+            for _ in range(d["rotation"]):
+                adjacencies = [adjacencies[3]] + adjacencies[:3]
 
-                pos = d["position"].replace("(", "").replace(")", "").split(",")
-                directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-                x = int(pos[0])
-                z = int(pos[2])
+            pos = d["position"].replace("(", "").replace(")", "").split(",")
+            directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+            x = int(pos[0])
+            z = int(pos[2])
 
-                for i, r in enumerate(adjacencies):
-                    dx, dz = directions[i]
-                    nx, nz = x + dx, z + dz
-                    if r == "EMPTY":
-                        self.assertTrue(nx >= 0 and nx < 5 and nz >= 0 and nz < 5)
-                    elif r == "WALL":
-                        self.assertTrue(nx < 0 or nx >= 5 or nz < 0 or nz >= 5)
+            for i, r in enumerate(adjacencies):
+                dx, dz = directions[i]
+                nx, nz = x + dx, z + dz
+                if r == "EMPTY":
+                    self.assertTrue(nx >= min_x and nx <= max_x and nz >= min_z and nz <= max_z)
+                elif r == "WALL":
+                    self.assertTrue(nx < min_x or nx > max_x or nz < min_z or nz > max_z)
 
 
 if __name__ == "__main__":

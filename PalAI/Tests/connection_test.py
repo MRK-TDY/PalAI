@@ -1,7 +1,6 @@
 import unittest
 import subprocess
 import time
-import websocket
 import os
 import signal
 
@@ -14,6 +13,7 @@ class TestEchoWebSocket(unittest.TestCase):
     @unittest.skip("This fails on some systems for package mismatch reasons")
     def test_echo(self):
         # Connect to the WebSocket server
+        import websocket
         ws = websocket.WebSocket()
         try:
             ws.connect("ws://127.0.0.1:8000/echo")  # Adjust the port if needed

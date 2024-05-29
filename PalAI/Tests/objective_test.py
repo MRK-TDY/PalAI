@@ -38,6 +38,7 @@ class TestClient(unittest.TestCase):
 
         return pal_ai, pal_ai.building
 
+    @unittest.skip("This test depends on the LLM, it does not need to be run every time")
     def test_small_house(self):
         _, building = self._build_structure(
             "I want a house that is just a 2x2 square flat on the ground with a single floor"
@@ -81,6 +82,7 @@ class TestClient(unittest.TestCase):
         self.assertEqual(max_x - min_x, 1, "shape created should be a 2x2 square")
         self.assertEqual(max_z - min_z, 1, "shape created should be a 2x2 square")
 
+    @unittest.skip("This test depends on the LLM, it does not need to be run every time")
     def test_artist(self):
         pal_ai = self._create_pal_ai()
         pal_ai.prompt = "I want a very rounded house with no sharp angles, use a very generic type of bland white for the floor, for the interior use a honeycomb of the same color, and for the exterior use a material that is found naturally on the beach."
