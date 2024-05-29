@@ -240,6 +240,10 @@ class Decorator:
         """
         # TODO: foreach level of subdivisions
 
+        if not self.floor_list:
+            # sometimes there are only diagonals or other blocks on the ground floor
+            return []
+
         placed_decors = []
         used_decorations_count = {
             d["name"]: 0 for d in self.decorations if d["limit"] > 0
