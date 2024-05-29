@@ -9,17 +9,21 @@ from hypothesis import given, settings, strategies as st
 
 @st.composite
 def square_building_strategy(draw):
-    size = draw(st.integers(min_value=4, max_value=8))
-    offset = (draw(st.integers(min_value=-5, max_value=5)),
-              draw(st.integers(min_value=-5, max_value=5)))
-    return _get_square_building(size, offset)
+    building = []
+    for y in range(draw(st.integers(min_value=1, max_value=3))):
+        size = draw(st.integers(min_value=4, max_value=8))
+        offset = (draw(st.integers(min_value=-5, max_value=5)),
+                  draw(st.integers(min_value=-5, max_value=5)))
+        building.extend(_get_square_building(size, offset, y))
+
+    return building
 
 
-def _get_square_building(size, offset):
+def _get_square_building(size, offset, height = 0):
     building = []
     for x in range(size):
         for z in range(size):
-            block = Placeable("CUBE", x + offset[0], 0, z + offset[1])
+            block = Placeable("CUBE", x + offset[0], height, z + offset[1])
             building.append(block)
 
     return building
@@ -86,10 +90,11 @@ class PostProcessTest(unittest.TestCase):
         decorator.import_building(building)
         decorations = decorator.decorate()
 
-        min_x = min(building, key=lambda b: b.x).x
-        min_z = min(building, key=lambda b: b.z).z
-        max_x = max(building, key=lambda b: b.x).x
-        max_z = max(building, key=lambda b: b.z).z
+        ground_floor = [b for b in building if b.y == 0]
+        min_x = min(ground_floor, key=lambda b: b.x).x
+        min_z = min(ground_floor, key=lambda b: b.z).z
+        max_x = max(ground_floor, key=lambda b: b.x).x
+        max_z = max(ground_floor, key=lambda b: b.z).z
 
         # Get the json list of decorations
         # print(json.dumps(decorations, indent=4))
