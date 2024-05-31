@@ -15,6 +15,7 @@ class Placeable:
         DOOR = "DOOR"
         SMALL_GARDEN = "SMALL GARDEN"
         LARGE_GARDEN = "LARGE GARDEN"
+        GARDEN_LIGHT = "GARDEN LIGHT"
 
         @classmethod
         def from_str(cls, value: str):
@@ -73,12 +74,12 @@ class Placeable:
     def has_door(self) -> bool:
         if self.tags is None:
             return False
-        return len([t.block_type == Placeable.BlockType.DOOR for t in self.tags]) > 0
+        return any(t.block_type == Placeable.BlockType.DOOR for t in self.tags)
 
     def has_window(self) -> bool:
         if self.tags is None:
             return False
-        return len([t.block_type == Placeable.BlockType.WINDOW for t in self.tags]) > 0
+        return any(t.block_type == Placeable.BlockType.WINDOW for t in self.tags)
 
     @position.setter
     def position(self, value: str):

@@ -51,7 +51,9 @@ def create_gardens(building: list[Placeable], rng: random.Random) -> list[Placea
     for x in range(garden_size[0] + 1):
         for z in range(garden_size[1] + 1):
             if garden_array[x, z] is not None:
-                if alignment == 0:
+                if (x == 0 or x == garden_size[0]) and (z == 0 or z == garden_size[1]):
+                    garden_array[x, z].block_type = Placeable.BlockType.GARDEN_LIGHT
+                elif alignment == 0:
                     if z + 1 < garden_size[1] and garden_array[x, z + 1] is not None:
                         garden_array[x, z].block_type = Placeable.BlockType.LARGE_GARDEN
                         garden_array[x, z + 1] = None
@@ -73,7 +75,7 @@ def _choose_garden_area(building_area: tuple[tuple[float]], door_rotation: tuple
     # area is calculated as such:
     # with a size of 1 the garden perfectly mirrors the house
     # direction is chosen based on the door, such that the garden is outside it
-   # there is then a buffer of 1 block between the house and garden
+    # there is then a buffer of 1 block between the house and garden
 
     # Using garden size as 1 for now
     building_size_x = abs(building_area[1][0] - building_area[0][0])

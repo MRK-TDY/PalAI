@@ -308,7 +308,6 @@ class Decorator:
                     (current_block.y, current_block.x, current_block.z), current_floor
                 )
 
-            print(json.dumps(placed_decors, indent=2))
             return placed_decors
 
     def _apply_callback(

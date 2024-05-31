@@ -41,7 +41,7 @@ class PalAI:
         def layers_only():
             return PalAI.PalAIRequest(False, False, False, False, False, False)
 
-    def __init__(self, prompts_file, llm, logger=None, web_socket=None):
+    def __init__(self, prompts_file, llm, logger=None, web_socket=None, rng = None):
         """
         :param prompts_file: all prompts to be used
         :type prompts_file: dict
@@ -127,7 +127,10 @@ class PalAI:
         self.history = []
         self.api_result = {}
 
-        self.rng = random.Random()
+        if rng is not None:
+            self.rng = random.Random()
+        else:
+            self.rng = rng
         self.post_process = PostProcess()
 
         self.ws = web_socket

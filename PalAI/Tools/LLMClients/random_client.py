@@ -11,6 +11,7 @@ class RandomClient(LLMClient):
         # self.model_name = self.config.get('openai', 'model_name')
         self.logger = logger
         self.price_rate = 0
+        self.rng = kwargs.get('rng', random.Random())
 
         # get lists based on jsons
         with open(os.path.join(os.path.dirname(__file__), '../../Server/layers.json'), 'r') as f:
@@ -27,10 +28,10 @@ class RandomClient(LLMClient):
             self.window_quantifiers = [i["name"] for i in aux['quantifiers']]
 
     def get_architect_response(self):
-        self.layer_count = max(1, int(random.gauss(4, 2)))
+        self.layer_count = max(1, int(self.rng.gauss(4, 2)))
         response = ""
         for i in range(self.layer_count):
-            response += f"Layer {i}: {random.choice(self.layers)}\n"
+            response += f"Layer {i}: {self.rng.choice(self.layers)}\n"
 
         return response
 

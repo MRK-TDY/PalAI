@@ -13,10 +13,11 @@ class ObjVisualizer:
             "ROUNDED CORNER": "Blocks/ConvexCurve.obj",
             "DIAGONAL": "Blocks/Diagonal.obj",
             "CYLINDER": "Blocks/Cylinder.obj",
-            "SMALL GARDEN": "Blocks/Cube_Block.obj",
-            "LARGE GARDEN": "Blocks/long_cube.obj",
             "CONVEX CURVE": "Blocks/ConvexCurve.obj",
             "CONCAVE CURVE": "Blocks/Concave.obj",
+            "SMALL GARDEN": "Blocks/Cube_Block.obj",
+            "LARGE GARDEN": "Blocks/long_cube.obj",
+            "GARDEN LIGHT": "Blocks/Cylinder.obj",
             # Add more block types here
         }
 

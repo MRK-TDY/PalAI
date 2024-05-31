@@ -94,14 +94,22 @@ class PropertyTestCase(unittest.TestCase):
 
         # Assert tests
         self.assert_ground_floor(building)
+        self.assert_doors_in_ground_floor(building)
         self.assert_door_exists(building)
         self.assert_maximum_garden_size(garden)
+        self.assert_garden_light_count(garden)
 
     def assert_door_exists(self, building: list[Placeable]):
         for i in building:
             if i.has_door():
                 return
         self.fail("No door found in building")
+
+    def assert_doors_in_ground_floor(self, building: list[Placeable]):
+        for i in building:
+            if i.has_door() and i.y != 0:
+                self.fail(f"Found door outside ground floor: {i.to_json()}")
+        return # No doors found outside the ground floor
 
     def assert_ground_floor(self, building: list[Placeable]):
         for i in building:
@@ -112,6 +120,11 @@ class PropertyTestCase(unittest.TestCase):
     def assert_maximum_garden_size(self, garden: list[Placeable]):
         max_size = 10
         self.assertLess(len(garden), max_size, f"Garden size exceeds {max_size}")
+
+    def assert_garden_light_count(self, garden: list[Placeable]):
+        lights = [i for i in garden if i.block_type == Placeable.BlockType.GARDEN_LIGHT]
+        self.assertLessEqual(len(lights), 4, f"Too many garden lights, found {len(lights)}")
+        # self.assertNotEqual(len(lights), 3, f"Invalid number of lights, should be 1, 2 or 4")
 
 
 if __name__ == "__main__":

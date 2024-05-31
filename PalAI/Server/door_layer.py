@@ -24,8 +24,12 @@ def create_doors(building: list[Placeable], rng: random.Random) -> list[Placeabl
     full_grid = [[None for _ in range(size_z)] for _ in range(size_x)]
 
     for b in building:
+        if b.y != 0:
+            continue
+
+        # full_grid contains all ground floor blocks
         full_grid[b.x - offset_x][b.z - offset_z] = b
-        if b.y != 0 or b.block_type != "CUBE":
+        if b.block_type != "CUBE":
             continue
         grid[b.x - offset_x][b.z - offset_z] = b
 
