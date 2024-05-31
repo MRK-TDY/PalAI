@@ -127,7 +127,7 @@ class PalAI:
         self.history = []
         self.api_result = {}
 
-        if rng is not None:
+        if rng is None:
             self.rng = random.Random()
         else:
             self.rng = rng
