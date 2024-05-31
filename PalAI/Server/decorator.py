@@ -190,9 +190,7 @@ class Decorator:
                 # There is an empty space if there is a block
                 if (
                     len(self.grid[ny][nx - self.offset_x][nz - self.offset_z]) == 0
-                    or self.grid[ny][nx - self.offset_x][nz - self.offset_z][
-                        0
-                    ]["type"]
+                    or self.grid[ny][nx - self.offset_x][nz - self.offset_z][0]["type"]
                     != "CUBE"
                 ):
                     return False
@@ -245,7 +243,7 @@ class Decorator:
             return []
 
         placed_decors = []
-        used_decorations_count = {
+        self.used_decorations_count = {
             d["name"]: 0 for d in self.decorations if d["limit"] > 0
         }
 
@@ -280,7 +278,7 @@ class Decorator:
                 current_block["options"] = sorted(
                     current_block["options"],
                     key=lambda x: self.rng.random()
-                    - used_decorations_count.get(x["name"], 0),
+                    - self.used_decorations_count.get(x["name"], 0),
                 )
                 current_decor = self.rng.choice(current_block["options"])
 
@@ -292,14 +290,13 @@ class Decorator:
                 # Recursively apply callbacks
                 self._apply_callback(
                     current_decor,
-                    used_decorations_count,
                     current_block,
                     placed_decors,
                     current_floor,
                 )
 
                 # Check limit and remove options from other blocks if reached
-                self._check_limits(current_decor, used_decorations_count, current_floor)
+                self._check_limits(current_decor, current_floor)
 
                 # Update options of neighbors based on this choice
                 self._update_neighbors(
@@ -317,7 +314,6 @@ class Decorator:
     def _apply_callback(
         self,
         current_decoration,
-        used_decorations_count,
         current_block,
         placed_decors,
         current_floor,
@@ -343,10 +339,10 @@ class Decorator:
                 break
 
             if chosen.get("limit", 0) != 0:
-                if used_decorations_count[chosen["name"]] >= chosen["limit"]:
+                if self.used_decorations_count[chosen["name"]] >= chosen["limit"]:
                     break
 
-                used_decorations_count[chosen["name"]] += 1
+                self.used_decorations_count[chosen["name"]] += 1
 
                 if chosen["name"] != "EMPTY":
                     self._add_decoration(
@@ -355,13 +351,16 @@ class Decorator:
 
             callbacker = chosen
 
-    def _check_limits(self, decor, used_decorations_count, current_floor):
+    def _check_limits(self, decor, current_floor):
         if decor["limit"] > 0:
-            used_decorations_count[decor["name"]] += 1
-            if used_decorations_count[decor["name"]] >= decor["limit"]:
+            self.used_decorations_count[decor["name"]] += 1
+            if self.used_decorations_count[decor["name"]] >= decor["limit"]:
                 for b in current_floor:
                     b["options"] = [
-                        o for o in b["options"] if o["name"] != decor["name"]
+                        o
+                        for o in b["options"]
+                        if self.asset_name_to_decoration_name(o["name"])
+                        != self.asset_name_to_decoration_name(decor["name"])
                     ]
 
     def _validate_cell(self, pos, current_floor):
@@ -423,6 +422,10 @@ class Decorator:
         if c["type"] != "EMPTY":
             placed_decors.append(c)
             self.grid[y][block.x - self.offset_x][block.z - self.offset_z].append(c)
+
+            self._check_limits(decor, current_floor)
+
+
 
     def _get_pos_neighbors(self, pos):
         neighbors = []

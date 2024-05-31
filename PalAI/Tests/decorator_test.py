@@ -96,8 +96,40 @@ class PostProcessTest(unittest.TestCase):
         max_x = max(ground_floor, key=lambda b: b.x).x
         max_z = max(ground_floor, key=lambda b: b.z).z
 
-        # Get the json list of decorations
-        # print(json.dumps(decorations, indent=4))
+        self.assert_decorations_are_correct(decorations, min_x, min_z, max_x, max_z)
+        self.assert_decorations_within_limits(decorations)
+
+    def assert_decorations_within_limits(self, decorations):
+        limits = {}
+        for d in decorations:
+            found = False
+            for prefab in self.decorations_json["decorations"]:
+                if d["type"] in prefab.get("asset_name", [prefab["name"]]):
+                    matching_prefab = prefab
+                    found = True
+                    break
+
+            if not found:
+                self.fail("Decoration not found in decorations.json")
+
+            if matching_prefab["name"] not in limits:
+                limits[matching_prefab["name"]] = 0
+
+            limits[matching_prefab["name"]] += 1
+
+        for k, v in limits.items():
+            prefab = next(
+                (p for p in self.decorations_json["decorations"] if p["name"] == k),
+                None,
+            )
+            if prefab is None:
+                self.fail("Prefab not found in decorations.json")
+
+            if "limit" in prefab:
+                self.assertLessEqual(v, prefab["limit"], f"Limit for {k} exceeded")
+
+
+    def assert_decorations_are_correct(self, decorations, min_x, min_z, max_x, max_z):
         for d in decorations:
             found = False
             for prefab in self.decorations_json["decorations"]:
