@@ -38,7 +38,7 @@ class RandomClient(LLMClient):
     def get_add_ons_response(self):
         response = ""
         for i in range(self.layer_count):
-            response += f"Layer {i}: {random.choice(self.window_styles)} | {random.choice(self.window_quantifiers)}\n"
+            response += f"Layer {i}: {self.rng.choice(self.window_styles)} | {self.rng.choice(self.window_quantifiers)}\n"
         return response
 
 
