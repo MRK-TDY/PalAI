@@ -11,10 +11,11 @@ def create_gardens(building: list[Placeable], rng: random.Random) -> list[Placea
     """
 
     # We need the "bounding" box of the house, as seen from above
-    min_x = min(building, key=lambda b: b.x).x
-    max_x = max(building, key=lambda b: b.x).x
-    min_z = min(building, key=lambda b: b.z).z
-    max_z = max(building, key=lambda b: b.z).z
+    ground_floor = [b for b in building if b.y == 0]
+    min_x = min(ground_floor, key=lambda b: b.x).x
+    max_x = max(ground_floor, key=lambda b: b.x).x
+    min_z = min(ground_floor, key=lambda b: b.z).z
+    max_z = max(ground_floor, key=lambda b: b.z).z
 
     directions = ((1, 0), (0, 1), (-1, 0), (0, -1))
     chosen_rotation = rng.choice(directions)

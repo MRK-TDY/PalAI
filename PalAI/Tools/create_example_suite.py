@@ -15,7 +15,6 @@ def generate_obj(building, name = "test"):
         fptr.flush()
 
 
-include_seeds = [0, 1, 2]
 
 def generate_building(prompts_file, logger, seed):
     rng = random.Random(seed)
@@ -63,8 +62,6 @@ def main():
     start_time = time.time()
 
     for i in range(100):
-        generate_building(prompts_file, logger, i)
-    for i in include_seeds:
         generate_building(prompts_file, logger, i)
 
     print(f"Time taken: {(time.time() - start_time):.2f}")
