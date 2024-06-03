@@ -70,7 +70,7 @@ class Decorator:
         self.floor_list: list[Placeable] = copy.deepcopy(api_building)
         to_remove = []
         for b in self.floor_list:
-            if b.block_type != Placeable.BlockType.CUBE or b.y > 0:
+            if b.block_type != Placeable.BlockType.CUBE or b.y > 0 or b.has_door():
                 to_remove.append(b)
             else:
                 b["options"] = self.decorations

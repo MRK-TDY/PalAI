@@ -98,6 +98,7 @@ class PostProcessTest(unittest.TestCase):
 
         self.assert_decorations_are_correct(decorations, min_x, min_z, max_x, max_z)
         self.assert_decorations_within_limits(decorations)
+        self.assert_no_decorations_near_doors(decorations, ground_floor)
 
     def assert_decorations_within_limits(self, decorations):
         limits = {}
@@ -127,6 +128,13 @@ class PostProcessTest(unittest.TestCase):
 
             if "limit" in prefab:
                 self.assertLessEqual(v, prefab["limit"], f"Limit for {k} exceeded")
+
+
+    def assert_no_decorations_near_doors(self, decorations, building):
+        doors = [i for i in building if i.has_door()]
+        for d in decorations:
+            if any(d.x == i.x and d.z == i.z for i in doors):
+                self.fail("Decoration placed near door")
 
 
     def assert_decorations_are_correct(self, decorations, min_x, min_z, max_x, max_z):
