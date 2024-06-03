@@ -586,7 +586,7 @@
         },
         {
             "name": "2x2 Circle",
-            "description": "A small 2x2 circle with curves",
+            "description": "A small 2x2 circle with convex curves",
             "blocks": [
                 {
                     "type": "ROUNDED CORNER",
@@ -616,7 +616,7 @@
         },
         {
             "name": "3x3 Circle",
-            "description": "A 3x3 circle with curves",
+            "description": "A 3x3 circle with convex curves",
             "blocks": [
                 {
                     "type": "CUBE",
@@ -4889,7 +4889,7 @@
                     "x": 1, "z": 1
                 },
                 {
-                    "type": "CUBE", "rotation": 0,
+                    "type": "CONVEX CURVE", "rotation": 0,
                     "x": 2, "z": 1
                 },
                 {
@@ -4907,8 +4907,8 @@
             ]
         },
         {
-            "name": "5x5 Thin Trident",
-            "description": "5x5 Thin Trident with center at (0,0)",
+            "name": "5x5 Thin Y-shape",
+            "description": "5x5 Thin Y-Shape building with center at (0,0)",
             "blocks": [
                 {
                     "type": "CUBE", "rotation": 0,
