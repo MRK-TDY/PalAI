@@ -61,7 +61,7 @@ def create_gardens(building: list[Placeable], rng: random.Random) -> list[Placea
                 else:
                     if x + 1 < garden_size[0] and garden_array[x + 1, z] is not None:
                         garden_array[x, z].block_type = Placeable.BlockType.LARGE_GARDEN
-                        garden_array[x, z].rotation = 1
+                        garden_array[x, z].rotation = 3
                         garden_array[x + 1, z] = None
 
     garden = []
@@ -81,8 +81,8 @@ def _choose_garden_area(building_area: tuple[tuple[float]], door_rotation: tuple
     # Using garden size as 1 for now
     building_size_x = abs(building_area[1][0] - building_area[0][0])
     building_size_z = abs(building_area[1][1] - building_area[0][1])
-    garden_size_x = min(int(building_size_x * 1), 2)
-    garden_size_z = min(int(building_size_z * 1), 2)
+    garden_size_x = min(int(building_size_x * 1), 3)
+    garden_size_z = min(int(building_size_z * 1), 3)
 
     match (door_rotation):
         # I don't know why we add by 2 instead of 1, but it works
