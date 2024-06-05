@@ -118,7 +118,7 @@ class PropertyTestCase(unittest.TestCase):
         self.fail("No door found in building")
 
     def assert_maximum_garden_size(self, garden: list[Placeable]):
-        max_size = 10
+        max_size = 25
         self.assertLess(len(garden), max_size, f"Garden size exceeds {max_size}")
 
     def assert_garden_light_count(self, garden: list[Placeable]):

@@ -54,7 +54,7 @@ class PostProcessTest(unittest.TestCase):
             total_decorations_count += len(d.get("asset_name", [d["name"]]))
             decoration_names = decoration_names.union(d.get("asset_name", [d["name"]]))
 
-        for _ in range(100):
+        for _ in range(total_decorations_count * 10):
             building = _get_square_building(5, (0, 0))
             decorator = Decorator(random.Random())
             decorator.import_building(building)
