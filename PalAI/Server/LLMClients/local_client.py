@@ -48,13 +48,6 @@ class LocalClient(LLMClient):
         self.hf = HuggingFacePipeline(pipeline=self.pipe)
         self.price_rate = 0
 
-    async def get_agent_response(self, agent, prompt, **kwargs):
-        system_message = self._get_agent_system_message(agent, **kwargs)
-
-        messages = self.preparePrompt(prompt, agent)
-        kwargs["messages"] = messages
-        return await self.get_llm_response(system_message, prompt, **kwargs)
-
     async def get_llm_response(self, system_message, prompt, **kwargs):
 
         if self.verbose:
@@ -128,29 +121,7 @@ class LocalClient(LLMClient):
 
         return response
 
-    def preparePrompt(self, prompt, type):
 
-        prompt = prompt.replace("USER: ", "")
-        prompt = prompt.replace("ARCHITECT:", "")
-        prompt = prompt.replace("ASSISTANT:", "")
-        prompt = prompt.replace("\n", "")
-
-        if type == "architect":
-            # self.logger.info("Architect: \n" + prompt)
-            messages = example_getter.getArchitectExamples(prompt)
-        elif type == "bricklayer":
-            # self.logger.info("Bricklayer: \n" + prompt)
-            messages = example_getter.getBrickExamples(prompt)
-        elif type == "materials":
-            # self.logger.info("Materials: \n" + prompt)
-            messages = example_getter.getMaterialExamples(prompt)
-        elif type == "add_ons":
-            # self.logger.info("Addons: \n" + prompt)
-            messages = example_getter.getAddOnsExamples(prompt)
-        else:
-            messages = example_getter.getArchitectExamples(prompt)
-
-        return messages
 
 
 if __name__ == "main":

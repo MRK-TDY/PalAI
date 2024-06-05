@@ -2,6 +2,7 @@ from abc import abstractmethod
 import os
 from configparser import RawConfigParser
 import logging
+from PalAI.Server.LLMClients.Examples import example_getter
 
 
 class LLMClient:
@@ -60,47 +61,39 @@ class LLMClient:
 
     async def get_agent_response(self, agent, prompt, **kwargs):
         system_message = self._get_agent_system_message(agent, **kwargs)
-
+        messages = self.preparePrompt(prompt, agent=agent)
+        kwargs["messages"] = messages
         return await self.get_llm_response(system_message, prompt, **kwargs)
+
+    def preparePrompt(self, prompt, agent='architect'):
+
+        prompt = prompt.replace("USER: ", "")
+        prompt = prompt.replace("ARCHITECT:", "")
+        prompt = prompt.replace("ASSISTANT:", "")
+        prompt = prompt.replace("\n", "")
+
+        if agent == "architect":
+            # self.logger.info("Architect: \n" + prompt)
+            messages = example_getter.getArchitectExamples(prompt)
+        elif agent == "bricklayer":
+            # self.logger.info("Bricklayer: \n" + prompt)
+            messages = example_getter.getBrickExamples(prompt)
+        elif agent == "materials":
+            # self.logger.info("Materials: \n" + prompt)
+            messages = example_getter.getMaterialExamples(prompt)
+        elif agent == "add_ons":
+            # self.logger.info("Addons: \n" + prompt)
+            messages = example_getter.getAddOnsExamples(prompt)
+        else:
+            messages = example_getter.getArchitectExamples(prompt)
+
+        return messages
 
     def getTotalPromptsUsed(self):
         return self.prompt_total
 
     # When it is necessary to treat the prompt more carefully. When systems need user -> assistant type of queries
-    def preparePrompt(self, system_message):
-        prompt_array = system_message.split("\n")
-        user = []
-        assistant = [""]
-        instructions = ""
-        assistant_index = 0
-        bUser = False
-        bAssistant = False
-        for p in prompt_array:
-            if len(p) < 2:
-                continue
-            if "EXAMPLE" in p:
-                continue
-            if "USER" in p:
-                bUser = True
-                bAssistant = False
-            if "ARCHITECT" in p:
-                bAssistant = True
-                bUser = False
-                assistant_index += 1
 
-            if bUser:
-                user.append(p)
-
-            elif bAssistant:
-                if len(assistant) <= assistant_index:
-                    assistant.append(p)
-                else:
-                    assistant[assistant_index] += p
-
-            else:
-                instructions += p
-
-        return user, assistant, instructions
 
     def SetModel(self, model_name):
         self.model_name = model_name
