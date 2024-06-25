@@ -1,18 +1,16 @@
 import base64
 import json
+import random
 import uuid
 import traceback
 import logging
-from flask import Flask, request
-from flask_sockets import Sockets
 import yaml
 import os
 from configparser import RawConfigParser
 import asyncio
 from PalAI.Server.pal_ai import PalAI
 from PalAI.Server.housedescription import BuildingDescriptor
-from gevent import pywsgi
-from geventwebsocket.handler import WebSocketHandler
+from fastapi import FastAPI
 from PalAI.Server.LLMClients import (
     gpt_client,
     together_client,
@@ -20,29 +18,30 @@ from PalAI.Server.LLMClients import (
     anyscale_client,
     local_client,
 )
-from PalAI.Tools.LLMClients import (random_client, mock_client)
+from PalAI.Tools.LLMClients import random_client, mock_client
+from contextlib import asynccontextmanager
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 
 # Set up a directory to store uploaded images
 UPLOAD_FOLDER = "Server/Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-
-app = Flask(__name__)
-sockets = Sockets(app)
+router = APIRouter()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), 'records.log'))
+file_handler = logging.FileHandler(
+    os.path.join(os.path.dirname(__file__), "records.log")
+)
 file_handler.setLevel(logging.DEBUG)
-file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 
 # Create a console handler to output logs to the console with INFO level
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
-console_formatter = logging.Formatter('%(levelname)s - %(message)s')
+console_formatter = logging.Formatter("%(levelname)s - %(message)s")
 console_handler.setFormatter(console_formatter)
 logger.addHandler(console_handler)
 
@@ -82,183 +81,112 @@ def create_descriptor_instance():
     return BuildingDescriptor(config.get("openai", "api_key"))
 
 
-# Dictionary to keep track of active WebSocket connections
-active_connections = {}
-active_tasks = {}
-
-def test_connect_token(ws):
-    session_token = request.args.get('token')
-    if not session_token:
-        session_token = str(uuid.uuid4())
-        ws.send(json.dumps({"token": session_token}))
-
-    if session_token in active_connections:
-        # Close the previous connection
-        previous_ws = active_connections[session_token]
-        previous_ws.close()
-
-    active_connections[session_token] = ws
-
-    try:
-        while not ws.closed:
-            message = ws.receive()
-            if message:
-                logger.info("Client connected")
-                ws.send(message)
-    except Exception as e:
-        logger.error(f"Error in test_connect: {e}")
-    finally:
-        logger.info("WebSocket closed")
-        # Remove the connection from active connections
-        if session_token in active_connections and active_connections[session_token] == ws:
-            del active_connections[session_token]
-
-
-def test_connect_ip(ws):
-    client_ip = request.remote_addr
-    if client_ip in active_connections:
-        # Close the previous connection
-        previous_ws = active_connections[client_ip]
-        previous_ws.close()
-
-    active_connections[client_ip] = ws
-
-    try:
-        while not ws.closed:
-            message = ws.receive()
-            if message:
-                logger.info("Client connected")
-                ws.send(message)
-    except Exception as e:
-        logger.error(f"Error in test_connect: {e}")
-    finally:
-        logger.info("WebSocket closed")
-        # Remove the connection from active connections
-        if client_ip in active_connections and active_connections[client_ip] == ws:
-            del active_connections[client_ip]
-
-@sockets.route("/echo", websocket=True)
-def test_connect(ws):
-    if use_tokens:
-        test_connect_token(ws)
-    else:
-        test_connect_ip(ws)
-
-@sockets.route("/disconnect")
-def test_disconnect():
-    logger.info("Client disconnected")
-
+@router.get("/echo")
+def test_connect():
+    return "200 - ok"
 
 
 async def _handle_post(ws, token):
     """Main function to handle building requests.
     Takes in a JSON with a prompt and returns a JSON with the generated building.
     """
-    logger.info("Client Build Request")
-    try:
-        while not ws.closed:
-            message = ws.receive()
-            if message:
-                logger.info(f"Received message: {message}")
-                try:
-                    json_data = json.loads(message)
-                    logger.info(f"Building: {json_data}")
-                    if "prompt" in json_data and len(json_data["prompt"]) > 3:
-                        pal = create_pal_instance()
-                        result = await pal.build(json_data["prompt"], ws)
-                        result["event"] = "result"
-                        result["message"] = "Data processed"
-                        ws.send(json.dumps(result))
-                        logger.debug(f"Sent Json Response: {result}")
-                    else:
-                        ws.send(json.dumps({"message": "Missing or invalid JSON payload"}))
-                        logger.warning("Missing or invalid JSON payload")
-                except Exception as e:
-                    logger.error(f"Error processing request: {e}")
-                    traceback.print_exc()
-                    ws.send(json.dumps({"message": "Error processing request", "error": str(e)}))
-            else:
-                ws.send(json.dumps({"message": "No message received"}))
-                logger.warning("No message received")
-    except asyncio.CancelledError:
-        logger.info("Task was cancelled")
 
-    except Exception as e:
-        logger.error(f"Error in handle_post: {e}")
-    finally:
-        logger.info("WebSocket closed")
-        if token in active_connections and active_connections[token] == ws:
-            del active_connections[token]
-        if token in active_tasks:
-            del active_tasks[token]
+
 async def stop():
     loop = asyncio.get_event_loop()
     loop.stop()
     loop.close()
 
-def handle_post_token(ws):
-    session_token = request.args.get('token')
-    if not session_token:
-        ws.send(json.dumps({"error": "Missing session token"}))
-        return
 
-    if session_token in active_connections:
-        # Close the previous connection
-        previous_ws = active_connections[session_token]
-        previous_ws.close()
+@router.websocket("/build")
+async def handle_post(ws: WebSocket):
+    logger.info("PalAI WebSocket connected")
+    await manager.connect(ws)
 
-    active_connections[session_token] = ws
+    try:
+        message = await ws.receive_text()
+        if message:
+            logger.info(f"Received message: {message}")
+            try:
+                json_data = json.loads(message)
+                logger.info(f"Building: {json_data}")
+                if "prompt" in json_data and len(json_data["prompt"]) > 3:
+                    pal = create_pal_instance()
+                    result = await pal.build(json_data["prompt"], ws, manager)
+                    result["event"] = "result"
+                    result["message"] = "Data processed"
+                    await manager.send_personal_message(json.dumps(result), ws)
 
-    loop = asyncio.new_event_loop()
-    asyncio.run(_handle_post(ws, session_token))
-    #asyncio.set_event_loop(loop)
-    #loop.create_task(_handle_post(ws, session_token, loop))
+                    logger.debug(f"Sent Json Response: {result}")
+                else:
+                    await manager.send_personal_message(
+                        json.dumps({"message": "Missing or invalid JSON payload"}), ws
+                    )
+                    logger.warning("Missing or invalid JSON payload")
+            except Exception as e:
+                logger.error(f"Error processing request: {e}")
+                traceback.print_exc()
+                await manager.send_personal_message(
+                    json.dumps(
+                        {"message": "Error processing request", "error": str(e)}
+                    ),
+                    ws,
+                )
+        else:
+            await manager.send_personal_message(
+                json.dumps({"message": "No message received"}), ws
+            )
+            logger.warning("No message received")
 
-def handle_post_ip(ws):
-    client_ip = request.remote_addr
-    if client_ip in active_connections:
-        # Cancel the previous task
-        if client_ip in active_tasks:
-            task = active_tasks[client_ip]
-            if(task != None):
-                task.cancel()
-            else:
-                del active_tasks[client_ip]
+    except WebSocketDisconnect:
+        manager.disconnect(ws)
 
-        # Close the previous connection
-        previous_ws = active_connections[client_ip]
-        if not previous_ws.closed:
-            previous_ws.close()
+    finally:
+        logger.info("WebSocket closed")
 
-    active_connections[client_ip] = ws
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: list[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
+
+
+manager = ConnectionManager()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # logger.info("Starting up...")
+    # logger.info("Started up")
+    # app.state.pal = create_pal_instance()
+    # logger.info("Shutting down...")
+    yield
+
+
+def create_app():
+    app = FastAPI(lifespan=lifespan)
+
+    app.include_router(router)
+    # app.include_router(search_router)
+    # app.include_router(websocket_chat_router)
+
     loop = asyncio.get_event_loop()
-    if loop.is_running():
-        task = loop.create_task(_handle_post(ws, client_ip))
-    else:
-        task = loop.run_until_complete(_handle_post(ws, client_ip))
-    active_tasks[client_ip] = task
 
-    # logger.error(f"Error in task management: {e}")
-
-#except Exception as e:
-    #    logger.error(f"Error in handle_post: {e}")
-
-    #loop.create_task(_handle_post(ws, client_ip, loop))
-
-@sockets.route("/build")
-def handle_post(ws):
-    if(use_tokens):
-        #test_connect_token(ws)
-        handle_post_token(ws)
-    else:
-        handle_post_ip(ws)
+    return app
 
 
-
-if __name__ == "__main__":
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    server = pywsgi.WSGIServer(("0.0.0.0", PORT), app, handler_class=WebSocketHandler)
-    logger.info(f"Running on ws://0.0.0.0:{PORT}")
-    server.serve_forever()
+logger.info(f"Running on 0.0.0.0:{PORT}")
+api = create_app()

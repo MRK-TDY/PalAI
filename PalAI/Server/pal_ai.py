@@ -41,7 +41,7 @@ class PalAI:
         def layers_only():
             return PalAI.PalAIRequest(False, False, False, False, False, False)
 
-    def __init__(self, prompts_file, llm, logger=None, web_socket=None, rng = None):
+    def __init__(self, prompts_file, llm, logger=None, web_socket=None, rng=None):
         """
         :param prompts_file: all prompts to be used
         :type prompts_file: dict
@@ -79,8 +79,7 @@ class PalAI:
             "WORN DOWN BROWN",
             "WORN DOWN WOOD",
             "LIGHT WOOD",
-            "HONEYCOMB STEEL"
-            "HONEYCOMB DARK GREY",
+            "HONEYCOMB STEEL" "HONEYCOMB DARK GREY",
         ]
 
         if logger is not None:
@@ -143,7 +142,9 @@ class PalAI:
 
         os.chdir(os.path.dirname(__file__))
 
-    async def build(self, prompt, ws=None, request_type: PalAIRequest = None):
+    async def build(
+        self, prompt, ws=None, manager=None, request_type: PalAIRequest = None
+    ):
         """Constructs the entire building based on the prompt
 
         :type prompt: string
@@ -156,6 +157,8 @@ class PalAI:
         self.original_prompt = prompt
         if ws is not None:
             self.ws = ws
+        if manager is not None:
+            self.manager = manager
 
         self.logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 
@@ -164,7 +167,7 @@ class PalAI:
             f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}"
         )
 
-        self.build_structure()
+        await self.build_structure()
 
         self.logger.info(f"{Fore.BLUE}Received basic structure{Fore.RESET}")
 
@@ -181,11 +184,11 @@ class PalAI:
             self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
 
         if request_type is None or request_type.create_doors:
-            self.apply_doors()
+            await self.apply_doors()
             self.logger.info(f"{Fore.BLUE}Applied doors{Fore.RESET}")
 
         if request_type is None or request_type.create_garden:
-            self.create_garden()
+            await self.create_garden()
             self.logger.info(f"{Fore.BLUE}Created gardens{Fore.RESET}")
 
         if request_type is None or request_type.create_decorations:
@@ -216,20 +219,20 @@ class PalAI:
 
         return
 
-    def build_structure(self):
+    async def build_structure(self):
         for y, l in enumerate(self.plan_list):
-            if("|" in l):
+            if "|" in l:
                 l = l.split("|")[0]
             l = l.split(":")
             if len(l) < 2:
                 if self.ws is not None:
-                    self.ws.send(
+                    await self.manager.send_personal_message(
                         json.dumps(
                             {
                                 "message": "Error processing request",
                                 "error": " Unable to read " + str(l),
                             }
-                        )
+                        ), self.ws
                     )
                 return
             chosen_layer = self._get_similarity_response(
@@ -250,7 +253,7 @@ class PalAI:
             message = {"value": json_building}
             message["event"] = "layer"
 
-            self.ws.send(json.dumps(message))
+            await self.manager.send_personal_message(json.dumps(message), self.ws)
         self.logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
 
     async def apply_windows(self):
@@ -289,7 +292,9 @@ class PalAI:
                     quantifier_options,
                 )
                 self.window_quantifiers[i] = [
-                    i["value"] for i in self.windows["quantifiers"] if i["name"] == quantifier
+                    i["value"]
+                    for i in self.windows["quantifiers"]
+                    if i["name"] == quantifier
                 ][0]
 
         for i, w in enumerate(self.window_styles):
@@ -297,7 +302,9 @@ class PalAI:
                 self.window_styles[i] = "none"
                 self.window_quantifiers[i] = "none"
 
-        self.building = window_layer.create_windows(self.building, self.window_styles, self.window_quantifiers, self.rng)
+        self.building = window_layer.create_windows(
+            self.building, self.window_styles, self.window_quantifiers, self.rng
+        )
 
         # Only sending the blocks with add_ons
         self.api_result["add_on_agent"] = windows
@@ -306,18 +313,18 @@ class PalAI:
             json_building = [i.to_json() for i in self.building]
             message = {"value": json_building}
             message["event"] = "add_ons"
-            self.ws.send(json.dumps(message))
+            await self.manager.send_personal_message(json.dumps(message), self.ws)
 
-    def apply_doors(self):
+    async def apply_doors(self):
         doors = door_layer.create_doors(self.building, self.rng)
 
         if self.ws is not None:
             json_building = [i.to_json() for i in doors]
             message = {"value": json_building}
             message["event"] = "doors"
-            self.ws.send(json.dumps(message))
+            await self.manager.send_personal_message(json.dumps(message), self.ws)
 
-    def create_garden(self):
+    async def create_garden(self):
         self.garden = gardener.create_gardens(self.building, self.rng)
         self.api_result["garden"] = [i.to_json() for i in self.garden]
 
@@ -325,7 +332,7 @@ class PalAI:
             json_building = [i.to_json() for i in self.garden]
             message = {"value": json_building}
             message["event"] = "garden"
-            self.ws.send(json.dumps(message))
+            await self.manager.send_personal_message(json.dumps(message), self.ws)
 
     async def get_artist_response(self):
         materials_response = await self.llm_client.get_agent_response(
@@ -361,7 +368,7 @@ class PalAI:
         if self.ws is not None:
             message = {"value": material}
             message["event"] = "material"
-            self.ws.send(json.dumps(message))
+            await self.manager.send_personal_message(json.dumps(message), self.ws)
 
     def _get_similarity_response(self, response, possibilities):
         """Takes in a response and a list of possibilities and returns the most similar possibility
@@ -382,7 +389,7 @@ class PalAI:
         except Exception as e:
             self.style = "no style"
             self.logger.warning(f"{Fore.RED}Style Error {e}{Fore.RESET}")
-            self.ws.send(json.dumps("Error found with post-processing"))
+            await self.manager.send_personal_message(json.dumps("Error found with post-processing"), self.ws)
 
     async def decorate(self):
         decorator = Decorator(self.rng)
@@ -394,7 +401,7 @@ class PalAI:
         if self.ws is not None:
             message = {"value": self.decorations}
             message["event"] = "decorations"
-            self.ws.send(json.dumps(message))
+            await self.manager.send_personal_message(json.dumps(message), self.ws)
 
     def overlap_blocks(
         self, base_structure: list[Placeable], extra_blocks: list[Placeable]
