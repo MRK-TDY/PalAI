@@ -183,8 +183,6 @@ def create_app():
     # app.include_router(search_router)
     # app.include_router(websocket_chat_router)
 
-    loop = asyncio.get_event_loop()
-
     return app
 
 
