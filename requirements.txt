@@ -10,3 +10,6 @@ langchain==0.2.6
 Levenshtein==0.25.1
 fastapi==0.111.0
 colorama==0.4.6
+loguru==0.7.2
+hypothesis==6.104.1
+pytest==8.2.2
