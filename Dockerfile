@@ -8,13 +8,18 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install .
+# RUN pip install --no-cache-dir -r requirements.txt
+# RUN pip install .
+
+RUN pip install --no-cache-dir --upgrade pip uv
+# COPY ./requirements.txt /code/requirements.txt
+RUN uv pip install --system --no-cache-dir --upgrade -r requirements.txt
+RUN uv pip install --system .
+
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 EXPOSE 5005
 
-# Run app.py when the container launches
-CMD ["python", "server.py"]
 
+CMD ["python", "server.py"]
