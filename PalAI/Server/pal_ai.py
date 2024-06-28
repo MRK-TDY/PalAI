@@ -2,6 +2,7 @@ import json
 import os
 
 from colorama import Fore
+import uuid
 import Levenshtein
 from loguru import logger
 from dataclasses import dataclass
@@ -85,21 +86,13 @@ class PalAI:
         if llm is not None and isinstance(llm, str):
             match llm:
                 case "gpt":
-                    self.llm_client = gpt_client.GPTClient(
-                        prompts_file
-                    )
+                    self.llm_client = gpt_client.GPTClient(prompts_file)
                 case "together":
-                    self.llm_client = together_client.TogetherClient(
-                        prompts_file
-                    )
+                    self.llm_client = together_client.TogetherClient(prompts_file)
                 case "google":
-                    self.llm_client = google_client.GoogleClient(
-                        prompts_file
-                    )
+                    self.llm_client = google_client.GoogleClient(prompts_file)
                 case "anyscale":
-                    self.llm_client = anyscale_client.AnyscaleClient(
-                        prompts_file
-                    )
+                    self.llm_client = anyscale_client.AnyscaleClient(prompts_file)
                 case "local":
                     self.llm_client = local_client.LocalClient(
                         prompts_file, verbose=True
@@ -133,7 +126,11 @@ class PalAI:
         os.chdir(os.path.dirname(__file__))
 
     async def build(
-        self, prompt, ws=None, manager=None, request_type: PalAIRequest = None
+        self,
+        prompt,
+        ws=None,
+        manager=None,
+        request_type: PalAIRequest = None,
     ):
         """Constructs the entire building based on the prompt
 
@@ -153,9 +150,7 @@ class PalAI:
         logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 
         await self.get_architect_plan()
-        logger.info(
-            f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}"
-        )
+        logger.info(f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}")
 
         await self.build_structure()
 
@@ -222,7 +217,8 @@ class PalAI:
                                 "message": "Error processing request",
                                 "error": " Unable to read " + str(l),
                             }
-                        ), self.ws
+                        ),
+                        self.ws,
                     )
                 return
             chosen_layer = self._get_similarity_response(
@@ -379,7 +375,9 @@ class PalAI:
         except Exception as e:
             self.style = "no style"
             logger.warning(f"{Fore.RED}Style Error {e}{Fore.RESET}")
-            await self.manager.send_personal_message(json.dumps("Error found with post-processing"), self.ws)
+            await self.manager.send_personal_message(
+                json.dumps("Error found with post-processing"), self.ws
+            )
 
     async def decorate(self):
         decorator = Decorator(self.rng)

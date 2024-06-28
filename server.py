@@ -29,10 +29,18 @@ UPLOAD_FOLDER = "Server/Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 router = APIRouter()
 
-fmt = "{time} - {name} - {level} - {message}"
-logger.add("records.log", level="DEBUG", format=fmt)
-logger.add(sys.stderr, level="ERROR", format=fmt)
-# logger.add(sys.stdout, level="INFO", format=fmt)
+fmt = (
+    "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
+    "<level>{level: <8}</level> | "
+    "{extra[request_id]} |"
+    "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+)
+
+logger.remove(0)
+logger.configure(extra={"request_id": "NONE"})
+logger.add(os.path.join(os.path.dirname(__file__,), "records.log"), level="DEBUG", format=fmt)
+logger.add(sys.stderr, level="ERROR", format=fmt, colorize=True)
+logger.add(sys.stdout, level="INFO", format=fmt, colorize=True)
 
 config = RawConfigParser()
 config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
@@ -89,31 +97,33 @@ async def stop():
 
 @router.websocket("/build")
 async def handle_post(ws: WebSocket):
-    logger.info("PalAI WebSocket connected")
+    logger.info("Client connected")
     await manager.connect(ws)
 
     try:
         message = await ws.receive_text()
+
         if message:
-            logger.info(f"Received message: {message}")
             try:
                 json_data = json.loads(message)
-                logger.info(f"Building: {json_data}")
-                if "prompt" in json_data and len(json_data["prompt"]) > 3:
-                    pal = create_pal_instance()
-                    result = await pal.build(json_data["prompt"], ws, manager)
-                    result["event"] = "result"
-                    result["message"] = "Data processed"
-                    await manager.send_personal_message(json.dumps(result), ws)
+                id = json_data.get("id", str(uuid.uuid4()))
 
-                    logger.debug(f"Sent Json Response: {result}")
-                else:
-                    await manager.send_personal_message(
-                        json.dumps({"message": "Missing or invalid JSON payload"}), ws
+                if "prompt" not in json_data or len(json_data["prompt"]) < 3:
+                    raise Exception("Missing or invalid JSON payload")
+
+                logger.info(f"PalAI request {id}: {json_data['prompt']}")
+                pal = create_pal_instance()
+                with logger.contextualize(request_id=id):
+                    result = await pal.build(
+                        prompt=json_data["prompt"], ws=ws, manager=manager
                     )
-                    logger.warning("Missing or invalid JSON payload")
+                result["event"] = "result"
+                result["message"] = "Data processed"
+                await manager.send_personal_message(json.dumps(result), ws)
+
+                logger.info(f"Request {id}: success")
             except Exception as e:
-                logger.error(f"Error processing request: {e}")
+                logger.error(f"Error processing request {id}: {e}")
                 traceback.print_exc()
                 await manager.send_personal_message(
                     json.dumps(
@@ -129,7 +139,6 @@ async def handle_post(ws: WebSocket):
 
     except WebSocketDisconnect:
         manager.disconnect(ws)
-
     finally:
         logger.info("WebSocket closed")
 
@@ -175,5 +184,5 @@ def create_app():
     return app
 
 
-logger.info(f"Running on 0.0.0.0:{PORT}")
+logger.info(f"PalAI server started on port {PORT}")
 api = create_app()
