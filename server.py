@@ -2,8 +2,9 @@ import base64
 import json
 import random
 import uuid
+import sys
 import traceback
-import logging
+from loguru import logger
 import yaml
 import os
 from configparser import RawConfigParser
@@ -28,22 +29,10 @@ UPLOAD_FOLDER = "Server/Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 router = APIRouter()
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler(
-    os.path.join(os.path.dirname(__file__), "records.log")
-)
-file_handler.setLevel(logging.DEBUG)
-file_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-file_handler.setFormatter(file_formatter)
-logger.addHandler(file_handler)
-
-# Create a console handler to output logs to the console with INFO level
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
-console_formatter = logging.Formatter("%(levelname)s - %(message)s")
-console_handler.setFormatter(console_formatter)
-logger.addHandler(console_handler)
+fmt = "{time} - {name} - {level} - {message}"
+logger.add("records.log", level="DEBUG", format=fmt)
+logger.add(sys.stderr, level="ERROR", format=fmt)
+# logger.add(sys.stdout, level="INFO", format=fmt)
 
 config = RawConfigParser()
 config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
@@ -58,23 +47,23 @@ with open(os.path.join(os.path.dirname(__file__), "prompts.yaml"), "r") as file:
 
 match config.get("llm", "type"):
     case "gpt":
-        llm_client = gpt_client.GPTClient(prompts_file, logger)
+        llm_client = gpt_client.GPTClient(prompts_file)
     case "together":
-        llm_client = together_client.TogetherClient(prompts_file, logger)
+        llm_client = together_client.TogetherClient(prompts_file)
     case "google":
-        llm_client = google_client.GoogleClient(prompts_file, logger)
+        llm_client = google_client.GoogleClient(prompts_file)
     case "anyscale":
-        llm_client = anyscale_client.AnyscaleClient(prompts_file, logger)
+        llm_client = anyscale_client.AnyscaleClient(prompts_file)
     case "local":
-        llm_client = local_client.LocalClient(prompts_file, logger)
+        llm_client = local_client.LocalClient(prompts_file)
     case "random":
-        llm_client = random_client.RandomClient(prompts_file, logger)
+        llm_client = random_client.RandomClient(prompts_file)
     case "mock":
-        llm_client = mock_client.MockClient(prompts_file, logger)
+        llm_client = mock_client.MockClient(prompts_file)
 
 
 def create_pal_instance():
-    return PalAI(prompts_file, llm_client, logger)
+    return PalAI(prompts_file, llm_client)
 
 
 def create_descriptor_instance():

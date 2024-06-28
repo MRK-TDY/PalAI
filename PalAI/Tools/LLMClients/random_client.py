@@ -2,14 +2,15 @@ import os
 import random
 import json
 from PalAI.Server.LLMClients.llm_client import LLMClient
+from loguru import logger
+
 
 class RandomClient(LLMClient):
 
-    def __init__(self, prompts_file, logger, **kwargs):
-        LLMClient.__init__(self, prompts_file, logger)
+    def __init__(self, prompts_file, **kwargs):
+        LLMClient.__init__(self, prompts_file)
 
         # self.model_name = self.config.get('openai', 'model_name')
-        self.logger = logger
         self.price_rate = 0
         self.rng = kwargs.get('rng', random.Random())
 

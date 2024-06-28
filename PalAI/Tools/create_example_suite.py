@@ -19,7 +19,7 @@ def generate_obj(building, name = "test"):
 def generate_building(prompts_file, logger, seed):
     rng = random.Random(seed)
     client = RandomClient(prompts_file, logger, rng=rng)
-    pal = PalAI(prompts_file, client, logger, None, rng)
+    pal = PalAI(prompts_file, client, None, rng)
 
     # run main pipeline
     prompt = "Where we're going we don't need prompts"

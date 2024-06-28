@@ -39,7 +39,7 @@ def main():
     request = PalAI.PalAIRequest.layers_only()
 
     for l in layers:
-        pal = PalAI(prompts_file, client, logger)
+        pal = PalAI(prompts_file, client)
 
         # run main pipeline
         prompt = l

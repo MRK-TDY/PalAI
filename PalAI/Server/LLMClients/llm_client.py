@@ -1,19 +1,18 @@
 from abc import abstractmethod
 import os
 from configparser import RawConfigParser
-import logging
+from loguru import logger
 from PalAI.Server.LLMClients.Examples import example_getter
 
 
 class LLMClient:
 
-    def __init__(self, prompts_file, logger):
+    def __init__(self, prompts_file):
         """Abstract class representing a client for any LLM
 
         :param prompts_file: prompts to be used
         :type prompts_file: dict
         """
-        self.logger = logger
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get("system_prompt", "")
         self.prompt_template = self.prompts_file.get("prompt_template", "")
@@ -73,16 +72,16 @@ class LLMClient:
         prompt = prompt.replace("\n", "")
 
         if agent == "architect":
-            # self.logger.info("Architect: \n" + prompt)
+            # logger.info("Architect: \n" + prompt)
             messages = example_getter.getArchitectExamples(prompt)
         elif agent == "bricklayer":
-            # self.logger.info("Bricklayer: \n" + prompt)
+            # logger.info("Bricklayer: \n" + prompt)
             messages = example_getter.getBrickExamples(prompt)
         elif agent == "materials":
-            # self.logger.info("Materials: \n" + prompt)
+            # logger.info("Materials: \n" + prompt)
             messages = example_getter.getMaterialExamples(prompt)
         elif agent == "add_ons":
-            # self.logger.info("Addons: \n" + prompt)
+            # logger.info("Addons: \n" + prompt)
             messages = example_getter.getAddOnsExamples(prompt)
         else:
             messages = example_getter.getArchitectExamples(prompt)

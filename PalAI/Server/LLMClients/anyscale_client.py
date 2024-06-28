@@ -1,14 +1,14 @@
 import openai
 from PalAI.Server.LLMClients.llm_client import LLMClient
+from loguru import logger
 
 # Pricing: https://docs.endpoints.anyscale.com/pricing/
 
 
 class AnyscaleClient(LLMClient):
 
-    def __init__(self, prompts_file, logger, **kwargs):
-        LLMClient.__init__(self, prompts_file, logger)
-        self.logger = logger
+    def __init__(self, prompts_file, **kwargs):
+        LLMClient.__init__(self, prompts_file)
         self.api_key = self.config.get("anyscale", "api_key")
         self.model_name = "meta-llama/Meta-Llama-3-70B-Instruct"
 
@@ -41,7 +41,7 @@ class AnyscaleClient(LLMClient):
         )
 
         if self.verbose:
-            self.logger.info(chat_completion.choices[0].message.content)
+            logger.info(chat_completion.choices[0].message.content)
 
         return chat_completion.choices[0].message.content
 

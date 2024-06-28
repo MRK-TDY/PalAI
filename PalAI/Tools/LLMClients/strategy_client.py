@@ -2,17 +2,17 @@ import os
 import json
 from PalAI.Server.LLMClients.llm_client import LLMClient
 from hypothesis import strategies as st
+from loguru import logger
 
 class StrategyClient(LLMClient):
 
-    def __init__(self, prompts_file, logger, **kwargs):
-        LLMClient.__init__(self, prompts_file, logger)
+    def __init__(self, prompts_file, **kwargs):
+        LLMClient.__init__(self, prompts_file)
         self.draw = kwargs.get('draw', None)
         if self.draw is None:
             raise ValueError("Must set strategy draw.")
 
         # self.model_name = self.config.get('openai', 'model_name')
-        self.logger = logger
         self.price_rate = 0
 
         # get lists based on jsons

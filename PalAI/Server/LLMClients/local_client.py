@@ -1,4 +1,5 @@
 from configparser import RawConfigParser
+from loguru import logger
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from langchain_community.chat_models.huggingface import ChatHuggingFace
@@ -15,11 +16,10 @@ from huggingface_hub import login
 
 class LocalClient(LLMClient):
 
-    def __init__(self, prompts_file, logger, **kwargs):
+    def __init__(self, prompts_file, **kwargs):
         LLMClient.__init__(self, prompts_file, logger)
 
         # self.model_name = self.config.get('openai', 'model_name')
-        self.logger = logger
         self.verbose = kwargs.get("verbose", False)
         self.device = kwargs.get("device", "cuda")
         login(self.config.get("hugging_face", "login_key"))
@@ -51,8 +51,8 @@ class LocalClient(LLMClient):
     async def get_llm_response(self, system_message, prompt, **kwargs):
 
         if self.verbose:
-            self.logger.info(f"{Fore.GREEN}System message:{Fore.RESET} {system_message}")
-            self.logger.info(f"{Fore.BLUE}Prompt:{Fore.RESET} {prompt}")
+            logger.info(f"{Fore.GREEN}System message:{Fore.RESET} {system_message}")
+            logger.info(f"{Fore.BLUE}Prompt:{Fore.RESET} {prompt}")
 
         self.prompt_total += system_message
         self.prompt_total += prompt
@@ -80,13 +80,12 @@ class LocalClient(LLMClient):
 
         decoded = self.tokenizer.batch_decode(generated_ids)
         response = decoded[0]
-        # self.logger.info("--------------------------------------------------------- \n LLM RESPONSE " + str(response))
         # if self.verbose:
-        #    self.logger.info(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
+        #    logger.info(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
 
         response = self.extractResponse(response, messages, length)
         if self.verbose:
-            self.logger.info(f"{Fore.CYAN} Filtered LLM RESPONSE: {Fore.RESET}\n" + str(response))
+            logger.info(f"{Fore.CYAN} Filtered LLM RESPONSE: {Fore.RESET}\n" + str(response))
 
         return response
 

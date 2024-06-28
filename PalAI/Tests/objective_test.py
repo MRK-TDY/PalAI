@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 import os
 import sys
 import yaml
@@ -21,11 +21,6 @@ class TestClient(unittest.TestCase):
             prompts_file = yaml.safe_load(file)
 
         pal_ai = PalAI(prompts_file, llm_client)
-        # logger = logging.getLogger()
-        # logger.level = logging.DEBUG
-        # stream_handler = logging.StreamHandler(sys.stdout)
-        # logger.addHandler(stream_handler)
-        # pal_ai = PalAI(prompts_file, llm_client, logger)
 
         return pal_ai
 

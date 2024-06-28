@@ -1,7 +1,7 @@
 import asyncio
 from copy import copy
 import json
-import logging
+from loguru import logger
 import os
 import unittest
 
@@ -24,19 +24,11 @@ def building_strategy(draw):
     ) as file:
         prompts_file = yaml.safe_load(file)
 
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.WARNING)
 
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.WARNING)
-    console_formatter = logging.Formatter("%(levelname)s - %(message)s")
-    console_handler.setFormatter(console_formatter)
-    logger.addHandler(console_handler)
-
-    client = StrategyClient(prompts_file, logger, draw=draw)
+    client = StrategyClient(prompts_file, draw=draw)
 
     rng = draw(st.randoms())
-    pal = PalAI(prompts_file, client, logger)
+    pal = PalAI(prompts_file, client)
     pal.rng = rng
 
     prompt = "Where we're going we don't need prompts."

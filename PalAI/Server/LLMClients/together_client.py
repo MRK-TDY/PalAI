@@ -4,14 +4,14 @@ from PalAI.Server.LLMClients.llm_client import LLMClient
 from configparser import RawConfigParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.messages import HumanMessage
+from loguru import logger
 
 
 # Pricing https://api.together.xyz/models
 class TogetherClient(LLMClient):
 
-    def __init__(self, prompts_file, logger):
-        LLMClient.__init__(self, prompts_file, logger)
-        self.logger = logger
+    def __init__(self, prompts_file):
+        LLMClient.__init__(self, prompts_file)
         self.api_key = self.config.get("together", "api_key")
         self.model_name = self.config.get("together", "model_name")
         self.max_tokens = int(self.config.get("together", "together_max_tokens"))
@@ -22,7 +22,7 @@ class TogetherClient(LLMClient):
 
         actual_prompt = self.prompts_file["plan_system_message"]
         actual_prompt += prompt
-        self.logger.info(actual_prompt)
+        logger.info(actual_prompt)
         output = together.Complete.create(
             prompt=actual_prompt,
             model=self.model_name,
@@ -33,6 +33,6 @@ class TogetherClient(LLMClient):
         self.prompt_total += actual_prompt
         # parse the completion then print the whole output
         generatedText = output["output"]["choices"][0]["text"]
-        self.logger.info(output)
-        self.logger.info("Generated Text:" + generatedText)
+        logger.info(output)
+        logger.info("Generated Text:" + generatedText)
         return generatedText

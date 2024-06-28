@@ -7,7 +7,7 @@ class ParrotClient(LLMClient):
         LLMClient.__init__(self, prompts_file, logger)
 
         # self.model_name = self.config.get('openai', 'model_name')
-        self.logger = logger
+        logger = logger
         self.price_rate = 0
 
     async def get_agent_response(self, agent, prompt, **kwargs):

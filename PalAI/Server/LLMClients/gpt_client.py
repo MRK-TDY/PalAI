@@ -1,4 +1,5 @@
 from configparser import RawConfigParser
+from loguru import logger
 import base64
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.messages import HumanMessage
@@ -11,10 +12,9 @@ import os
 
 class GPTClient(LLMClient):
 
-    def __init__(self, prompts_file, logger, **kwargs):
-        LLMClient.__init__(self, prompts_file, logger)
+    def __init__(self, prompts_file, **kwargs):
+        LLMClient.__init__(self, prompts_file)
 
-        self.logger = logger
         self.api_key = self.config.get("openai", "api_key")
         self.model_name = self.config.get("openai", "model_name")
         self.verbose = kwargs.get("verbose", False)
@@ -48,10 +48,10 @@ class GPTClient(LLMClient):
 
     async def get_llm_response(self, system_message, prompt, image_path="", **kwargs):
         if self.verbose:
-            self.logger.info(
+            logger.info(
                 f"{colorama.Fore.GREEN}System message:{colorama.Fore.RESET} {system_message}"
             )
-            self.logger.info(f"{colorama.Fore.BLUE}Prompt:{colorama.Fore.RESET} {prompt}")
+            logger.info(f"{colorama.Fore.BLUE}Prompt:{colorama.Fore.RESET} {prompt}")
 
         self.prompt_total += system_message + prompt
 
@@ -68,11 +68,11 @@ class GPTClient(LLMClient):
                 {"system_message": system_message, "prompt": chat_prompt}
             )
         except Exception as e:
-            self.logger.error(f"Error during chain invocation: {e}")
+            logger.error(f"Error during chain invocation: {e}")
             raise
 
         if self.verbose:
-            self.logger.info(f"{colorama.Fore.CYAN} Response:{colorama.Fore.RESET} {response}")
+            logger.info(f"{colorama.Fore.CYAN} Response:{colorama.Fore.RESET} {response}")
 
         return response
 
@@ -113,6 +113,6 @@ class GPTClient(LLMClient):
         )
 
         if self.verbose:
-            self.logger.info(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
+            logger.info(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
 
         return response

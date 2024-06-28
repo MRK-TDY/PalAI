@@ -3,7 +3,7 @@ import os
 
 from colorama import Fore
 import Levenshtein
-import logging
+from loguru import logger
 from dataclasses import dataclass
 import random
 
@@ -41,7 +41,7 @@ class PalAI:
         def layers_only():
             return PalAI.PalAIRequest(False, False, False, False, False, False)
 
-    def __init__(self, prompts_file, llm, logger=None, web_socket=None, rng=None):
+    def __init__(self, prompts_file, llm, web_socket=None, rng=None):
         """
         :param prompts_file: all prompts to be used
         :type prompts_file: dict
@@ -82,37 +82,27 @@ class PalAI:
             "HONEYCOMB STEEL" "HONEYCOMB DARK GREY",
         ]
 
-        if logger is not None:
-            self.logger = logger
-        else:
-            self.logger = logging.getLogger(__name__)
-            self.console_handler = logging.StreamHandler()
-            self.console_handler.setLevel(logging.DEBUG)
-            console_formatter = logging.Formatter("%(levelname)s - %(message)s")
-            self.console_handler.setFormatter(console_formatter)
-            self.logger.addHandler(self.console_handler)
-
         if llm is not None and isinstance(llm, str):
             match llm:
                 case "gpt":
                     self.llm_client = gpt_client.GPTClient(
-                        prompts_file, logger=self.logger
+                        prompts_file
                     )
                 case "together":
                     self.llm_client = together_client.TogetherClient(
-                        prompts_file, logger=self.logger
+                        prompts_file
                     )
                 case "google":
                     self.llm_client = google_client.GoogleClient(
-                        prompts_file, logger=self.logger
+                        prompts_file
                     )
                 case "anyscale":
                     self.llm_client = anyscale_client.AnyscaleClient(
-                        prompts_file, logger=self.logger
+                        prompts_file
                     )
                 case "local":
                     self.llm_client = local_client.LocalClient(
-                        prompts_file, verbose=True, logger=self.logger
+                        prompts_file, verbose=True
                     )
         elif llm is not None:
             self.llm_client = llm
@@ -160,43 +150,43 @@ class PalAI:
         if manager is not None:
             self.manager = manager
 
-        self.logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
+        logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 
         await self.get_architect_plan()
-        self.logger.info(
+        logger.info(
             f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}"
         )
 
         await self.build_structure()
 
-        self.logger.info(f"{Fore.BLUE}Received basic structure{Fore.RESET}")
+        logger.info(f"{Fore.BLUE}Received basic structure{Fore.RESET}")
 
         if request_type is None or request_type.create_windows:
             await self.apply_windows()
-            self.logger.info(f"{Fore.BLUE}Received add-ons{Fore.RESET}")
+            logger.info(f"{Fore.BLUE}Received add-ons{Fore.RESET}")
 
         if request_type is None or request_type.create_materials:
             await self.get_artist_response()
-            self.logger.info(f"{Fore.BLUE}Received artist response{Fore.RESET}")
+            logger.info(f"{Fore.BLUE}Received artist response{Fore.RESET}")
 
         if request_type is None or request_type.apply_post_process:
             await self.apply_style()
-            self.logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
+            logger.info(f"{Fore.BLUE}Applied style {self.style}{Fore.RESET}")
 
         if request_type is None or request_type.create_doors:
             await self.apply_doors()
-            self.logger.info(f"{Fore.BLUE}Applied doors{Fore.RESET}")
+            logger.info(f"{Fore.BLUE}Applied doors{Fore.RESET}")
 
         if request_type is None or request_type.create_garden:
             await self.create_garden()
-            self.logger.info(f"{Fore.BLUE}Created gardens{Fore.RESET}")
+            logger.info(f"{Fore.BLUE}Created gardens{Fore.RESET}")
 
         if request_type is None or request_type.create_decorations:
             await self.decorate()
-            self.logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
+            logger.info(f"{Fore.BLUE}Obtained decorations{Fore.RESET}")
 
         self.api_result["result"] = [i.to_json() for i in self.building]
-        self.logger.info(f"{Fore.GREEN}Finished Request{Fore.RESET}")
+        logger.info(f"{Fore.GREEN}Finished Request{Fore.RESET}")
         return self.api_result
 
     async def get_architect_plan(self):
@@ -238,7 +228,7 @@ class PalAI:
             chosen_layer = self._get_similarity_response(
                 l[1], [i["name"] for i in self.layers]
             )
-            self.logger.info(f"{Fore.BLUE}Chosen Layer: {chosen_layer}{Fore.RESET}")
+            logger.info(f"{Fore.BLUE}Chosen Layer: {chosen_layer}{Fore.RESET}")
             blocks = [i for i in self.layers if i["name"] == chosen_layer][0]["blocks"]
             for b in blocks:
                 p = Placeable(b.get("type", "CUBE"), b["x"], y, b["z"])
@@ -254,7 +244,7 @@ class PalAI:
             message["event"] = "layer"
 
             await self.manager.send_personal_message(json.dumps(message), self.ws)
-        self.logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
+        logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
 
     async def apply_windows(self):
         """Adds doors and windows to the building"""
@@ -262,7 +252,7 @@ class PalAI:
         plan = "\n".join(self.plan_list)
         add_on_prompt = f"Here is the building:\n{plan}\n"
         # print("ADD ON PROMPT: \n" + str(add_on_prompt))
-        self.logger.debug(f"ADDON PROMPT: {add_on_prompt}")
+        logger.debug(f"ADDON PROMPT: {add_on_prompt}")
         styles = ""
         for s in self.windows["styles"]:
             styles += f"{s['name']}:{s['description']}\n"
@@ -272,7 +262,7 @@ class PalAI:
             styles=styles,
             quantifiers=self.windows["quantifiers"],
         )
-        self.logger.debug(f"ADDON RESPONSE: {windows}")
+        logger.debug(f"ADDON RESPONSE: {windows}")
         windows = windows.split("\n")
 
         height = max([i.y for i in self.building]) + 1
@@ -342,7 +332,7 @@ class PalAI:
             styles=self.post_process.get_available_styles(),
         )
 
-        self.logger.debug(f"ARTIST RESPONSE: {materials_response}")
+        logger.debug(f"ARTIST RESPONSE: {materials_response}")
         material = {}
         for l in materials_response.split("\n"):
             l = [i.strip() for i in l.upper().split(":")]
@@ -388,7 +378,7 @@ class PalAI:
             self.building = self.post_process.style(self.style)
         except Exception as e:
             self.style = "no style"
-            self.logger.warning(f"{Fore.RED}Style Error {e}{Fore.RESET}")
+            logger.warning(f"{Fore.RED}Style Error {e}{Fore.RESET}")
             await self.manager.send_personal_message(json.dumps("Error found with post-processing"), self.ws)
 
     async def decorate(self):
@@ -471,7 +461,7 @@ class PalAI:
                     ]  # sometimes LLMs return garbage after the immportant part
                     building_info.append(line[2:])
                 except Exception as e:
-                    self.logger.warning(
+                    logger.warning(
                         f"{Fore.RED}Error extracting building information from LLM response.{Fore.RESET}"
                     )
 
@@ -487,7 +477,7 @@ class PalAI:
                     )
                     blocks.append(aux)
             except Exception as e:
-                self.logger.warning(
+                logger.warning(
                     f"{Fore.RED}Error extracting building information from LLM response:{Fore.RESET}{e}"
                 )
                 continue
