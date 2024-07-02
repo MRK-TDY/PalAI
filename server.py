@@ -1,6 +1,4 @@
-import base64
 import json
-import random
 import uuid
 import sys
 import traceback
@@ -23,27 +21,69 @@ from PalAI.Tools.LLMClients import random_client, mock_client
 from contextlib import asynccontextmanager
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+import sentry_sdk
+from sentry_sdk.integrations.loguru import LoguruIntegration
+from sentry_sdk.integrations.loguru import LoggingLevels
 
 # Set up a directory to store uploaded images
 UPLOAD_FOLDER = "Server/Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+config = RawConfigParser()
+config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
+
 router = APIRouter()
 
+# Set up logger
 fmt = (
     "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
     "<level>{level: <8}</level> | "
     "{extra[request_id]} |"
     "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
 )
-
 logger.remove(0)
 logger.configure(extra={"request_id": "NONE"})
-logger.add(os.path.join(os.path.dirname(__file__,), "records.log"), level="DEBUG", format=fmt)
+logger.add(
+    os.path.join(
+        os.path.dirname(
+            __file__,
+        ),
+        "records.log",
+    ),
+    level="DEBUG",
+    format=fmt,
+)
 logger.add(sys.stderr, level="ERROR", format=fmt, colorize=True)
 logger.add(sys.stdout, level="INFO", format=fmt, colorize=True)
 
-config = RawConfigParser()
-config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
+# Set up Sentry
+dsn = config.get("sentry", "dsn", fallback=None)
+if dsn is not None:
+    try:
+        sentry_loguru = LoguruIntegration(
+            level=LoggingLevels.INFO.value,  # Capture info and above as breadcrumbs
+            event_level=LoggingLevels.ERROR.value,  # Send errors as events
+        )
+
+        sentry_sdk.init(
+            dsn=dsn,
+            # Set traces_sample_rate to 1.0 to capture 100%
+            # of transactions for performance monitoring.
+            traces_sample_rate=1.0,
+            # Set profiles_sample_rate to 1.0 to profile 100%
+            # of sampled transactions.
+            # We recommend adjusting this value in production.
+            profiles_sample_rate=1.0,
+            send_default_pii=True,  # necessary to include prompts
+            enable_tracing=True,
+            integrations=[sentry_loguru],
+        )
+
+        logger.info("Sentry initialized")
+    except:
+        logger.warning("Failed to initialize Sentry")
+        pass
+
 
 PORT = config.getint("server", "port")
 
@@ -95,52 +135,74 @@ async def stop():
     loop.close()
 
 
+@router.websocket("/ping")
+async def ping(ws: WebSocket):
+    await manager.connect(ws)
+    message = await ws.receive_text()
+    await manager.send_personal_message(message, ws)
+
 @router.websocket("/build")
-async def handle_post(ws: WebSocket):
+async def build(ws: WebSocket):
     logger.info("Client connected")
     await manager.connect(ws)
+    # Increment a counter by one for each button click.
+    sentry_sdk.metrics.incr(
+        key="Pal Connection",
+        value=1,
+        tags={
+            }
+        )
 
-    try:
-        message = await ws.receive_text()
-
-        if message:
+    while True:
+        with sentry_sdk.start_transaction(op="build-request", name="build-request"):
             try:
-                json_data = json.loads(message)
-                id = json_data.get("id", str(uuid.uuid4()))
-
-                if "prompt" not in json_data or len(json_data["prompt"]) < 3:
-                    raise Exception("Missing or invalid JSON payload")
-
-                logger.info(f"PalAI request {id}: {json_data['prompt']}")
-                pal = create_pal_instance()
-                with logger.contextualize(request_id=id):
-                    result = await pal.build(
-                        prompt=json_data["prompt"], ws=ws, manager=manager
+                message = await ws.receive_text()
+                sentry_sdk.metrics.incr(
+                    key="Pal Request",
+                    value=1,
+                    tags={
+                        }
                     )
-                result["event"] = "result"
-                result["message"] = "Data processed"
-                await manager.send_personal_message(json.dumps(result), ws)
 
-                logger.info(f"Request {id}: success")
-            except Exception as e:
-                logger.error(f"Error processing request {id}: {e}")
-                traceback.print_exc()
-                await manager.send_personal_message(
-                    json.dumps(
-                        {"message": "Error processing request", "error": str(e)}
-                    ),
-                    ws,
-                )
-        else:
-            await manager.send_personal_message(
-                json.dumps({"message": "No message received"}), ws
-            )
-            logger.warning("No message received")
+                if message:
+                    try:
+                        json_data = json.loads(message)
+                        id = json_data.get("id", str(uuid.uuid4()))
 
-    except WebSocketDisconnect:
-        manager.disconnect(ws)
-    finally:
-        logger.info("WebSocket closed")
+                        if "prompt" not in json_data or len(json_data["prompt"]) < 3:
+                            raise Exception("Missing or invalid JSON payload")
+
+                        logger.info(f"PalAI request {id}: {json_data['prompt']}")
+                        pal = create_pal_instance()
+
+                        with logger.contextualize(request_id=id):
+                            result = await pal.build(
+                                prompt=json_data["prompt"], ws=ws, manager=manager
+                            )
+                        result["event"] = "result"
+                        result["message"] = "Data processed"
+                        await manager.send_personal_message(json.dumps(result), ws)
+
+                        logger.info(f"Request {id}: success")
+                    except Exception as e:
+                        logger.error(f"Error processing request {id}: {e}")
+                        traceback.print_exc()
+                        await manager.send_personal_message(
+                            json.dumps(
+                                {"message": "Error processing request", "error": str(e)}
+                            ),
+                            ws,
+                        )
+                else:
+                    await manager.send_personal_message(
+                        json.dumps({"message": "No message received"}), ws
+                    )
+                    logger.warning("No message received")
+
+            except WebSocketDisconnect:
+                manager.disconnect(ws)
+                logger.info("Client closed connection")
+                return
 
 
 class ConnectionManager:

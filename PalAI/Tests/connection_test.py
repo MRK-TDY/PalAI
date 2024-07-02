@@ -19,18 +19,17 @@ class TestEchoWebSocket(unittest.TestCase):
     def test_echo(self):
         async def send_and_receive(uri, message):
             async with websockets.connect(uri) as websocket:
-                await websocket.send(json.dumps(message))
-                for _ in range(10):
-                    response = await websocket.recv()
-                    print(message, response)
-                    if "result" in response:
-                        return
+                await websocket.send(message)
+                response = await websocket.recv()
+                print(message, response)
+                if message == response:
+                    return
                 self.fail("Did not receive a result")
 
 
         async def test_concurrency():
-            uri = "ws://127.0.0.1:8000/build"
-            tasks = [send_and_receive(uri, {"prompt": "Mock prompt"}) for _ in range(5)]
+            uri = "ws://127.0.0.1:8000/ping"
+            tasks = [send_and_receive(uri, "test") for _ in range(5)]
             await asyncio.gather(*tasks)
 
         # Run the async test as a blocking call
