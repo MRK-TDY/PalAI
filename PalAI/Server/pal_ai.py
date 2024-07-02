@@ -7,6 +7,7 @@ import Levenshtein
 from loguru import logger
 from dataclasses import dataclass
 import random
+import sentry_sdk
 
 from PalAI.Server.LLMClients import (
     gpt_client,
@@ -23,7 +24,11 @@ from PalAI.Server.decorator import Decorator
 from PalAI.Server.placeable import Placeable
 
 
+
 class PalAI:
+    ARCHITECT = "architect"
+    ARTIST = "artist"
+    DECORATOR = "decorator"
 
     @dataclass
     class PalAIRequest:
@@ -202,6 +207,16 @@ class PalAI:
             if i.lstrip().lower().startswith(f"layer")
         ]
 
+        sentry_sdk.metrics.distribution(
+            key="Layer count",
+            value=len(self.plan_list),
+            unit="count",
+            tags={
+                "agent": PalAI.ARCHITECT,
+                "service": "PALAI",
+                }
+            )
+
         return
 
     async def build_structure(self):
@@ -240,6 +255,17 @@ class PalAI:
             message["event"] = "layer"
 
             await self.manager.send_personal_message(json.dumps(message), self.ws)
+
+        sentry_sdk.metrics.distribution(
+            key="Block Count",
+            value=len(self.plan_list),
+            unit="count",
+            tags={
+                "agent": PalAI.ARCHITECT,
+                "service": "PALAI",
+                }
+            )
+
         logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
 
     async def apply_windows(self):
@@ -350,6 +376,45 @@ class PalAI:
                     material["EXTERIOR"] = self._get_similarity_response(
                         l[1].strip(), self.material_types
                     )
+
+
+        sentry_sdk.metrics.set(
+            key="Interior Material",
+            value=material["INTERIOR"],
+            unit="material",
+            tags={
+                "agent": PalAI.ARTIST,
+                "service": "PALAI",
+                }
+            )
+        sentry_sdk.metrics.set(
+            key="Exterior Material",
+            value=material["EXTERIOR"],
+            unit="material",
+            tags={
+                "agent": PalAI.ARTIST,
+                "service": "PALAI",
+                }
+            )
+        sentry_sdk.metrics.set(
+            key="Floor Material",
+            value=material["FLOOR"],
+            unit="material",
+            tags={
+                "agent": PalAI.ARTIST,
+                "service": "PALAI",
+                }
+            )
+        sentry_sdk.metrics.set(
+            key="Style",
+            value=material["STYLE"],
+            unit="style",
+            tags={
+                "agent": PalAI.ARTIST,
+                "service": "PALAI",
+                }
+            )
+
         self.api_result["materials"] = material
         if self.ws is not None:
             message = {"value": material}
@@ -385,6 +450,18 @@ class PalAI:
         self.decorations = decorator.decorate()
 
         self.api_result["decorations"] = self.decorations
+
+        sentry_sdk.metrics.distribution(
+            key="Decorations",
+            value=len(self.decorations),
+            unit="count",
+            tags={
+                "agent": PalAI.DECORATOR,
+                "service": "PALAI",
+                }
+            )
+
+
 
         if self.ws is not None:
             message = {"value": self.decorations}

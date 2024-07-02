@@ -150,6 +150,7 @@ async def build(ws: WebSocket):
         key="Pal Connection",
         value=1,
         tags={
+            "service": "PALAI"
             }
         )
 
@@ -161,6 +162,7 @@ async def build(ws: WebSocket):
                     key="Pal Request",
                     value=1,
                     tags={
+                        "service": "PALAI"
                         }
                     )
 
