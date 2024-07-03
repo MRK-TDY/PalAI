@@ -20,8 +20,10 @@ class LLMClient:
         self.price_rate = 0.00000015
         os.chdir(os.path.dirname(__file__))
 
+
+        config_path = os.getenv("CONFIG_PATH", "config.ini")
         self.config = RawConfigParser()
-        self.config.read("../../../config.ini")
+        self.config.read("../../../" + config_path)
         self.temperature = float(self.config.get("llm", "temperature"))
         self.max_tokens = int(self.config.get("llm", "max_tokens"))
         self.verbose = bool(self.config.get("llm", "verbose"))

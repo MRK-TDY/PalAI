@@ -29,8 +29,9 @@ from sentry_sdk.integrations.loguru import LoggingLevels
 UPLOAD_FOLDER = "Server/Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+config_path = os.getenv("CONFIG_PATH", "config.ini")
 config = RawConfigParser()
-config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
+config.read(os.path.join(os.path.dirname(__file__), config_path))
 
 router = APIRouter()
 
@@ -85,6 +86,7 @@ if dsn is not None:
         pass
 
 
+logger.info("Using config file: " + config_path)
 PORT = config.getint("server", "port")
 
 use_tokens = config.getboolean("server", "use_tokens")
@@ -134,12 +136,6 @@ async def stop():
     loop.stop()
     loop.close()
 
-
-@router.websocket("/ping")
-async def ping(ws: WebSocket):
-    await manager.connect(ws)
-    message = await ws.receive_text()
-    await manager.send_personal_message(message, ws)
 
 @router.websocket("/build")
 async def build(ws: WebSocket):
