@@ -8,6 +8,7 @@ from loguru import logger
 from dataclasses import dataclass
 import random
 import sentry_sdk
+from configparser import RawConfigParser
 
 from PalAI.Server.LLMClients import (
     gpt_client,
@@ -22,7 +23,6 @@ import PalAI.Server.door_layer as door_layer
 import PalAI.Server.gardener as gardener
 from PalAI.Server.decorator import Decorator
 from PalAI.Server.placeable import Placeable
-
 
 
 class PalAI:
@@ -120,6 +120,10 @@ class PalAI:
             self.rng = rng
         self.post_process = PostProcess()
 
+        config_path = os.getenv("CONFIG_PATH", "config.ini")
+        self.config = RawConfigParser()
+        self.config.read(os.path.join(os.path.dirname(__file__), "../../" + config_path))
+
         self.ws = web_socket
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get("system_prompt", "")
@@ -214,8 +218,8 @@ class PalAI:
             tags={
                 "agent": PalAI.ARCHITECT,
                 "service": "PALAI",
-                }
-            )
+            },
+        )
 
         return
 
@@ -225,7 +229,9 @@ class PalAI:
                 l = l.split("|")[0]
             l = l.split(":")
             if len(l) < 2:
-                if self.ws is not None:
+                if self.ws is not None and self.config.getboolean(
+                    "socket", "layer", fallback=True
+                ):
                     await self.manager.send_personal_message(
                         json.dumps(
                             {
@@ -246,7 +252,7 @@ class PalAI:
                 p.rotation = b.get("rotation", 0)
                 self.building.append(p)
 
-        if self.ws is not None:
+        if self.ws is not None and self.config.getboolean("socket", "layer", fallback=True):
             json_building = []
             for l in self.building:
                 json_building.append(l.to_json())
@@ -263,8 +269,8 @@ class PalAI:
             tags={
                 "agent": PalAI.ARCHITECT,
                 "service": "PALAI",
-                }
-            )
+            },
+        )
 
         logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
 
@@ -321,7 +327,7 @@ class PalAI:
         # Only sending the blocks with add_ons
         self.api_result["add_on_agent"] = windows
 
-        if self.ws is not None:
+        if self.ws is not None and self.config.getboolean("socket", "add_ons", fallback=True):
             json_building = [i.to_json() for i in self.building]
             message = {"value": json_building}
             message["event"] = "add_ons"
@@ -330,7 +336,7 @@ class PalAI:
     async def apply_doors(self):
         doors = door_layer.create_doors(self.building, self.rng)
 
-        if self.ws is not None:
+        if self.ws is not None and self.config.getboolean("socket", "doors", fallback=True):
             json_building = [i.to_json() for i in doors]
             message = {"value": json_building}
             message["event"] = "doors"
@@ -340,7 +346,7 @@ class PalAI:
         self.garden = gardener.create_gardens(self.building, self.rng)
         self.api_result["garden"] = [i.to_json() for i in self.garden]
 
-        if self.ws is not None:
+        if self.ws is not None and self.config.getboolean("socket", "garden", fallback=True):
             json_building = [i.to_json() for i in self.garden]
             message = {"value": json_building}
             message["event"] = "garden"
@@ -377,7 +383,6 @@ class PalAI:
                         l[1].strip(), self.material_types
                     )
 
-
         sentry_sdk.metrics.set(
             key="Interior Material",
             value=material["INTERIOR"],
@@ -385,8 +390,8 @@ class PalAI:
             tags={
                 "agent": PalAI.ARTIST,
                 "service": "PALAI",
-                }
-            )
+            },
+        )
         sentry_sdk.metrics.set(
             key="Exterior Material",
             value=material["EXTERIOR"],
@@ -394,8 +399,8 @@ class PalAI:
             tags={
                 "agent": PalAI.ARTIST,
                 "service": "PALAI",
-                }
-            )
+            },
+        )
         sentry_sdk.metrics.set(
             key="Floor Material",
             value=material["FLOOR"],
@@ -403,8 +408,8 @@ class PalAI:
             tags={
                 "agent": PalAI.ARTIST,
                 "service": "PALAI",
-                }
-            )
+            },
+        )
         sentry_sdk.metrics.set(
             key="Style",
             value=material["STYLE"],
@@ -412,11 +417,11 @@ class PalAI:
             tags={
                 "agent": PalAI.ARTIST,
                 "service": "PALAI",
-                }
-            )
+            },
+        )
 
         self.api_result["materials"] = material
-        if self.ws is not None:
+        if self.ws is not None and self.config.getboolean("socket", "material", fallback=True):
             message = {"value": material}
             message["event"] = "material"
             await self.manager.send_personal_message(json.dumps(message), self.ws)
@@ -458,12 +463,10 @@ class PalAI:
             tags={
                 "agent": PalAI.DECORATOR,
                 "service": "PALAI",
-                }
-            )
+            },
+        )
 
-
-
-        if self.ws is not None:
+        if self.ws is not None and self.config.getboolean("socket", "decorations", fallback=True):
             message = {"value": self.decorations}
             message["event"] = "decorations"
             await self.manager.send_personal_message(json.dumps(message), self.ws)
