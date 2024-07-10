@@ -13,7 +13,6 @@ from fastapi import APIRouter, FastAPI, WebSocket, WebSocketDisconnect
 from loguru import logger
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 
-from PalAI.Server.housedescription import BuildingDescriptor
 from PalAI.Server.LLMClients import (
     anyscale_client,
     google_client,
