@@ -1,4 +1,5 @@
 import random
+
 from PalAI.Server.placeable import Placeable
 
 directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
@@ -57,13 +58,21 @@ def create_windows(
     for i, w in enumerate(window_styles):
         match w:
             case "maximalist":
-                _create_maximalist_windows(layered_candidates[i], window_quantifiers[i], rng)
+                _create_maximalist_windows(
+                    layered_candidates[i], window_quantifiers[i], rng
+                )
             case "symmetric":
-                _create_symmetric_windows(layered_candidates[i], window_quantifiers[i], rng)
+                _create_symmetric_windows(
+                    layered_candidates[i], window_quantifiers[i], rng
+                )
             case "default":
-                _create_default_windows(layered_candidates[i], window_quantifiers[i], rng)
+                _create_default_windows(
+                    layered_candidates[i], window_quantifiers[i], rng
+                )
             case "erratic":
-                _create_erratic_windows(layered_candidates[i], window_quantifiers[i], rng)
+                _create_erratic_windows(
+                    layered_candidates[i], window_quantifiers[i], rng
+                )
             case "none":
                 pass
             case _:
@@ -91,13 +100,17 @@ def _create_erratic_windows(
 
 
 def _create_maximalist_windows(
-    layered_candidates: list[list[Placeable]], window_quantifier: float, rng: random.Random
+    layered_candidates: list[list[Placeable]],
+    window_quantifier: float,
+    rng: random.Random,
 ):
     return _create_symmetric_windows(layered_candidates, window_quantifier * 2, rng)
 
 
 def _create_default_windows(
-    layered_candidates: list[list[Placeable]], window_quantifier: float, rng: random.Random
+    layered_candidates: list[list[Placeable]],
+    window_quantifier: float,
+    rng: random.Random,
 ):
     return _create_symmetric_windows(layered_candidates, window_quantifier / 2, rng)
 

@@ -1,6 +1,6 @@
 import json
-from typing import Self
 from enum import StrEnum
+from typing import Self
 
 
 class Placeable:
@@ -48,9 +48,9 @@ class Placeable:
     def from_json(cls, data: dict) -> Self:
         block_type = Placeable.BlockType.from_str(data["type"])
         x, y, z = map(
-                    float,
-                    data["position"].replace("(", "").replace(")", "").split(","),
-                )
+            float,
+            data["position"].replace("(", "").replace(")", "").split(","),
+        )
         aux = cls(block_type, x, y, z)
         if "rotation" in data:
             aux.rotation = int(data["rotation"])
@@ -89,7 +89,7 @@ class Placeable:
         self.z = value[2]
 
     def __repr__(self):
-        return json.dumps(self.to_json(), indent = 2)
+        return json.dumps(self.to_json(), indent=2)
 
     def __setitem__(self, key: str, value):
         if key == "type":

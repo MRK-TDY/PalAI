@@ -1,6 +1,7 @@
 import os
 
 from numpy import add
+
 from PalAI.Server.placeable import Placeable
 
 
@@ -127,8 +128,8 @@ class ObjVisualizer:
                 position = (position[0] + 0.25, position[1], position[2] + 0.25)
                 size = 0.5
 
-            rotation = block.get("rotation", 0 )
-            for add_on in block.get("tags", [] ):
+            rotation = block.get("rotation", 0)
+            for add_on in block.get("tags", []):
                 # add_on_size = float(block['add_on_size'])
                 add_on_size = 0.3 if add_on["type"] == "WINDOW" else 0.5
                 pos = add_on["position"].replace("(", "").replace(")", "").split(",")
@@ -145,9 +146,9 @@ class ObjVisualizer:
                 vertex_offset = placed_block[1]
                 if add_on["type"] == "DOOR":
                     add_on_position = (
-                            add_on_position[0],
-                            add_on_position[1] - 0.4,
-                            add_on_position[2]
+                        add_on_position[0],
+                        add_on_position[1] - 0.4,
+                        add_on_position[2],
                     )
                     placed_block = self.__place_block(
                         add_on_position, "CUBE", add_on_size, vertex_offset

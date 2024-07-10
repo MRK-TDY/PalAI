@@ -1,29 +1,28 @@
+import asyncio
 import json
-import uuid
+import os
 import sys
 import traceback
-from loguru import logger
-import yaml
-import os
+import uuid
 from configparser import RawConfigParser
-import asyncio
-from PalAI.Server.pal_ai import PalAI
-from PalAI.Server.housedescription import BuildingDescriptor
-from fastapi import FastAPI
-from PalAI.Server.LLMClients import (
-    gpt_client,
-    together_client,
-    google_client,
-    anyscale_client,
-    local_client,
-)
-from PalAI.Tools.LLMClients import random_client, mock_client
 from contextlib import asynccontextmanager
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 import sentry_sdk
-from sentry_sdk.integrations.loguru import LoguruIntegration
-from sentry_sdk.integrations.loguru import LoggingLevels
+import yaml
+from fastapi import APIRouter, FastAPI, WebSocket, WebSocketDisconnect
+from loguru import logger
+from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
+
+from PalAI.Server.housedescription import BuildingDescriptor
+from PalAI.Server.LLMClients import (
+    anyscale_client,
+    google_client,
+    gpt_client,
+    local_client,
+    together_client,
+)
+from PalAI.Server.pal_ai import PalAI
+from PalAI.Tools.LLMClients import mock_client, random_client
 
 # Set up a directory to store uploaded images
 UPLOAD_FOLDER = "Server/Uploads"
@@ -142,25 +141,15 @@ async def build(ws: WebSocket):
     logger.info("Client connected")
     await manager.connect(ws)
     # Increment a counter by one for each button click.
-    sentry_sdk.metrics.incr(
-        key="Pal Connection",
-        value=1,
-        tags={
-            "service": "PALAI"
-            }
-        )
+    sentry_sdk.metrics.incr(key="Pal Connection", value=1, tags={"service": "PALAI"})
 
     while True:
         with sentry_sdk.start_transaction(op="build-request", name="build-request"):
             try:
                 message = await ws.receive_text()
                 sentry_sdk.metrics.incr(
-                    key="Pal Request",
-                    value=1,
-                    tags={
-                        "service": "PALAI"
-                        }
-                    )
+                    key="Pal Request", value=1, tags={"service": "PALAI"}
+                )
 
                 if message:
                     try:

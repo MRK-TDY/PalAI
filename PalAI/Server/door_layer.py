@@ -1,5 +1,6 @@
 import random
 import re
+
 from PalAI.Server.placeable import Placeable
 
 directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
@@ -12,7 +13,6 @@ def create_doors(building: list[Placeable], rng: random.Random) -> list[Placeabl
     :type building: list(Placeable)
     :return: list of blocks that have been added doors
     """
-
 
     offset_x = min(building, key=lambda b: b.x).x
     offset_z = min(building, key=lambda b: b.z).z
@@ -72,7 +72,10 @@ def create_doors(building: list[Placeable], rng: random.Random) -> list[Placeabl
 
     return building
 
-def _decide_door_count(candidates: list[list[Placeable]], building: list[Placeable]) -> int:
+
+def _decide_door_count(
+    candidates: list[list[Placeable]], building: list[Placeable]
+) -> int:
     total_candidates = sum(len(c) for c in candidates)
     ground_floor = len([b for b in building if b.y == 0])
     if ground_floor == 0 or total_candidates == 0:
@@ -86,7 +89,9 @@ def _decide_door_count(candidates: list[list[Placeable]], building: list[Placeab
     return 1
 
 
-def _create_doors(candidates: list[list[Placeable]], door_count: int, rng: random.Random) -> list[Placeable]:
+def _create_doors(
+    candidates: list[list[Placeable]], door_count: int, rng: random.Random
+) -> list[Placeable]:
     """Creates doors in the building
 
     :param candidates: list of possible candidates, organized by direction

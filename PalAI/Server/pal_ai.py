@@ -1,34 +1,36 @@
 import json
 import os
-
-from colorama import Fore
-import uuid
-import Levenshtein
-from loguru import logger
-from dataclasses import dataclass
 import random
-import sentry_sdk
 from configparser import RawConfigParser
+from dataclasses import dataclass
 
-from PalAI.Server.LLMClients import (
-    gpt_client,
-    together_client,
-    google_client,
-    anyscale_client,
-    local_client,
-)
-from PalAI.Server.post_process import PostProcess
-import PalAI.Server.window_layer as window_layer
+import Levenshtein
+import sentry_sdk
+from colorama import Fore
+from loguru import logger
+
 import PalAI.Server.door_layer as door_layer
 import PalAI.Server.gardener as gardener
+import PalAI.Server.window_layer as window_layer
 from PalAI.Server.decorator import Decorator
+from PalAI.Server.LLMClients import (
+    anyscale_client,
+    google_client,
+    gpt_client,
+    local_client,
+    together_client,
+)
 from PalAI.Server.placeable import Placeable
+from PalAI.Server.post_process import PostProcess
 
+from PalAI.Server.utils import log_additional_data
 
 class PalAI:
     ARCHITECT = "architect"
     ARTIST = "artist"
     DECORATOR = "decorator"
+    ADD_ONS = "add_ons"
+    GARDEN = "garden"
 
     @dataclass
     class PalAIRequest:
@@ -122,7 +124,9 @@ class PalAI:
 
         config_path = os.getenv("CONFIG_PATH", "config.ini")
         self.config = RawConfigParser()
-        self.config.read(os.path.join(os.path.dirname(__file__), "../../" + config_path))
+        self.config.read(
+            os.path.join(os.path.dirname(__file__), "../../" + config_path)
+        )
 
         self.ws = web_socket
         self.prompts_file = prompts_file
@@ -134,6 +138,7 @@ class PalAI:
 
         os.chdir(os.path.dirname(__file__))
 
+    @sentry_sdk.trace
     async def build(
         self,
         prompt,
@@ -149,6 +154,8 @@ class PalAI:
         :return: complete building
         :rtype: list(dict)
         """
+        log_additional_data("Prompt", prompt)
+
         self.prompt = prompt
         self.original_prompt = prompt
         if ws is not None:
@@ -193,6 +200,7 @@ class PalAI:
         logger.info(f"{Fore.GREEN}Finished Request{Fore.RESET}")
         return self.api_result
 
+    @sentry_sdk.trace
     async def get_architect_plan(self):
         """Gets the architect's plan for the building"""
         described_layers = ""
@@ -220,9 +228,11 @@ class PalAI:
                 "service": "PALAI",
             },
         )
+        log_additional_data("Architect Plan", "\n".join(self.plan_list))
 
         return
 
+    @sentry_sdk.trace
     async def build_structure(self):
         for y, l in enumerate(self.plan_list):
             if "|" in l:
@@ -252,7 +262,9 @@ class PalAI:
                 p.rotation = b.get("rotation", 0)
                 self.building.append(p)
 
-        if self.ws is not None and self.config.getboolean("socket", "layer", fallback=True):
+        if self.ws is not None and self.config.getboolean(
+            "socket", "layer", fallback=True
+        ):
             json_building = []
             for l in self.building:
                 json_building.append(l.to_json())
@@ -274,6 +286,7 @@ class PalAI:
 
         logger.info(f"{Fore.BLUE}Received structure.{Fore.RESET}")
 
+    @sentry_sdk.trace
     async def apply_windows(self):
         """Adds doors and windows to the building"""
 
@@ -291,6 +304,7 @@ class PalAI:
             quantifiers=self.windows["quantifiers"],
         )
         logger.debug(f"ADDON RESPONSE: {windows}")
+        log_additional_data("Add-on Response", windows)
         windows = windows.split("\n")
 
         height = max([i.y for i in self.building]) + 1
@@ -327,31 +341,61 @@ class PalAI:
         # Only sending the blocks with add_ons
         self.api_result["add_on_agent"] = windows
 
-        if self.ws is not None and self.config.getboolean("socket", "add_ons", fallback=True):
+        if self.ws is not None and self.config.getboolean(
+            "socket", "add_ons", fallback=True
+        ):
             json_building = [i.to_json() for i in self.building]
             message = {"value": json_building}
             message["event"] = "add_ons"
             await self.manager.send_personal_message(json.dumps(message), self.ws)
 
+    @sentry_sdk.trace
     async def apply_doors(self):
         doors = door_layer.create_doors(self.building, self.rng)
+        sentry_sdk.metrics.distribution(
+            key="Door Count",
+            value=len(doors),
+            unit="count",
+            tags={
+                "agent": PalAI.ADD_ONS,
+                "service": "PALAI",
+            },
+        )
+        log_additional_data("Doors added", str(len(doors)))
 
-        if self.ws is not None and self.config.getboolean("socket", "doors", fallback=True):
+        if self.ws is not None and self.config.getboolean(
+            "socket", "doors", fallback=True
+        ):
             json_building = [i.to_json() for i in doors]
             message = {"value": json_building}
             message["event"] = "doors"
             await self.manager.send_personal_message(json.dumps(message), self.ws)
 
+    @sentry_sdk.trace
     async def create_garden(self):
         self.garden = gardener.create_gardens(self.building, self.rng)
         self.api_result["garden"] = [i.to_json() for i in self.garden]
 
-        if self.ws is not None and self.config.getboolean("socket", "garden", fallback=True):
+        sentry_sdk.metrics.distribution(
+            key="Garden size",
+            value=len(self.garden),
+            unit="count",
+            tags={
+                "agent": PalAI.GARDEN,
+                "service": "PALAI",
+            },
+        )
+        log_additional_data("Garden size", str(len(self.garden)))
+
+        if self.ws is not None and self.config.getboolean(
+            "socket", "garden", fallback=True
+        ):
             json_building = [i.to_json() for i in self.garden]
             message = {"value": json_building}
             message["event"] = "garden"
             await self.manager.send_personal_message(json.dumps(message), self.ws)
 
+    @sentry_sdk.trace
     async def get_artist_response(self):
         materials_response = await self.llm_client.get_agent_response(
             "materials",
@@ -420,8 +464,12 @@ class PalAI:
             },
         )
 
+        log_additional_data("Artist response", materials_response)
+
         self.api_result["materials"] = material
-        if self.ws is not None and self.config.getboolean("socket", "material", fallback=True):
+        if self.ws is not None and self.config.getboolean(
+            "socket", "material", fallback=True
+        ):
             message = {"value": material}
             message["event"] = "material"
             await self.manager.send_personal_message(json.dumps(message), self.ws)
@@ -437,6 +485,7 @@ class PalAI:
         aux = sorted(possibilities, key=lambda x: Levenshtein.distance(x, response))
         return aux[0]
 
+    @sentry_sdk.trace
     async def apply_style(self):
         """Applies the style received from the artist"""
         try:
@@ -449,6 +498,7 @@ class PalAI:
                 json.dumps("Error found with post-processing"), self.ws
             )
 
+    @sentry_sdk.trace
     async def decorate(self):
         decorator = Decorator(self.rng)
         decorator.import_building(self.building)
@@ -465,8 +515,11 @@ class PalAI:
                 "service": "PALAI",
             },
         )
+        log_additional_data("Decorations added", str(len(self.decorations)))
 
-        if self.ws is not None and self.config.getboolean("socket", "decorations", fallback=True):
+        if self.ws is not None and self.config.getboolean(
+            "socket", "decorations", fallback=True
+        ):
             message = {"value": self.decorations}
             message["event"] = "decorations"
             await self.manager.send_personal_message(json.dumps(message), self.ws)

@@ -1,7 +1,8 @@
-import os
-import numpy as np
 import json
+import os
 from collections import deque
+
+import numpy as np
 
 from PalAI.Server.placeable import Placeable
 
@@ -174,7 +175,7 @@ class PostProcess:
             if block_count <= 1:
                 break
             if c[0][0] == 0:
-                continue  #allow floating blocks on the ground floor
+                continue  # allow floating blocks on the ground floor
             block_count -= 1
             self.grid[c[0][0]][c[0][1]][c[0][2]] = None
             self.pixel_grid[c[0][0], c[0][1], c[0][2]] = -1
@@ -305,6 +306,9 @@ class PostProcess:
             for x in range(self.size_x):
                 for z in range(self.size_z):
                     block: Placeable = self.grid[y][x][z]
-                    if block is not None and block.block_type != "CUBE" and len(block.tags) > 0:
+                    if (
+                        block is not None
+                        and block.block_type != "CUBE"
+                        and len(block.tags) > 0
+                    ):
                         block.tags = []
-

@@ -1,5 +1,7 @@
 import random
+
 import numpy as np
+
 from PalAI.Server.placeable import Placeable
 
 
@@ -48,7 +50,6 @@ def create_gardens(building: list[Placeable], rng: random.Random) -> list[Placea
     for g in garden:
         garden_array[g.x - garden_area[0][0], g.z - garden_area[0][1]] = g
 
-
     # Garden size is 1 smaller than the number of gardens
     if garden_size[0] >= 3 and garden_size[1] >= 3:
         create_4x4_garden(garden_size, garden_array, rng)
@@ -64,18 +65,26 @@ def create_gardens(building: list[Placeable], rng: random.Random) -> list[Placea
                 garden.append(garden_array[x, z])
     return garden
 
+
 def create_generic_garden(garden_size, garden_array, rng: random.Random):
     if garden_array[0, 0] is not None:
         garden_array[0, 0].block_type = Placeable.BlockType.GARDEN_LIGHT
     return
 
 
-def place_lights(garden_array, garden_size, limit = 0):
+def place_lights(garden_array, garden_size, limit=0):
     placed_lights = 0
-    positions = ((0, 0), (0, garden_size[1]), (garden_size[0], 0), (garden_size[0], garden_size[1]))
+    positions = (
+        (0, 0),
+        (0, garden_size[1]),
+        (garden_size[0], 0),
+        (garden_size[0], garden_size[1]),
+    )
     for p in positions:
         if garden_array[p[0], p[1]] is not None:
-            if (p[0] == 0 or p[0] == garden_size[0]) and (p[1] == 0 or p[1] == garden_size[1]):
+            if (p[0] == 0 or p[0] == garden_size[0]) and (
+                p[1] == 0 or p[1] == garden_size[1]
+            ):
                 garden_array[p[0], p[1]].block_type = Placeable.BlockType.GARDEN_LIGHT
                 placed_lights += 1
                 if placed_lights == limit:
@@ -92,7 +101,7 @@ def create_3x3_garden(garden_size, garden_array, rng: random.Random):
         for z in range(garden_size[1] + 1):
             if garden_array[x, z] is not None:
                 if (x == 0 or x == garden_size[0]) and (z == 0 or z == garden_size[1]):
-                    continue # This is where lights are placed
+                    continue  # This is where lights are placed
                 if alignment == 0:
                     if (
                         z < garden_size[1]
@@ -113,6 +122,7 @@ def create_3x3_garden(garden_size, garden_array, rng: random.Random):
                         garden_array[x, z].rotation = 3
                         garden_array[x + 1, z] = None
 
+
 def create_4x4_garden(garden_size, garden_array, rng: random.Random):
     place_lights(garden_array, garden_size, 4)
 
@@ -122,7 +132,7 @@ def create_4x4_garden(garden_size, garden_array, rng: random.Random):
         for z in range(garden_size[1] + 1):
             if garden_array[x, z] is not None:
                 if (x == 0 or x == garden_size[0]) and (z == 0 or z == garden_size[1]):
-                    continue # This is where lights are placed
+                    continue  # This is where lights are placed
                 if alignment == 0:
                     if (
                         z < garden_size[1]

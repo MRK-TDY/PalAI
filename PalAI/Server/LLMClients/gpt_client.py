@@ -1,13 +1,10 @@
-from configparser import RawConfigParser
-from loguru import logger
-import base64
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.schema.messages import HumanMessage
-from PalAI.Server.LLMClients.llm_client import LLMClient
-from langchain_core.output_parsers import StrOutputParser
-from langchain_openai import ChatOpenAI
 import colorama
-import os
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from loguru import logger
+
+from PalAI.Server.LLMClients.llm_client import LLMClient
 
 
 class GPTClient(LLMClient):
@@ -72,7 +69,9 @@ class GPTClient(LLMClient):
             raise
 
         if self.verbose:
-            logger.info(f"{colorama.Fore.CYAN} Response:{colorama.Fore.RESET} {response}")
+            logger.info(
+                f"{colorama.Fore.CYAN} Response:{colorama.Fore.RESET} {response}"
+            )
 
         return response
 
@@ -113,6 +112,8 @@ class GPTClient(LLMClient):
         )
 
         if self.verbose:
-            logger.info(f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}")
+            logger.info(
+                f"{colorama.Fore.CYAN}Response:{colorama.Fore.RESET} {response}"
+            )
 
         return response

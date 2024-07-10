@@ -1,11 +1,12 @@
-import numpy as np
+import copy
 import json
 import os
 import random
 from functools import reduce
-import copy
 
+import numpy as np
 from numpy.core.multiarray import empty
+
 from PalAI.Server.placeable import Placeable
 
 
@@ -423,8 +424,6 @@ class Decorator:
             self.grid[y][block.x - self.offset_x][block.z - self.offset_z].append(c)
 
             self._check_limits(decor, current_floor)
-
-
 
     def _get_pos_neighbors(self, pos):
         neighbors = []
