@@ -11,7 +11,12 @@ from PalAI.Server.placeable import Placeable
 
 
 class Decorator:
-    def __init__(self, rng: random.Random, style_sheet="decorations.json"):
+    def __init__(
+        self,
+        rng: random.Random,
+        decorations: list[str] = None,
+        style_sheet="decorations.json",
+    ):
         """
 
         :param style_sheet: list of decorations and their rules
@@ -22,6 +27,17 @@ class Decorator:
             loaded = json.load(fptr)
             self.decorations = loaded["decorations"]
             self.rooms = loaded["rooms"]
+
+            if decorations is not None:
+                # Filter self.decorations to only include those whose asset_name contains any of the given decorations
+                self.decorations = [
+                    d
+                    for d in self.decorations
+                    if any(
+                        decoration in d.get("asset_name", []) + [d["name"]]
+                        for decoration in decorations
+                    )
+                ]
 
         rotated_decorations = []
         for d in self.decorations:

@@ -135,6 +135,7 @@ async def build(ws: WebSocket):
                             result = await pal.build(
                                 prompt=json_data["prompt"],
                                 materials=json_data.get("materials", None),
+                                decorations=json_data.get("decorations", None),
                                 ws=ws,
                                 manager=manager,
                             )

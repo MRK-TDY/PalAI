@@ -123,6 +123,7 @@ class PalAI:
         self,
         prompt,
         materials: list[str] = None,
+        decorations: list[str] = None,
         ws=None,
         manager=None,
         request_type: PalAIRequest = None,
@@ -146,6 +147,7 @@ class PalAI:
 
         if materials is not None:
             self.material_types = materials
+        self.decorations = decorations
 
         logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 
@@ -484,7 +486,7 @@ class PalAI:
 
     @sentry_sdk.trace
     async def decorate(self):
-        decorator = Decorator(self.rng)
+        decorator = Decorator(self.rng, self.decorations)
         decorator.import_building(self.building)
         self.decorations = decorator.decorate()
 
