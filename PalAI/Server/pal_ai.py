@@ -142,6 +142,7 @@ class PalAI:
     async def build(
         self,
         prompt,
+        materials: list[str] = None,
         ws=None,
         manager=None,
         request_type: PalAIRequest = None,
@@ -162,6 +163,9 @@ class PalAI:
             self.ws = ws
         if manager is not None:
             self.manager = manager
+
+        if materials is not None:
+            self.material_types = materials
 
         logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 

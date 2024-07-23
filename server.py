@@ -163,7 +163,10 @@ async def build(ws: WebSocket):
 
                         with logger.contextualize(request_id=id):
                             result = await pal.build(
-                                prompt=json_data["prompt"], ws=ws, manager=manager
+                                prompt=json_data["prompt"],
+                                materials=json_data.get("materials", None),
+                                ws=ws,
+                                manager=manager,
                             )
                         result["event"] = "result"
                         result["message"] = "Data processed"
