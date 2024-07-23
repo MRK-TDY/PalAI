@@ -13,17 +13,11 @@ import PalAI.Server.door_layer as door_layer
 import PalAI.Server.gardener as gardener
 import PalAI.Server.window_layer as window_layer
 from PalAI.Server.decorator import Decorator
-from PalAI.Server.LLMClients import (
-    anyscale_client,
-    google_client,
-    gpt_client,
-    local_client,
-    together_client,
-)
+from PalAI.Server.LLMClients import gpt_client
 from PalAI.Server.placeable import Placeable
 from PalAI.Server.post_process import PostProcess
-
 from PalAI.Server.utils import log_additional_data
+
 
 class PalAI:
     ARCHITECT = "architect"
@@ -91,19 +85,8 @@ class PalAI:
         ]
 
         if llm is not None and isinstance(llm, str):
-            match llm:
-                case "gpt":
-                    self.llm_client = gpt_client.GPTClient(prompts_file)
-                case "together":
-                    self.llm_client = together_client.TogetherClient(prompts_file)
-                case "google":
-                    self.llm_client = google_client.GoogleClient(prompts_file)
-                case "anyscale":
-                    self.llm_client = anyscale_client.AnyscaleClient(prompts_file)
-                case "local":
-                    self.llm_client = local_client.LocalClient(
-                        prompts_file, verbose=True
-                    )
+            self.llm_client = gpt_client.GPTClient(prompts_file)
+
         elif llm is not None:
             self.llm_client = llm
 
@@ -131,10 +114,7 @@ class PalAI:
         self.ws = web_socket
         self.prompts_file = prompts_file
         self.system_prompt = self.prompts_file.get("system_prompt", "")
-        if type(llm) == local_client.LocalClient:
-            self.prompt_template = self.prompts_file.get("prompt_local_template", "")
-        else:
-            self.prompt_template = self.prompts_file.get("prompt_template", "")
+        self.prompt_template = self.prompts_file.get("prompt_template", "")
 
         os.chdir(os.path.dirname(__file__))
 

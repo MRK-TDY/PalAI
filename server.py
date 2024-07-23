@@ -13,13 +13,7 @@ from fastapi import APIRouter, FastAPI, WebSocket, WebSocketDisconnect
 from loguru import logger
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 
-from PalAI.Server.LLMClients import (
-    anyscale_client,
-    google_client,
-    gpt_client,
-    local_client,
-    together_client,
-)
+from PalAI.Server.LLMClients import gpt_client
 from PalAI.Server.pal_ai import PalAI
 from PalAI.Tools.LLMClients import mock_client, random_client
 
@@ -93,40 +87,16 @@ with open(os.path.join(os.path.dirname(__file__), "prompts.yaml"), "r") as file:
     prompts_file = yaml.safe_load(file)
 
 
-match config.get("llm", "type"):
-    case "gpt":
-        llm_client = gpt_client.GPTClient(prompts_file)
-    case "together":
-        llm_client = together_client.TogetherClient(prompts_file)
-    case "google":
-        llm_client = google_client.GoogleClient(prompts_file)
-    case "anyscale":
-        llm_client = anyscale_client.AnyscaleClient(prompts_file)
-    case "local":
-        llm_client = local_client.LocalClient(prompts_file)
-    case "random":
-        llm_client = random_client.RandomClient(prompts_file)
-    case "mock":
-        llm_client = mock_client.MockClient(prompts_file)
+llm_client = gpt_client.GPTClient(prompts_file)
 
 
 def create_pal_instance():
     return PalAI(prompts_file, llm_client)
 
 
-def create_descriptor_instance():
-    return BuildingDescriptor(config.get("openai", "api_key"))
-
-
 @router.get("/echo")
 def test_connect():
     return "200 - ok"
-
-
-async def _handle_post(ws, token):
-    """Main function to handle building requests.
-    Takes in a JSON with a prompt and returns a JSON with the generated building.
-    """
 
 
 async def stop():
