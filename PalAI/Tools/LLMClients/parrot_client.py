@@ -3,11 +3,10 @@ from PalAI.Server.LLMClients.llm_client import LLMClient
 class ParrotClient(LLMClient):
     """ Repeats the prompt as a layer, used to debug the layers that have been implemented"""
 
-    def __init__(self, prompts_file, logger, **kwargs):
-        LLMClient.__init__(self, prompts_file, logger)
+    def __init__(self, prompts_file, **kwargs):
+        LLMClient.__init__(self, prompts_file)
 
         # self.model_name = self.config.get('openai', 'model_name')
-        logger = logger
         self.price_rate = 0
 
     async def get_agent_response(self, agent, prompt, **kwargs):

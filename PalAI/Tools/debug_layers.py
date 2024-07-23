@@ -19,16 +19,7 @@ def main():
     ) as file:
         prompts_file = yaml.safe_load(file)
 
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-    console_formatter = logging.Formatter("%(levelname)s - %(message)s")
-    console_handler.setFormatter(console_formatter)
-    logger.addHandler(console_handler)
-
-    client = ParrotClient(prompts_file, logger)
+    client = ParrotClient(prompts_file)
 
     os.makedirs(os.path.join(os.path.dirname(__file__), "output/layers"), exist_ok=True)
 
