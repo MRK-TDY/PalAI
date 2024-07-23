@@ -6,6 +6,10 @@ from PalAI.Server.LLMClients.Examples import example_getter
 
 
 class LLMClient:
+    ARCHITECT = "architect"
+    BRICKLAYER = "bricklayer"
+    ADD_ONS = "add_ons"
+    MATERIALS = "materials"
 
     def __init__(self, prompts_file):
         """Abstract class representing a client for any LLM
@@ -35,21 +39,21 @@ class LLMClient:
     def _get_agent_system_message(self, agent, **kwargs):
         system_message = ""
         match agent:
-            case "architect":
+            case LLMClient.ARCHITECT:
                 system_message = self.prompts_file["architect"]
                 system_message = system_message.format(
                     presets=kwargs.get("presets", "")
                 )
-            case "bricklayer":
+            case LLMClient.BRICKLAYER:
                 system_message = self.prompts_file["bricklayer"]
-            case "materials":
+            case LLMClient.MATERIALS:
                 system_message = self.prompts_file["materials"]
                 materials = kwargs.get("materials", "")
                 styles = kwargs.get("styles", "")
                 system_message = system_message.format(
                     materials=materials, styles=styles
                 )
-            case "add_ons":
+            case LLMClient.ADD_ONS:
                 system_message = self.prompts_file["windows"]
                 styles = kwargs.get("styles", "")
                 quantifiers = kwargs.get("quantifiers", "")
@@ -57,7 +61,7 @@ class LLMClient:
                     styles=styles, quantifiers=quantifiers
                 )
             case _:
-                system_message = self.prompts_file["architect"]
+                system_message = self.prompts_file[LLMClient.ARCHITECT]
         return system_message
 
     async def get_agent_response(self, agent, prompt, **kwargs):
@@ -73,16 +77,16 @@ class LLMClient:
         prompt = prompt.replace("ASSISTANT:", "")
         prompt = prompt.replace("\n", "")
 
-        if agent == "architect":
+        if agent == LLMClient.ARCHITECT:
             # logger.info("Architect: \n" + prompt)
             messages = example_getter.getArchitectExamples(prompt)
-        elif agent == "bricklayer":
+        elif agent == LLMClient.BRICKLAYER:
             # logger.info("Bricklayer: \n" + prompt)
             messages = example_getter.getBrickExamples(prompt)
-        elif agent == "materials":
+        elif agent == LLMClient.MATERIALS:
             # logger.info("Materials: \n" + prompt)
             messages = example_getter.getMaterialExamples(prompt)
-        elif agent == "add_ons":
+        elif agent == LLMClient.ADD_ONS:
             # logger.info("Addons: \n" + prompt)
             messages = example_getter.getAddOnsExamples(prompt)
         else:

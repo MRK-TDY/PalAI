@@ -45,11 +45,11 @@ class RandomClient(LLMClient):
 
     async def get_agent_response(self, agent, prompt, **kwargs):
         match agent:
-            case "architect":
+            case LLMClient.ARCHITECT:
                 return f"We will create a building made up of 3 layers.\n {self.get_architect_response()}"
-            case "materials":
+            case LLMClient.MATERIALS:
                 return "FLOOR:Sand\nINTERIOR:Sand\nEXTERIOR:Sand\nSTYLE:modern"
-            case "add_ons":
+            case LLMClient.ADD_ONS:
                 return self.get_add_ons_response()
             case _:
                 return "Layer 0: Single block"

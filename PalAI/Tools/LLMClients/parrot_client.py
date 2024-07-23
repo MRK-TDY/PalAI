@@ -19,11 +19,11 @@ class ParrotClient(LLMClient):
                 aux += l + "\n"
         prompt = aux.strip()
         match agent:
-            case "architect":
+            case LLMClient.ARCHITECT:
                 return f"We will create a building made up of 1 layers.\n{prompt}"
-            case "materials":
+            case LLMClient.MATERIALS:
                 return "FLOOR:Sand\nINTERIOR:Sand\nEXTERIOR:Sand\nSTYLE:modern"
-            case "add_ons":
+            case LLMClient.ADD_ONS:
                 return "Layer 0: symmetric | many\n"
             case _:
                 return prompt

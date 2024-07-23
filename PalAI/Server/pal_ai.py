@@ -14,6 +14,7 @@ import PalAI.Server.gardener as gardener
 import PalAI.Server.window_layer as window_layer
 from PalAI.Server.decorator import Decorator
 from PalAI.Server.LLMClients import gpt_client
+from PalAI.Server.LLMClients.llm_client import LLMClient
 from PalAI.Server.placeable import Placeable
 from PalAI.Server.post_process import PostProcess
 from PalAI.Server.utils import log_additional_data
@@ -194,7 +195,7 @@ class PalAI:
             described_layers += f"{l['name']}: {l['description']}\n"
 
         self.prompt = await self.llm_client.get_agent_response(
-            "architect",
+            LLMClient.ARCHITECT,
             self.prompts_file["plan_prompt"].format(self.prompt),
             presets=described_layers,
         )
@@ -284,7 +285,7 @@ class PalAI:
         for s in self.windows["styles"]:
             styles += f"{s['name']}:{s['description']}\n"
         windows = await self.llm_client.get_agent_response(
-            "add_ons",
+            LLMClient.ADD_ONS,
             add_on_prompt,
             styles=styles,
             quantifiers=self.windows["quantifiers"],
@@ -384,7 +385,7 @@ class PalAI:
     @sentry_sdk.trace
     async def get_artist_response(self):
         materials_response = await self.llm_client.get_agent_response(
-            "materials",
+            LLMClient.MATERIALS,
             self.original_prompt,
             materials=self.material_types,
             styles=self.post_process.get_available_styles(),
