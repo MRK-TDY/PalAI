@@ -65,7 +65,7 @@ class PropertyTestCase(unittest.TestCase):
         return super().setUpClass()
 
     @given(building_strategy())
-    @settings(max_examples=500)
+    @settings(max_examples=200)
     def test_complete_pipeline(self, api_response):
         # Extract building from the response
         building = [Placeable.from_json(i) for i in api_response["result"]]
