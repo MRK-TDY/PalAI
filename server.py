@@ -15,6 +15,7 @@ from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 
 from PalAI.Server.LLMClients import gpt_client
 from PalAI.Server.pal_ai import PalAI
+from PalAI.Server.utils import log_additional_data
 from PalAI.Tools.LLMClients import mock_client, random_client
 
 # Set up a directory to store uploaded images
@@ -87,7 +88,14 @@ with open(os.path.join(os.path.dirname(__file__), "prompts.yaml"), "r") as file:
     prompts_file = yaml.safe_load(file)
 
 
-llm_client = gpt_client.GPTClient(prompts_file)
+match config.get("llm", "type", fallback="gpt"):
+    case "random":
+        llm_client = random_client.RandomClient(prompts_file)
+    case "mock":
+        llm_client = mock_client.MockClient(prompts_file)
+    case "gpt" | _:
+        llm_client = gpt_client.GPTClient(prompts_file)
+
 
 
 def create_pal_instance():
@@ -121,12 +129,17 @@ async def build(ws: WebSocket):
                 )
 
                 if message:
+                    id = str(uuid.uuid4())
                     try:
                         json_data = json.loads(message)
-                        id = json_data.get("id", str(uuid.uuid4()))
+                        id = json_data.get("id", id)
 
                         if "prompt" not in json_data or len(json_data["prompt"]) < 3:
-                            raise Exception("Missing or invalid JSON payload")
+                            logger.warning("Missing or invalid JSON payload")
+                            continue
+
+                        for key, value in json_data.items():
+                            log_additional_data(key, str(value))
 
                         logger.info(f"PalAI request {id}: {json_data['prompt']}")
                         pal = create_pal_instance()

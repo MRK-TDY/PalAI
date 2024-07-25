@@ -54,7 +54,7 @@ class PalAI:
         :type web_socket: web_socket
         """
 
-        self.material_types = [
+        materials = [
             "GENERIC WHITE",
             "PLASTIC ORANGE",
             "CONCRETE WHITE",
@@ -84,6 +84,7 @@ class PalAI:
             "LIGHT WOOD",
             "HONEYCOMB STEEL" "HONEYCOMB DARK GREY",
         ]
+        self.material_types = {"floor": materials, "wall": materials}
 
         if llm is not None and isinstance(llm, str):
             self.llm_client = gpt_client.GPTClient(prompts_file)
@@ -123,7 +124,7 @@ class PalAI:
     async def build(
         self,
         prompt,
-        materials: list[str] = None,
+        materials: dict[str, list[str]] = None,
         decorations: list[str] = None,
         ws=None,
         manager=None,
@@ -137,7 +138,6 @@ class PalAI:
         :return: complete building
         :rtype: list(dict)
         """
-        log_additional_data("Prompt", prompt)
 
         self.prompt = prompt
         self.original_prompt = prompt
@@ -403,15 +403,15 @@ class PalAI:
                     material["STYLE"] = self.style
                 elif "FLOOR" in l[0]:
                     material["FLOOR"] = self._get_similarity_response(
-                        l[1].strip(), self.material_types
+                        l[1].strip(), self.material_types["floor"]
                     )
                 elif "INTERIOR" in l[0]:
                     material["INTERIOR"] = self._get_similarity_response(
-                        l[1].strip(), self.material_types
+                        l[1].strip(), self.material_types["wall"]
                     )
                 elif "EXTERIOR" in l[0]:
                     material["EXTERIOR"] = self._get_similarity_response(
-                        l[1].strip(), self.material_types
+                        l[1].strip(), self.material_types["wall"]
                     )
 
         sentry_sdk.metrics.set(
