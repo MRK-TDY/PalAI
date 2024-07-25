@@ -147,12 +147,15 @@ class PalAI:
             self.manager = manager
 
         if materials is not None:
+            for key in materials:
+                materials[key] = [i for i in materials[key] if i != "" and i != "None"]
             self.material_types = materials
             log_additional_data("materials", json.dumps(materials))
 
         log_additional_data("prompt", str(prompt))
         self.decorations = decorations
         if decorations is not None:
+            decorations = [i for i in decorations if i != "" and i != "None"]
             log_additional_data("decorations", json.dumps(decorations))
 
         logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
