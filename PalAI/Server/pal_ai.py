@@ -148,7 +148,12 @@ class PalAI:
 
         if materials is not None:
             self.material_types = materials
+            log_additional_data("materials", json.dumps(materials))
+
+        log_additional_data("prompt", str(prompt))
         self.decorations = decorations
+        if decorations is not None:
+            log_additional_data("decorations", json.dumps(decorations))
 
         logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 

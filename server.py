@@ -139,8 +139,8 @@ async def build(ws: WebSocket):
                             continue
 
                         with logger.contextualize(request_id=id):
-                            logger.info(f"Received message: {json.dumps(json_data)}")
                             for key, value in json_data.items():
+                                logger.info(f"Request: {key} - {value}")
                                 log_additional_data(key, str(value))
 
                             pal = create_pal_instance()
