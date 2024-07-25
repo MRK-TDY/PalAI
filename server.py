@@ -138,13 +138,13 @@ async def build(ws: WebSocket):
                             logger.warning("Missing or invalid JSON payload")
                             continue
 
-                        for key, value in json_data.items():
-                            log_additional_data(key, str(value))
-
-                        logger.info(f"PalAI request {id}: {json_data['prompt']}")
-                        pal = create_pal_instance()
-
                         with logger.contextualize(request_id=id):
+                            logger.info(f"Received message: {json.dumps(json_data)}")
+                            for key, value in json_data.items():
+                                log_additional_data(key, str(value))
+
+                            pal = create_pal_instance()
+
                             result = await pal.build(
                                 prompt=json_data["prompt"],
                                 materials=json_data.get("materials", None),
