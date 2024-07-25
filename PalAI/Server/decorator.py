@@ -28,7 +28,7 @@ class Decorator:
             self.decorations = loaded["decorations"]
             self.rooms = loaded["rooms"]
 
-            if decorations is not None:
+            if decorations is not None and decorations != []:
                 # Filter self.decorations to only include those whose asset_name contains any of the given decorations
                 self.decorations = [
                     d
