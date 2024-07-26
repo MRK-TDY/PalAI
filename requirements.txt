@@ -14,3 +14,4 @@ loguru==0.7.2
 hypothesis==6.104.1
 pytest==8.2.2
 sentry-sdk==2.7.1
+testcontainers==4.7.2

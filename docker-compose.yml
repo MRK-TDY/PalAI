@@ -2,7 +2,8 @@ services:
   fastapi-app:
     build: .
     restart: always
-    container_name: PALAI
+    container_name: palai
+    image: palai
     volumes:
       - ./:/usr/src/app
     ports:
@@ -12,5 +13,4 @@ services:
         reservations:
             cpus: '4.0'
             memory: 5000M
-#    command: [ "uvicorn", "app.main:api", "--host", "0.0.0.0", "--port", "${FASTAPI_PORT}" ]
     command: ["gunicorn", "--preload", "--timeout", "60", "--workers", "16", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "server:api"]

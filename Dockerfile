@@ -22,4 +22,4 @@ EXPOSE 8000
 EXPOSE 5005
 
 
-CMD ["python", "server.py"]
+CMD ["gunicorn", "--preload", "--timeout", "60", "--workers", "16", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "server:api"]
