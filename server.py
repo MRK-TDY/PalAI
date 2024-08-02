@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 
 import sentry_sdk
 import yaml
-from fastapi import APIRouter, FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, FastAPI, Response, WebSocket, WebSocketDisconnect
 from loguru import logger
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 
@@ -103,7 +103,8 @@ def create_pal_instance():
 
 
 @router.get("/echo")
-def test_connect():
+def test_connect(response: Response):
+    response.status_code = 200
     return "200 - ok"
 
 

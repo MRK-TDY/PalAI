@@ -14,3 +14,19 @@ services:
             cpus: '4.0'
             memory: 5000M
     command: ["gunicorn", "--preload", "--timeout", "60", "--workers", "16", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "server:api"]
+    healthcheck:
+      test:  "curl -f http://localhost:8000/echo || exit 1"
+      interval: 3s
+      timeout: 10s
+      retries: 3
+    labels:
+      autoheal: "true"
+
+  autoheal:
+    image: willfarrell/autoheal
+    container_name: autoheal
+    restart: always
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
