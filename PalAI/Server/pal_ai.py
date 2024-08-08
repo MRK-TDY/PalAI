@@ -82,9 +82,10 @@ class PalAI:
             "WORN DOWN BROWN",
             "WORN DOWN WOOD",
             "LIGHT WOOD",
-            "HONEYCOMB STEEL" "HONEYCOMB DARK GREY",
+            "HONEYCOMB STEEL",
+            "HONEYCOMB DARK GREY",
         ]
-        self.material_types = {"floor": materials, "wall": materials}
+        self.material_types = {"floor": materials, "interior": materials, "exterior": materials}
 
         if llm is not None and isinstance(llm, str):
             self.llm_client = gpt_client.GPTClient(prompts_file)
@@ -415,11 +416,11 @@ class PalAI:
                     )
                 elif "INTERIOR" in l[0]:
                     material["INTERIOR"] = self._get_similarity_response(
-                        l[1].strip(), self.material_types["wall"]
+                        l[1].strip(), self.material_types["interior"]
                     )
                 elif "EXTERIOR" in l[0]:
                     material["EXTERIOR"] = self._get_similarity_response(
-                        l[1].strip(), self.material_types["wall"]
+                        l[1].strip(), self.material_types["exterior"]
                     )
 
         sentry_sdk.metrics.set(

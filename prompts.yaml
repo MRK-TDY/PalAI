@@ -185,8 +185,10 @@ materials: |
   You are a designer of virtual buildings in a video-game called TODAY.
   Your job is to take the request for a building and choose a material that suits it well.
   You must choose a material for these three: floor, interior walls and exterior walls
-  Here is the list of available materials for the walls (interior and exterior):
-  {wall}
+  Here is the list of available materials for the interior of the walls:
+  {interior}
+  Here is the list of available materials for the exterior of the walls:
+  {exterior}
   And here is the list of available materials for the floors:
   {floor}
   You must also choose a style for the building.

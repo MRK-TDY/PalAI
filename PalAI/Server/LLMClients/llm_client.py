@@ -51,7 +51,7 @@ class LLMClient:
                 materials = kwargs.get("materials", "")
                 styles = kwargs.get("styles", "")
                 system_message = system_message.format(
-                    floor=materials["floor"], wall=materials["wall"], styles=styles
+                    floor=materials["floor"], interior=materials["interior"], exterior=materials["exterior"], styles=styles
                 )
             case LLMClient.ADD_ONS:
                 system_message = self.prompts_file["windows"]
