@@ -135,7 +135,8 @@ async def build(ws: WebSocket):
                         json_data = json.loads(message)
                         id = json_data.get("id", id)
 
-                        if "prompt" not in json_data or len(json_data["prompt"]) < 3:
+                        prompt = next((json_data[i] for i in json_data.keys() if i.lower() == "prompt"), None)
+                        if prompt is None:
                             logger.warning("Missing or invalid JSON payload")
                             continue
 
@@ -146,10 +147,19 @@ async def build(ws: WebSocket):
 
                             pal = create_pal_instance()
 
+                            # Someetimes Unreal sends keys in uppercase
+                            materials = next((json_data[i] for i in json_data.keys() if i.lower() == "materials"), None)
+                            decorations = next((json_data[i] for i in json_data.keys() if i.lower() == "decorations"), None)
+                            if materials is not None:
+                                aux = {}
+                                for key, value in materials.items():
+                                    aux[key.lower()] = value
+                                materials = aux
+
                             result = await pal.build(
-                                prompt=json_data["prompt"],
-                                materials=json_data.get("materials", None),
-                                decorations=json_data.get("decorations", None),
+                                prompt=prompt,
+                                materials=materials,
+                                decorations=decorations,
                                 ws=ws,
                                 manager=manager,
                             )
