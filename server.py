@@ -201,7 +201,7 @@ async def build(ws: WebSocket):
                         logger.info(f"Request {id}: success")
                     except Exception as e:
                         logger.error(
-                            f"Error processing request {id}: {e}\nTraceback: {traceback.print_exc()}"
+                            f"Error processing request {id}: {e}\nTraceback: {''.join(traceback.format_tb(e.__traceback__))}"
                         )
                         await manager.send_personal_message(
                             json.dumps(
