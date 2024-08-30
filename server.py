@@ -97,7 +97,6 @@ match config.get("llm", "type", fallback="gpt"):
         llm_client = gpt_client.GPTClient(prompts_file)
 
 
-
 def create_pal_instance():
     return PalAI(prompts_file, llm_client)
 
@@ -135,7 +134,14 @@ async def build(ws: WebSocket):
                         json_data = json.loads(message)
                         id = json_data.get("id", id)
 
-                        prompt = next((json_data[i] for i in json_data.keys() if i.lower() == "prompt"), None)
+                        prompt = next(
+                            (
+                                json_data[i]
+                                for i in json_data.keys()
+                                if i.lower() == "prompt"
+                            ),
+                            None,
+                        )
                         if prompt is None:
                             logger.warning("Missing or invalid JSON payload")
                             continue
@@ -148,13 +154,38 @@ async def build(ws: WebSocket):
                             pal = create_pal_instance()
 
                             # Someetimes Unreal sends keys in uppercase
-                            materials = next((json_data[i] for i in json_data.keys() if i.lower() == "materials"), None)
-                            decorations = next((json_data[i] for i in json_data.keys() if i.lower() == "decorations"), None)
+                            materials = next(
+                                (
+                                    json_data[i]
+                                    for i in json_data.keys()
+                                    if i.lower() == "materials"
+                                ),
+                                None,
+                            )
+                            decorations = next(
+                                (
+                                    json_data[i]
+                                    for i in json_data.keys()
+                                    if i.lower() == "decorations"
+                                ),
+                                None,
+                            )
                             if materials is not None:
                                 aux = {}
                                 for key, value in materials.items():
                                     aux[key.lower()] = value
-                                materials = aux
+
+                                if (
+                                    "floor" not in aux.keys()
+                                    or "interior" not in aux.keys()
+                                    or "exterior" not in aux.keys()
+                                    or len(aux["floor"]) == 0
+                                    or len(aux["interior"]) == 0
+                                    or len(aux["exterior"]) == 0
+                                ):
+                                    materials = None
+                                else:
+                                    materials = aux
 
                             result = await pal.build(
                                 prompt=prompt,
@@ -169,7 +200,9 @@ async def build(ws: WebSocket):
 
                         logger.info(f"Request {id}: success")
                     except Exception as e:
-                        logger.error(f"Error processing request {id}: {e}\nTraceback: {traceback.print_exc()}")
+                        logger.error(
+                            f"Error processing request {id}: {e}\nTraceback: {traceback.print_exc()}"
+                        )
                         await manager.send_personal_message(
                             json.dumps(
                                 {"message": "Error processing request", "error": str(e)}
