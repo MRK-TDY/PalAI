@@ -84,9 +84,9 @@ class Placeable:
     @position.setter
     def position(self, value: str):
         value = value.replace("(", "").replace(")", "").split(",")
-        self.x = value[0]
-        self.y = value[1]
-        self.z = value[2]
+        self.x = eval(value[0])
+        self.y = eval(value[1])
+        self.z = eval(value[2])
 
     def __repr__(self):
         return json.dumps(self.to_json(), indent=2)

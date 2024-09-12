@@ -224,8 +224,8 @@
             "limit": 1,
             "adjacency": [
                 "",
-                "",
                 "WALL",
+                "",
                 ""
             ],
             "room": "Bedroom",

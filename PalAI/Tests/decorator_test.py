@@ -1,10 +1,13 @@
-import os
 import json
+import os
 import random
 import unittest
-from PalAI.Server.placeable import Placeable
+
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
 from PalAI.Server.decorator import Decorator
-from hypothesis import given, settings, strategies as st
+from PalAI.Server.placeable import Placeable
 
 
 @st.composite
@@ -12,34 +15,44 @@ def square_building_strategy(draw):
     building = []
     for y in range(draw(st.integers(min_value=1, max_value=3))):
         size = draw(st.integers(min_value=4, max_value=8))
-        offset = (draw(st.integers(min_value=-5, max_value=5)),
-                  draw(st.integers(min_value=-5, max_value=5)))
+        offset = (
+            draw(st.integers(min_value=-5, max_value=5)),
+            draw(st.integers(min_value=-5, max_value=5)),
+        )
         building.extend(_get_square_building(size, offset, y))
+
+    for _ in range(int(len(building) / 10)):
+        building.pop(draw(st.integers(min_value=0, max_value=len(building) - 1)))
 
     return building
 
 
-def _get_square_building(size, offset, height = 0):
+def _get_square_building(size, offset, height=0):
     building = []
     for x in range(size):
         for z in range(size):
-            block = Placeable("CUBE", x + offset[0], height, z + offset[1])
+            # We only use 2 corners as diagonals to allow for decorations that need actual corners
+            is_corner = (x == 0) and (z == 0 or z == size - 1)
+            shape = "DIAGONAL" if is_corner else "CUBE"
+            block = Placeable(shape, x + offset[0], height, z + offset[1])
             building.append(block)
 
     return building
 
+
 class PostProcessTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        cls.decorations_path = "decorations.json"
         with open(
-            os.path.join(os.path.dirname(__file__), "../Server/decorations.json")
+            os.path.join(os.path.dirname(__file__), f"../Server/{cls.decorations_path}")
         ) as f:
             cls.decorations_json = json.load(f)
 
     @given(square_building_strategy(), st.randoms())
     @settings(max_examples=100)
     def test_decorations_are_placed(self, building, rng):
-        decorator = Decorator(random.Random())
+        decorator = Decorator(random.Random(), None, self.decorations_path)
         decorator.import_building(building)
         decorations = decorator.decorate()
         self.assertGreater(len(decorations), 0)
@@ -48,7 +61,6 @@ class PostProcessTest(unittest.TestCase):
         used_decorations = set()
         total_decorations_count = 0
         decoration_names = set()
-        decoration_limits = {}
 
         for d in self.decorations_json["decorations"]:
             total_decorations_count += len(d.get("asset_name", [d["name"]]))
@@ -56,7 +68,7 @@ class PostProcessTest(unittest.TestCase):
 
         for _ in range(total_decorations_count * 10):
             building = _get_square_building(5, (0, 0))
-            decorator = Decorator(random.Random())
+            decorator = Decorator(random.Random(), None, self.decorations_path)
             decorator.import_building(building)
             decorations = decorator.decorate()
 
@@ -86,7 +98,7 @@ class PostProcessTest(unittest.TestCase):
     @given(square_building_strategy(), st.randoms())
     @settings(max_examples=100)
     def test_decorations_are_correct(self, building, rng):
-        decorator = Decorator(random.Random())
+        decorator = Decorator(random.Random(), None, self.decorations_path)
         decorator.import_building(building)
         decorations = decorator.decorate()
 
@@ -96,7 +108,9 @@ class PostProcessTest(unittest.TestCase):
         max_x = max(ground_floor, key=lambda b: b.x).x
         max_z = max(ground_floor, key=lambda b: b.z).z
 
-        self.assert_decorations_are_correct(decorations, min_x, min_z, max_x, max_z)
+        self.assert_decorations_are_correct(
+            decorations, building, min_x, min_z, max_x, max_z
+        )
         self.assert_decorations_within_limits(decorations)
         self.assert_no_decorations_near_doors(decorations, ground_floor)
 
@@ -129,15 +143,15 @@ class PostProcessTest(unittest.TestCase):
             if "limit" in prefab:
                 self.assertLessEqual(v, prefab["limit"], f"Limit for {k} exceeded")
 
-
     def assert_no_decorations_near_doors(self, decorations, building):
         doors = [i for i in building if i.has_door()]
         for d in decorations:
             if any(d.x == i.x and d.z == i.z for i in doors):
                 self.fail("Decoration placed near door")
 
-
-    def assert_decorations_are_correct(self, decorations, min_x, min_z, max_x, max_z):
+    def assert_decorations_are_correct(
+        self, decorations, building, min_x, min_z, max_x, max_z
+    ):
         for d in decorations:
             found = False
             for prefab in self.decorations_json["decorations"]:
@@ -156,15 +170,30 @@ class PostProcessTest(unittest.TestCase):
             pos = d["position"].replace("(", "").replace(")", "").split(",")
             directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
             x = int(pos[0])
+            y = int(pos[1])
             z = int(pos[2])
 
             for i, r in enumerate(adjacencies):
                 dx, dz = directions[i]
                 nx, nz = x + dx, z + dz
                 if r == "EMPTY":
-                    self.assertTrue(nx >= min_x and nx <= max_x and nz >= min_z and nz <= max_z)
+                    self.assertTrue(
+                        nx >= min_x and nx <= max_x and nz >= min_z and nz <= max_z
+                    )
+                    self.assertTrue(
+                        any(
+                            nx == b.x
+                            and y == b.y
+                            and nz == b.z
+                            and b.block_type == Placeable.BlockType.CUBE
+                            for b in building
+                        )
+                    )
                 elif r == "WALL":
-                    self.assertTrue(nx < min_x or nx > max_x or nz < min_z or nz > max_z)
+                    if not (nx < min_x or nx > max_x or nz < min_z or nz > max_z):
+                        self.assertFalse(
+                            any(nx == b.x and y == b.y and nz == b.z for b in building)
+                        )
 
 
 if __name__ == "__main__":
