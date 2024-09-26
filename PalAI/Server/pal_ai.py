@@ -27,6 +27,7 @@ class PalAI:
     ADD_ONS = "add_ons"
     GARDEN = "garden"
 
+    # Review: should this use pydantic instead of dataclass for vaildation?
     @dataclass
     class PalAIRequest:
         create_windows: bool
@@ -54,6 +55,7 @@ class PalAI:
         :type web_socket: web_socket
         """
 
+        # Review: could the variables below be loaded from config?
         materials = [
             "GENERIC WHITE",
             "PLASTIC ORANGE",
@@ -121,6 +123,7 @@ class PalAI:
 
         os.chdir(os.path.dirname(__file__))
 
+    # Review: should the code be adapted to use JSON mode instead of text?
     @sentry_sdk.trace
     async def build(
         self,
@@ -161,6 +164,9 @@ class PalAI:
 
         logger.info(f"{Fore.BLUE}Received prompt: {prompt}{Fore.RESET}")
 
+        # Review: should the code be converted to use pure functions?
+        # the motivation is to initialize the PalAI class once with the necessary config
+        # and everything else will be passed as an argument
         await self.get_architect_plan()
         logger.info(f"{Fore.BLUE}Received architect plan {self.plan_list}{Fore.RESET}")
 

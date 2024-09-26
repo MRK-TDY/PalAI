@@ -1,3 +1,4 @@
+
 import asyncio
 import json
 import os
@@ -27,6 +28,14 @@ config = RawConfigParser()
 config.read(os.path.join(os.path.dirname(__file__), config_path))
 
 router = APIRouter()
+
+# Review: folders are lowercase by convention in python
+
+# Review: should server.py be an API component of the PalAI module and be further split by functionality?
+# What we discussed with endpoints being separated from logic
+
+# Review: Should initialization happen in a seperate function initialize_pal with
+# and in there have fuctions to initialize the logger?
 
 # Set up logger
 fmt = (
@@ -78,7 +87,7 @@ if dsn is not None:
         logger.warning("Failed to initialize Sentry")
         pass
 
-
+# Review: should these be in a state object
 logger.info("Using config file: " + config_path)
 PORT = config.getint("server", "port")
 
@@ -112,7 +121,9 @@ async def stop():
     loop.stop()
     loop.close()
 
-
+# Review: logic should be encapuslated in a function, this is a route handler
+# Maybe create base inferface MercuryHander and subclass it with a MurcuryBuildHandler
+# where a handle() function is defined
 @router.websocket("/build")
 async def build(ws: WebSocket):
     logger.info("Client connected")
@@ -131,6 +142,7 @@ async def build(ws: WebSocket):
                 if message:
                     id = str(uuid.uuid4())
                     try:
+                        # Review: use pydantic for validation
                         json_data = json.loads(message)
                         id = json_data.get("id", id)
 
@@ -243,6 +255,7 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
+# Review: server init can be called here before yield
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # logger.info("Starting up...")
